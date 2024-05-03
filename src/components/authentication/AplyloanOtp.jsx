@@ -22,10 +22,16 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
         console.log(phone_number);
         const fetchIPAddress = async () => {
             try {
-                // const ip = await publicIpv4();
-                // setcurrent_access_ip(ip);
-            } catch (error) {
-                console.error("Error fetching IP address:", error);
+                const ip = await publicIpv4();
+                setcurrent_access_ip(ip);
+            }
+            // catch (error) {
+            //     console.error("Error fetching IP address:", error);
+            // }
+            catch (ex) {
+                if (ex.response && ex.response.status === 400) {
+                    toast.error(ex.response.data);
+                }
             }
             return () => clearInterval(timer);
         };
@@ -109,7 +115,7 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
             if (ex.response && ex.response.status === 400) {
 
                 console.log(errors);
-                toast.error(ex.response?.data, "otp not verified failed");
+                toast.error(ex.response?.data);
             }
         } finally {
             setBtnDisabled(false);
@@ -117,20 +123,24 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
     };
 
     const handleResendOtp = async () => {
+
         setBtnDisabled(true);
+
         try {
             // console.log(phone_number, otpkey, "key");
 
             const response = await authService.resendOtp(phone_number, otpkey);
 
-            setCountdown(120);
-            toast.success("Otp successfull", response.message);
+            toast.success(response.message);
             console.log(response, "resend");
+            setCountdown(120)
+            // startCountdown();
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response?.data);
             }
         } finally {
+
             setBtnDisabled(false);
         }
     };
@@ -151,6 +161,7 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
             )}`;
         }
     };
+
     const validate = () => {
         const options = { abortEarly: false };
         const { error } = Joi.validate(data, schema, options);
@@ -165,88 +176,110 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
 
     return (
         <>
-
-
-            {/* <div className="col-xl-6 col-lg-6 col-md-6"> */}
-            <div className="card mb-0 shadow-none ">
-                <div className="card-body">
-                    <div className="card-title text-uppercase fs-16 mt-4">
-                        <p className="">
-                            A One time 6-digit code has been sent to your Phone
-                            Number
-                        </p>
-                        <span className="text-lowercase text-primary">
-                            +{phone_number}
-                        </span>
-                    </div>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4 mt-5 position-relative">
-                            <label
-                                htmlFor="otpControlInput"
-                                className="form-label text-uppercase"
-                            >
-                                Enter OTP
-                            </label>
-                            <input
-                                type="text"
-                                name="otp"
-                                value={data.otp}
-                                onChange={handleChange}
-                                inputMode="numeric"
-                                className={`form-control input-shadow ${errors.otp ? "is-invalid" : ""
-                                    }`}
-                                maxLength="6"
-                                required
-                            />
-                            <div className="view-password-icon">
-                                <i className="ri-lock-password-line"></i>
-                            </div>
-                            {errors.otp && (
-                                <div className="invalid-feedback">{errors.otp}</div>
-                            )}
-                        </div>
-
-
-                        <div className="fs-14">
-                            {countdown > 0 ? (
-                                <div className="d-flex align-items-center">
-                                    <p className="mb-0 me-2 fs-16">OTP Expires in  </p>
-
-                                    <ReactCountdownClock
-                                        seconds={countdown}
-                                        color="#107FAB"
-                                        alpha={0.9}
-                                        size={35}
-                                        onComplete={handleResendOtp}
-                                        weight={4}
-                                        showMilliseconds={false}
-                                    />
-
-                                </div>
-                            ) : (
-                                <p className=" fs-16">
-                                    Didn't receive the otp?{" "}
-                                    <span
-                                        className="link text-primary link-OTP mt-5"
-                                        onClick={handleResendOtp}
-                                    >
-                                        Click here
-                                    </span>
+            <div className="row justify-content-center">
+                <div className="col-xl-8 col-lg-12 col-md-8 col-lg-8">
+                    <div className="card mb-0 shadow-none ">
+                        <div className="card-body">
+                            <div className="card-title text-uppercase fs-16 mt-4">
+                                <p className="">
+                                    A one time 6-digit code has been sent to your phone
+                                    number
                                 </p>
-                            )}
+                                <span className="text-lowercase text-primary">
+                                    +{phone_number}
+                                </span>
+                            </div>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4 mt-5 position-relative">
+                                    <label
+                                        htmlFor="otpControlInput"
+                                        className="form-label text-uppercase"
+                                    >
+                                        Enter OTP
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="otp"
+                                        placeholder="Enter OTP"
+                                        value={data.otp}
+                                        onChange={handleChange}
+                                        inputMode="numeric"
+                                        className={`form-control input-shadow ${errors.otp ? "is-invalid" : ""
+                                            }`}
+                                        maxLength="6"
+                                        required
+
+                                        autoFocus
+                                    />
+                                    {/* <div className="view-password-icon">
+                                        <i className="ri-lock-password-line"></i>
+                                    </div> */}
+                                    {errors.otp && (
+                                        <div className="invalid-feedback">{errors.otp}</div>
+                                    )}
+                                </div>
+
+
+                                {/* <div className="fs-14">
+                                    {countdown > 0 ? (
+                                        <div className="d-flex align-items-center">
+                                            <p className="mb-0 me-2 fs-16">OTP Expires in  </p>
+
+                                            <ReactCountdownClock
+                                                seconds={countdown}
+                                                color="#107FAB"
+                                                alpha={0.9}
+                                                size={35}
+                                                onComplete={handleResendOtp}
+                                                weight={4}
+                                                showMilliseconds={false}
+                                            />
+
+                                        </div>
+                                    ) : (
+                                        <p className=" fs-16">
+                                            Didn't receive the otp?{" "}
+                                            <span
+                                                className="link text-primary link-OTP mt-5"
+                                                onClick={handleResendOtp}
+                                            >
+                                                Click here
+                                            </span>
+                                        </p>
+                                    )}
+                                </div> */}
+                                <div className="card-footer  mt-4">
+                                    {countdown > 0 ? (
+                                        <>
+                                            <p className="mt-3 fs-16">
+                                                Code Expires Within{" "}
+                                                {getFormattedCountdown(countdown)} seconds
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="para-otp fs-5">
+                                            Didn't receive the otp?
+                                            <a
+                                                className="link link-OTP mt-5"
+                                                onClick={btnDisabled ? null : handleResendOtp}
+                                            >
+                                                <span id="resend-opt"> Click here</span>
+                                            </a>
+                                        </p>
+                                    )}
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary py-2 mb-3 mt-4"
+                                    disabled={btnDisabled}
+                                >
+                                    {btnDisabled ? "Please Wait" : "Verify"}
+                                </button>
+                            </form>
                         </div>
-                        <button
-                            type="submit"
-                            className="btn btn-primary py-2 mb-3 mt-4"
-                            disabled={btnDisabled}
-                        >
-                            {btnDisabled ? "Please Wait" : "Verify"}
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
-
-            {/*  </div> */}
 
         </>
     );

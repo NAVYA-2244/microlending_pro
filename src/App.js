@@ -23,6 +23,15 @@ import AplyloanLogin from "./components/authentication/AplyloanLogin";
 import LoaneligibilityDetails from "./components/authentication/LoaneligibilityDetails";
 import Transection_history from "./components/authentication/Transection_history";
 
+import Recenttransections from "./components/authentication/Resenttransections";
+
+import AplyloanOtp from "./components/authentication/AplyloanOtp";
+import LoanStatus from "./components/authentication/LoanStatus";
+import VerifyLoan from "./components/admin/VerifyLoan";
+import EmiDetails from "./components/authentication/EmiDetails";
+import Userinfo from "./components/admin/Userinfo";
+import EmiHistory from "./components/authentication/EmiHistory";
+
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
   render() {
@@ -44,10 +53,23 @@ class App extends Component {
               <Route path="/loaneligibility" element={<Loaneligibility />}></Route>
               <Route path="/loaneligibilitydetails" element={<LoaneligibilityDetails />}></Route>
               <Route path="/applyloan" element={<ApplyLoan/>}></Route>
+              <Route path="/AplyloanOtp" element={<AplyloanOtp/>}></Route>
               <Route path="/aplyloanLogin" element={<AplyloanLogin/>}></Route>
               <Route path="/Transection_history" element={<Transection_history/>}></Route>
+              <Route path="/Emihistory" element={<EmiHistory/>}></Route>
+                            
+              <Route path="/RecenttransactionHistory" element={<Recenttransections></Recenttransections>}></Route>
+              <Route path="/loanstatus" element={<LoanStatus/>}></Route>
+
+              <Route path="/Userprofile" element={<Userdetails/>}></Route>
+
+              <Route path="/userinfo" element={<Userinfo/>}></Route>
+
+              <Route path="/verifyloan" element={<VerifyLoan/>}></Route>
+              <Route path="/emaidetails" element={<EmiDetails/>}></Route>
 
             </Route>
+            
 
             <Route path="/landing" element={<Landing></Landing>}></Route>
             <Route path="/login" element={<LoginForm></LoginForm>}></Route>

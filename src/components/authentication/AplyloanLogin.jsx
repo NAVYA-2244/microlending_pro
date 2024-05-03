@@ -42,13 +42,14 @@ const AplyloanLogin = () => {
         language: {
           string: {
             regex: {
-              base: "should contain 6 digits",
+              base: "should not start with 1, 2, 3, 4 ,5 or 6 and should not contain special characters",
               test: "another description",
             },
           },
         },
       })
-      .label("Phone number"),
+
+      .label("phone number"),
 
     // current_access_ip: Joi.string()
     //   .ip({
@@ -108,44 +109,50 @@ const AplyloanLogin = () => {
   return (
     <>
       <div className="container ">
-        <div className="row  d-flex align-items-center">
-          <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 ">
+        <div className="row justify-content-center">
+          <div className="col-xl-6 col-lg-12 col-md-12 col-sm-12 ">
             {otp ? (
               <AplyloanOtp phone_number={63 + data.phone_number} />
             ) : (
               <div className="card mb-0 shadow-none">
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3 mt-5">
-                    <label htmlFor="phone_number" className="form-label">
-                      Phone Number
-                    </label>
-                    <div className="input-group ">
-                      <span className="input-group-text">+63</span>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="phone_number"
-                        maxLength={10}
-                        placeholder="Enter Your Phone Number"
-                        value={data.phone_number}
-                        name="phone_number"
-                        onChange={handleChange}
-                        inputMode="numeric"
-
-                      />
+                <div className="card-body">
+                  <di>
+                    <h6>Welcome to our loan application portal! Please enter your mobile number below to begin the application process. Once you've entered your number, click on the 'Send OTP' button to receive a One Time Password (OTP) for verification. We value your privacy and security, so rest assured that your information is safe with us. Thank you for choosing our loan service!</h6>
+                  </di>
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3 mt-5">
+                      <label htmlFor="phone_number" className="form-label">
+                        Phone Number
+                      </label>
+                      <div className="input-group ">
+                        <span className="input-group-text">+63</span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="phone_number"
+                          maxLength={10}
+                          placeholder="Enter Your Phone Number"
+                          value={data.phone_number}
+                          name="phone_number"
+                          onChange={handleChange}
+                          inputMode="numeric"
+                          required
+                          autoFocus
+                        />
+                      </div>
+                      {errors.phone_number && (
+                        <div className="text-danger mt-1">{errors.phone_number}</div>
+                      )}
                     </div>
-                    {errors.phone_number && (
-                      <div className="text-danger mt-1">{errors.phone_number}</div>
-                    )}
-                  </div>
 
-                  <button
-                    className="btn btn-primary py-2 mb-4 mt-4"
-                    disabled={btnDisabled}
-                  >
-                    Send OTP
-                  </button>
-                </form>
+                    <button
+                      className="btn btn-primary py-2 mb-4 mt-4"
+                      disabled={btnDisabled}
+                    >
+                      Send OTP
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
           </div>

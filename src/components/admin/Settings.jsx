@@ -17,15 +17,25 @@ const Settings = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetchUserData = async () => {
+      setBtnDisabled(true)
       try {
         const response = await authService.getCurrentUser();
-        console.log(response, "enable disable");
+        // console.log(response, "enable disable");
 
         setTfaStatus(response.TWO_FA_Status);
-        console.log(response, "two ");
+        // console.log(response, "two ");
         setphone_number(response.phone_number);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      }
+      // catch (error) {
+      //   console.error("Error fetching user data:", error);
+      // }
+      catch (ex) {
+        if (ex.response && ex.response.status === 400) {
+          toast.error(ex.response.data);
+        }
+      }
+      finally {
+        setBtnDisabled(false);
       }
     };
 
@@ -43,11 +53,11 @@ const Settings = () => {
           setQrData(true);
           console.log(response, "qrcod");
           setQr(response.QR);
-          toast.success("Two-factor authentication enabled successfully.");
+
         }
       } else {
         setQrData(true);
-        toast.success("Two-factor authentication disabled successfully.");
+        // toast.success("Two-factor authentication disabled successfully.");
       }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
@@ -63,9 +73,9 @@ const Settings = () => {
   const navigateTo = (path) => {
     navigate(path);
   };
-  console.log(qr, "qr code")
+  // console.log(qr, "qr code")
   return (
-    <div className="row align-items-stretch text-center">
+    <div className="row align-items-stretch text-center justify-content-center">
       {!qrData && (
         <div className="col-lg-6 col-12">
           <div className="card shadow-none mt-0">

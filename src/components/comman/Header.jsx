@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
-import { backEndCallObj } from "../../services/mainServiceFile";
+import { backEndCall } from "../../services/mainServiceFile";
 import { useEffect } from "react";
+import { useMovieContext } from "./Context";
 
 const Header = () => {
   const navigate = useNavigate();
-
-  const [userData, setUserData] = useState({});
+  const { userprofileData, setUserprofileData } = useMovieContext();
+  // const [userData, setUserData] = useState({});
   // const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerToggleMenu = () => {
@@ -18,10 +19,10 @@ const Header = () => {
 
     const fetchData = async () => {
       try {
-        const response = await backEndCallObj("/users/user_profile", {});
-        setUserData(response);
+        const response = await backEndCall("/users/user_profile");
+        setUserprofileData(response);
         // setLoading(false);
-        console.log(response, "profiledata");
+
       } catch (error) {
         console.error("Error fetching user profile:", error);
         // setLoading(false);
@@ -99,10 +100,21 @@ const Header = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 data-bs-auto-close="outside"
+                style={{ marginTop: "-25px" }}
+
+
+
               >
-                <span className="fw-semibold me-2 text-capitalize">user:{userData.name}</span>
-                <span className="user-details border rounded-circle p-2">
-                  <i className="ri-user-3-fill"></i>
+                <span className="fw-semibold me-2 text-capitalize"></span>
+                <span className="user-details border rounded-circle d-flex justify-content-center align-items-center">
+
+                  {userprofileData?.photo ? (
+                    // If userData.photo contains a valid image URL, display the image
+                    <img src={userprofileData?.photo} alt="User Photo" className="rounded-circle shadow" />
+                  ) : (
+                    // Otherwise, display the icon
+                    <i className="ri-user-3-fill"></i>
+                  )}
                 </span>
               </Link>
               <ul className="dropdown-menu text-small">
@@ -117,7 +129,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/updateprofile">
+                  <Link className="dropdown-item" to="/userdetails">
                     <i className="ri-user-fill fs-15 me-1"></i> Profile
                   </Link>
                 </li>
@@ -130,8 +142,8 @@ const Header = () => {
             </li>
           </ul>
         </div>
-      </nav>
-    </div>
+      </nav >
+    </div >
 
 
   );

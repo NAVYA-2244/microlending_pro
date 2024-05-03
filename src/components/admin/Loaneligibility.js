@@ -1,13 +1,362 @@
 
 
+// import React, { useEffect, useState } from 'react';
+// import toast from 'react-hot-toast';
+// import { Modal, Button } from 'react-bootstrap';
+// import { useMovieContext } from '../comman/Context';
+// import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
+
+// function Loaneligibility() {
+//     // const [eligibility, setEligibility] = useState([]);
+//     const { eligibility, setEligibility } = useMovieContext();
+//     const [showAddEligibilityModal, setShowAddEligibilityModal] = useState(false);
+//     const [btnDisabled, setBtnDisabled] = useState(false);
+//     const [newEligibility, setNewEligibility] = useState({
+//         cibilScore: '',
+//         minLoanAmount: '',
+//         maxLoanAmount: '',
+//         tenure: [{ months: '', interest: '' }]
+//     });
+//     const [loading, setLoading] = useState(false); 
+//     const [editIndex, setEditIndex] = useState(null);
+
+//     useEffect(() => {
+//         if(eligibility<=0){
+//         fetchData();
+//         }
+//     }, []);
+
+//     const fetchData = async () => {
+        
+//         try {
+//             setLoading(true);
+//             const response = await backEndCall("/admin/get_admin_controls");
+//             console.log(response, "get response");
+//             setEligibility(response?.eligibility || []);
+//             setLoading(false);
+//         }
+//         //  catch (error) {
+//         //     console.error("Error fetching admin controls:", error);
+//         //     toast.error("Failed to fetch admin controls. Please try again later.");
+//         //     setLoading(false);
+//         // }
+//         catch (ex) {
+//             if (ex.response && ex.response.status === 400) {
+//                 toast.error(ex.response.data);
+//             }
+//         }
+//     };
+
+
+//     const handleAddEligibility = async (e) => {
+//                 e.preventDefault();
+//                 setBtnDisabled(true)
+//                 try {
+//                     setLoading(true);
+//                     if (editIndex !== null) {
+//                         const updatedEligibility = [...eligibility];
+
+//                         console.log(newEligibility,"neweligibility")
+
+//                         updatedEligibility[editIndex] = newEligibility;
+
+//                         const obj1String = JSON.stringify(eligibility)
+//                         const obj2String = JSON.stringify(updatedEligibility)
+//                         if (obj1String === obj2String) {
+//                             window.location.href = '/loaneligibility';
+//                             console.log('same');
+//                           }
+//                         const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
+//                         console.log(response, "updated");
+                       
+//                         fetchData();
+//                         // eligibility[editIndex] = newEligibility
+//                         // console.log(updatedEligibility[editIndex],"updated eligibity")
+//                         // const newdata=updatedEligibility.map((ele)=>{return ele})
+//                         // console.log(newdata,"newdata")
+
+//                         setLoading(false);
+//                        setEligibility(response.eligibility);
+//                         console.log(eligibility,"jhjhkjh")
+//                         setEditIndex(null);
+                  
+//                     } else {
+//                         const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
+//                         console.log(response, "updated");
+//                         fetchData();
+//                         setLoading(false);
+//                     }
+//                     setShowAddEligibilityModal(false);
+//                     setNewEligibility({
+//                         cibilScore: '',
+//                         minLoanAmount: '',
+//                         maxLoanAmount: '',
+//                         tenure: [{ months: '', interest: '' }]
+//                     });
+//                     toast.success("New eligibility added successfully");
+//                 }  catch (ex) {
+//                     if (ex.response && ex.response.status === 400) {
+//                       console.log(ex.response?.data);
+//                       toast.error(ex.response?.data);
+//                     }
+//                   } 
+//                 finally{
+//                     setBtnDisabled(false)
+//                 }
+//             };
+        
+//             const handleShow = () => setShowAddEligibilityModal(true);
+        
+//             const handleEditClick = (index) => {
+//                 setEditIndex(index);
+//                 setShowAddEligibilityModal(true);
+//                 const selectedEligibility = eligibility[index];
+//                 setNewEligibility(selectedEligibility);
+//             };
+        
+//     const handleClose = () => {
+//         setShowAddEligibilityModal(false);
+//         setEditIndex(null);
+//         setNewEligibility({
+//             cibilScore: '',
+//             minLoanAmount: '',
+//             maxLoanAmount: '',
+//             tenure: [{ months: '', interest: '' }]
+//         });
+//     };
+
+//     const handleDelete = async (cibilRangeId) => {
+//         setBtnDisabled(true)
+//         try {
+//             const response = await backEndCallObj("/admin/remove_eligibility", { cibilRangeId });
+//             console.log(response, "deleted response");
+//             toast.success("Eligibility deleted successfully");
+//             setEligibility(response.eligibility)
+//                       // fetchData();
+            
+//         }  catch (ex) {
+//             if (ex.response && ex.response.status === 400) {
+//               console.log(ex.response?.data);
+//               toast.error(ex.response?.data);
+//             }
+//           } 
+//         finally{
+//             setBtnDisabled(false)
+//         }
+//     };
+
+//     const handleAddTenure = (e) => {
+//         setBtnDisabled(true)
+//         e.preventDefault();
+//         setNewEligibility(prevState => ({
+//             ...prevState,
+//             tenure: [...prevState.tenure, { months: '', interest: '' }]
+//         }));
+//         setBtnDisabled(false)
+//     };
+
+//     const handleDeleteTenure = (tenureIndex) => {
+//         setBtnDisabled(true)
+//         setNewEligibility(prevState => {
+//             const updatedTenure = [...prevState.tenure];
+//             updatedTenure.splice(tenureIndex, 1);
+//             return {
+//                 ...prevState,
+//                 tenure: updatedTenure
+//             };
+//         });
+//         setBtnDisabled(false)
+//     };
+
+//     return (
+//         <>
+//         <div className="user-details-container">
+//                 <h5 className="mb-4">Eligibility Loans</h5>
+//                 <div className='card'>
+//                     <div className='card-body scrolleHidden ' style={{ overflowY: "auto", height: "70vh" }}>
+//             <Button variant="primary mb-4" onClick={handleShow} disabled={btnDisabled}>
+//                 Add New eligibility
+//             </Button>
+
+//             {eligibility && eligibility.length > 0 ? (
+//                  <div className="table-responsive">
+//                  <table className="table table-bordered table-centered">
+               
+//                     <thead className='text-center'>
+//                         <tr>
+//                             <th>CIBIL Score</th>
+//                             <th>Min Loan Amount</th>
+//                             <th>Max Loan Amount</th>
+//                             <th>Tenure</th>
+//                             <th>Actions</th>
+//                         </tr>
+//                     </thead>
+//                     <tbody className='align-middle text-center'>
+//                         {eligibility.map((eligibilityItem, index) => (
+//                             <tr key={index}>
+//                                 <td>{eligibilityItem.cibilScore}</td>
+//                                 <td>{eligibilityItem.minLoanAmount}</td>
+//                                 <td>{eligibilityItem.maxLoanAmount}</td>
+//                                 <td>
+//                                     <ul>
+//                                         {eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
+//                                             <li key={tenureIndex}>
+//                                                 {tenureItem.months} months at {tenureItem.interest}% interest
+//                                             </li>
+//                                         ))}
+//                                     </ul>
+//                                 </td>
+//                                 <td>
+//                                     <Button onClick={() => handleEditClick(index)} className="me-2 mb-2" disabled={btnDisabled}>Edit</Button>
+//                                     <Button onClick={() => handleDelete(eligibilityItem.cibilRangeId)} disabled={btnDisabled}>Delete</Button>
+//                                 </td>
+//                             </tr>
+//                         ))}
+//                     </tbody>
+//                 </table>
+//                 </div>
+//             ) : (
+//                 <>
+//                 {loading && (
+//                     <div className="text-center mt-3">
+//                         <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+//                             <span className="sr-only"></span>
+//                         </div>
+//                     </div>)}
+//                     </>
+//             )}
+
+//             {showAddEligibilityModal ? (
+//                 <Modal show={true} onHide={handleClose}>
+//                     <Modal.Header closeButton>
+//                         <Modal.Title>{editIndex !== null ? "Edit Eligibility" : "Add New Eligibility"}</Modal.Title>
+//                     </Modal.Header>
+//                     <Modal.Body>
+//                         <form onSubmit={handleAddEligibility}>
+//                             <div className="mb-3">
+//                             <label
+//                             htmlFor="nameControlInput"
+//                             className="form-label"
+//                           >
+//                             CIBIL Score
+//                           </label>
+//                                 <input
+//                                     className='form-control'
+//                                     type="text"
+//                                     placeholder="CIBIL Score"
+//                                     value={newEligibility.cibilScore}
+//                                     onChange={e => setNewEligibility(prevState => ({ ...prevState, cibilScore: e.target.value }))}
+//                                     required
+//                                 />
+//                             </div>
+//                             <div className="mb-3">
+//                             <label
+//                             htmlFor="nameControlInput"
+//                             className="form-label"
+//                           >
+//                             Minimum Loan Amount
+//                           </label>
+//                                 <input
+//                                     className='form-control'
+//                                     type="number"
+//                                     placeholder="Minimum Loan Amount"
+//                                     value={newEligibility.minLoanAmount}
+//                                     onChange={e => setNewEligibility(prevState => ({ ...prevState, minLoanAmount: e.target.value }))}
+//                                     required
+//                                 />
+//                             </div>
+//                             <div className="mb-3">
+//                             <label
+//                             htmlFor="nameControlInput"
+//                             className="form-label"
+//                           >
+//                            Maximum Loan Amount
+//                           </label>
+//                                 <input
+//                                     className='form-control'
+//                                     type="number"
+//                                     placeholder="Maximum Loan Amount"
+//                                     value={newEligibility.maxLoanAmount}
+//                                     onChange={e => setNewEligibility(prevState => ({ ...prevState, maxLoanAmount: e.target.value }))}
+//                                     required
+//                                 />
+//                             </div>
+//                             <div className="mb-3">
+//                                 <label>Tenure:</label>
+//                                 {newEligibility.tenure.map((tenure, index) => (
+//                                     <div key={index}>
+//                                          <label
+//                             htmlFor="nameControlInput"
+//                             className="form-label"
+//                           >
+//                             Months
+//                           </label>
+//                                         <input
+//                                             className='form-control mb-3'
+//                                             type="number"
+//                                             placeholder="Months"
+//                                             value={tenure.months}
+//                                             onChange={e => {
+//                                                 const updatedTenure = [...newEligibility.tenure];
+//                                                 updatedTenure[index] = { ...updatedTenure[index], months: e.target.value };
+//                                                 setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
+//                                             }}
+//                                             name={`months_${index}`}
+//                                         />
+//                                          <label
+//                             htmlFor="nameControlInput"
+//                             className="form-label"
+//                           >
+//                            Interest
+//                           </label>
+//                                         <input
+//                                             className='form-control mb-3'
+//                                             type="number"
+//                                             placeholder="Interest"
+//                                             value={tenure.interest}
+//                                             onChange={e => {
+//                                                 const updatedTenure = [...newEligibility.tenure];
+//                                                 updatedTenure[index] = { ...updatedTenure[index], interest: e.target.value };
+//                                                 setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
+//                                             }}
+//                                             name={`interest_${index}`}
+                                            
+//                                         />
+//                                         <button  className="btn-primary btn"onClick={() => handleDeleteTenure(index)}>Delete</button>
+//                                     </div>
+//                                 ))}
+//                             </div>
+                            
+//                             <div>
+//                                 <button  className="btn-primary btn me-2"onClick={handleAddTenure}>Add Tenure</button>
+//                                 <Button variant="primary" type="submit" disabled={btnDisabled}>{editIndex !== null ? "Update" : "Submit"}</Button>
+//                             </div>
+//                         </form>
+//                     </Modal.Body>
+//                 </Modal>
+//             ) : null}
+//             </div>
+//             </div>
+//             </div>
+//         </>
+        
+//     );
+// }
+
+// export default Loaneligibility;
+
+
+
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Modal, Button } from 'react-bootstrap';
+import { useMovieContext } from '../comman/Context';
 import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
 
 function Loaneligibility() {
-    const [eligibility, setEligibility] = useState([]);
+    const { eligibility, setEligibility } = useMovieContext();
     const [showAddEligibilityModal, setShowAddEligibilityModal] = useState(false);
+    const [btnDisabled, setBtnDisabled] = useState(false);
     const [newEligibility, setNewEligibility] = useState({
         cibilScore: '',
         minLoanAmount: '',
@@ -16,75 +365,79 @@ function Loaneligibility() {
     });
     const [loading, setLoading] = useState(false); 
     const [editIndex, setEditIndex] = useState(null);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [deletingCibilRangeId, setDeletingCibilRangeId] = useState(null);
 
     useEffect(() => {
-        fetchData();
+        if(eligibility<=0){
+            fetchData();
+        }
     }, []);
 
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await backEndCall("/admin/get_admin_contrls");
-            console.log(response, "get response");
+            const response = await backEndCall("/admin/get_admin_controls");
             setEligibility(response?.eligibility || []);
             setLoading(false);
-        } catch (error) {
-            console.error("Error fetching admin controls:", error);
-            toast.error("Failed to fetch admin controls. Please try again later.");
-            setLoading(false);
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
         }
     };
 
     const handleAddEligibility = async (e) => {
-                e.preventDefault();
-                try {
-                    setLoading(true);
-                    if (editIndex !== null) {
-                        const updatedEligibility = [...eligibility];
-                        console.log(newEligibility,"neweligibility")
-                        updatedEligibility[editIndex] = newEligibility;
-                        const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
-                        console.log(response, "updated");
-                       
-                        fetchData();
-                        // eligibility[editIndex] = newEligibility
-                        // console.log(updatedEligibility[editIndex],"updated eligibity")
-                        // const newdata=updatedEligibility.map((ele)=>{return ele})
-                        // console.log(newdata,"newdata")
-                        setLoading(false);
-                       setEligibility(response.eligibility);
-                        console.log(eligibility,"jhjhkjh")
-                        setEditIndex(null);
-                  
-                    } else {
-                        const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
-                        console.log(response, "updated");
-                        fetchData();
-                        setLoading(false);
-                    }
-                    setShowAddEligibilityModal(false);
-                    setNewEligibility({
-                        cibilScore: '',
-                        minLoanAmount: '',
-                        maxLoanAmount: '',
-                        tenure: [{ months: '', interest: '' }]
-                    });
-                    toast.success("New eligibility added successfully");
-                } catch (error) {
-                    console.error("Error adding/updating eligibility:", error);
-                    toast.error("Failed to add/update eligibility. Please try again later.");
+        e.preventDefault();
+        setBtnDisabled(true);
+        try {
+            setLoading(true);
+            if (editIndex !== null) {
+                const updatedEligibility = [...eligibility];
+                updatedEligibility[editIndex] = newEligibility;
+                const obj1String = JSON.stringify(eligibility)
+                const obj2String = JSON.stringify(updatedEligibility)
+                if (obj1String === obj2String) {
+                    window.location.href = '/loaneligibility';
+                    console.log('same');
                 }
-            };
-        
-            const handleShow = () => setShowAddEligibilityModal(true);
-        
-            const handleEditClick = (index) => {
-                setEditIndex(index);
-                setShowAddEligibilityModal(true);
-                const selectedEligibility = eligibility[index];
-                setNewEligibility(selectedEligibility);
-            };
-        
+                const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
+                fetchData();
+                setLoading(false);
+                setEligibility(response.eligibility);
+                setEditIndex(null);
+            } else {
+                const response = await backEndCallObj("/admin/admin_controls_update", newEligibility);
+                fetchData();
+                setLoading(false);
+            }
+            setShowAddEligibilityModal(false);
+            setNewEligibility({
+                cibilScore: '',
+                minLoanAmount: '',
+                maxLoanAmount: '',
+                tenure: [{ months: '', interest: '' }]
+            });
+            toast.success("New eligibility added successfully");
+        }  catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                console.log(ex.response?.data);
+                toast.error(ex.response?.data);
+            }
+        } finally {
+            setBtnDisabled(false);
+        }
+    };
+
+    const handleShow = () => setShowAddEligibilityModal(true);
+
+    const handleEditClick = (index) => {
+        setEditIndex(index);
+        setShowAddEligibilityModal(true);
+        const selectedEligibility = eligibility[index];
+        setNewEligibility(selectedEligibility);
+    };
+
     const handleClose = () => {
         setShowAddEligibilityModal(false);
         setEditIndex(null);
@@ -96,29 +449,18 @@ function Loaneligibility() {
         });
     };
 
-    const handleDelete = async (cibilRangeId) => {
-        try {
-            const response = await backEndCallObj("/admin/remove_eligibility", { cibilRangeId });
-            console.log(response, "deleted response");
-            toast.success("Eligibility deleted successfully");
-            setEligibility(response.eligibility)
-                      // fetchData();
-            
-        } catch (error) {
-            console.error("Error deleting eligibility:", error);
-            toast.error("Failed to delete eligibility. Please try again later.");
-        }
-    };
-
     const handleAddTenure = (e) => {
+        setBtnDisabled(true);
         e.preventDefault();
         setNewEligibility(prevState => ({
             ...prevState,
             tenure: [...prevState.tenure, { months: '', interest: '' }]
         }));
+        setBtnDisabled(false);
     };
 
     const handleDeleteTenure = (tenureIndex) => {
+        setBtnDisabled(true);
         setNewEligibility(prevState => {
             const updatedTenure = [...prevState.tenure];
             updatedTenure.splice(tenureIndex, 1);
@@ -127,176 +469,208 @@ function Loaneligibility() {
                 tenure: updatedTenure
             };
         });
+        setBtnDisabled(false);
+    };
+
+    const handleDeleteClick = (cibilRangeId) => {
+        setDeletingCibilRangeId(cibilRangeId);
+        console.log("handle delete")
+        setShowDeleteConfirmation(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await handleDelete(deletingCibilRangeId);
+            setShowDeleteConfirmation(false);
+            setDeletingCibilRangeId(null);
+        } catch (error) {
+            // Handle error if necessary
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirmation(false);
+        setDeletingCibilRangeId(null);
+    };
+
+    const handleDelete = async (cibilRangeId) => {
+        setBtnDisabled(true);
+        try {
+            const response = await backEndCallObj("/admin/remove_eligibility", { cibilRangeId });
+            toast.success("Eligibility deleted successfully");
+           
+            setEligibility(response.eligibility);
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response?.data);
+            }
+        } finally {
+            setBtnDisabled(false);
+        }
     };
 
     return (
         <>
-       
-            <Button variant="primary" onClick={handleShow}>
-                Add New eligibility
-            </Button>
+            <div className="user-details-container">
+                <h5 className="mb-4">Eligibility Loans</h5>
+                <div className='card'>
+                    <div className='card-body scrolleHidden ' style={{ overflowY: "auto", height: "70vh" }}>
+                        <Button variant="primary mb-4" onClick={handleShow} disabled={btnDisabled}>
+                            Add New eligibility
+                        </Button>
 
-            {eligibility && eligibility.length > 0 ? (
-                <div className="table-responsive">
-                <table className="table ">
-                    <thead>
-                        <tr>
-                            <th>CIBIL Score</th>
-                            <th>Min Loan Amount</th>
-                            <th>Max Loan Amount</th>
-                            <th>Tenure</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {eligibility.map((eligibilityItem, index) => (
-                            <tr key={index}>
-                                <td>{eligibilityItem.cibilScore}</td>
-                                <td>{eligibilityItem.minLoanAmount}</td>
-                                <td>{eligibilityItem.maxLoanAmount}</td>
-                                <td>
-                                    <ul>
-                                        {eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
-                                            <li key={tenureIndex}>
-                                                {tenureItem.months} months at {tenureItem.interest}% interest
-                                            </li>
+                        {eligibility && eligibility.length > 0 ? (
+                            <div className="table-responsive">
+                                <table className="table table-bordered table-centered">
+                                    <thead className='text-center'>
+                                        <tr>
+                                            <th>CIBIL Score</th>
+                                            <th>Min Loan Amount</th>
+                                            <th>Max Loan Amount</th>
+                                            <th>Tenure</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='align-middle text-center'>
+                                        {eligibility.map((eligibilityItem, index) => (
+                                            <tr key={index}>
+                                                <td>{eligibilityItem.cibilScore}</td>
+                                                <td>{eligibilityItem.minLoanAmount}</td>
+                                                <td>{eligibilityItem.maxLoanAmount}</td>
+                                                <td>
+                                                    <ul>
+                                                        {eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
+                                                            <li key={tenureIndex}>
+                                                                {tenureItem.months} months at {tenureItem.interest}% interest
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <Button onClick={() => handleEditClick(index)} className="me-2 mb-2" disabled={btnDisabled} >Edit</Button>
+                                                    <Button onClick={() => handleDeleteClick(eligibilityItem.cibilRangeId)} disabled={btnDisabled} className='mb-2 me-2'>Delete</Button>
+                                                </td>
+                                            </tr>
                                         ))}
-                                    </ul>
-                                </td>
-                                <td>
-                                    <Button onClick={() => handleEditClick(index)} className="me-2">Edit</Button>
-                                    <Button onClick={() => handleDelete(eligibilityItem.cibilRangeId)}>Delete</Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                </div>
-            ) : (
-                <>
-                {loading && (
-                    <div className="text-center mt-3">
-                        <div className="spinner-border spiner-border-sm" style={{ color: "#efefef" }} role="status">
-                            <span className="sr-only"></span>
-                        </div>
-                    </div>)}
-                    </>
-            )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <>
+                                {loading && (
+                                    <div className="text-center mt-3">
+                                        <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                            <span className="sr-only"></span>
+                                        </div>
+                                    </div>)}
+                            </>
+                        )}
 
-            {showAddEligibilityModal ? (
-                <Modal show={true} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{editIndex !== null ? "Edit Eligibility" : "Add New Eligibility"}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <form onSubmit={handleAddEligibility}>
-                            <div className="mb-3">
-                            <label
-                            htmlFor="nameControlInput"
-                            className="form-label"
-                          >
-                            CIBIL Score
-                          </label>
-                                <input
-                                    className='form-control'
-                                    type="text"
-                                    placeholder="CIBIL Score"
-                                    value={newEligibility.cibilScore}
-                                    onChange={e => setNewEligibility(prevState => ({ ...prevState, cibilScore: e.target.value }))}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                            <label
-                            htmlFor="nameControlInput"
-                            className="form-label"
-                          >
-                            Minimum Loan Amount
-                          </label>
-                                <input
-                                    className='form-control'
-                                    type="number"
-                                    placeholder="Minimum Loan Amount"
-                                    value={newEligibility.minLoanAmount}
-                                    onChange={e => setNewEligibility(prevState => ({ ...prevState, minLoanAmount: e.target.value }))}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                            <label
-                            htmlFor="nameControlInput"
-                            className="form-label"
-                          >
-                           Maximum Loan Amount
-                          </label>
-                                <input
-                                    className='form-control'
-                                    type="number"
-                                    placeholder="Maximum Loan Amount"
-                                    value={newEligibility.maxLoanAmount}
-                                    onChange={e => setNewEligibility(prevState => ({ ...prevState, maxLoanAmount: e.target.value }))}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label>Tenure:</label>
-                                {newEligibility.tenure.map((tenure, index) => (
-                                    <div key={index}>
-                                         <label
-                            htmlFor="nameControlInput"
-                            className="form-label"
-                          >
-                            Months
-                          </label>
-                                        <input
-                                            className='form-control mb-3'
-                                            type="number"
-                                            placeholder="Months"
-                                            value={tenure.months}
-                                            onChange={e => {
-                                                const updatedTenure = [...newEligibility.tenure];
-                                                updatedTenure[index] = { ...updatedTenure[index], months: e.target.value };
-                                                setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
-                                            }}
-                                            name={`months_${index}`}
-                                        />
-                                         <label
-                            htmlFor="nameControlInput"
-                            className="form-label"
-                          >
-                           Interest
-                          </label>
-                                        <input
-                                            className='form-control mb-3'
-                                            type="number"
-                                            placeholder="Interest"
-                                            value={tenure.interest}
-                                            onChange={e => {
-                                                const updatedTenure = [...newEligibility.tenure];
-                                                updatedTenure[index] = { ...updatedTenure[index], interest: e.target.value };
-                                                setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
-                                            }}
-                                            name={`interest_${index}`}
-                                            
-                                        />
-                                        <button  className="btn-primary btn"onClick={() => handleDeleteTenure(index)}>Delete</button>
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            <div>
-                                <button  className="btn-primary btn me-2"onClick={handleAddTenure}>Add Tenure</button>
-                                <Button variant="primary" type="submit">{editIndex !== null ? "Update" : "Submit"}</Button>
-                            </div>
-                        </form>
-                    </Modal.Body>
-                </Modal>
-            ) : null}
+                        {showAddEligibilityModal ? (
+                            <Modal show={showAddEligibilityModal} onHide={handleClose}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>{editIndex !== null ? "Edit Eligibility" : "Add New Eligibility"}</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <form onSubmit={handleAddEligibility}>
+                                        <div className="mb-3">
+                                            <label htmlFor="nameControlInput" className="form-label">CIBIL Score</label>
+                                            <input
+                                                className='form-control'
+                                                type="text"
+                                                placeholder="CIBIL Score"
+                                                value={newEligibility.cibilScore}
+                                                onChange={e => setNewEligibility(prevState => ({ ...prevState, cibilScore: e.target.value }))}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="nameControlInput" className="form-label">Minimum Loan Amount</label>
+                                            <input
+                                                className='form-control'
+                                                type="number"
+                                                placeholder="Minimum Loan Amount"
+                                                value={newEligibility.minLoanAmount}
+                                                onChange={e => setNewEligibility(prevState => ({ ...prevState, minLoanAmount: e.target.value }))}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="nameControlInput" className="form-label">Maximum Loan Amount</label>
+                                            <input
+                                                className='form-control'
+                                                type="number"
+                                                placeholder="Maximum Loan Amount"
+                                                value={newEligibility.maxLoanAmount}
+                                                onChange={e => setNewEligibility(prevState => ({ ...prevState, maxLoanAmount: e.target.value }))}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label>Tenure:</label>
+                                            {newEligibility.tenure.map((tenure, index) => (
+                                                <div key={index}>
+                                                    <label htmlFor="nameControlInput" className="form-label">Months</label>
+                                                    <input
+                                                        className='form-control mb-3'
+                                                        type="number"
+                                                        placeholder="Months"
+                                                        value={tenure.months}
+                                                        onChange={e => {
+                                                            const updatedTenure = [...newEligibility.tenure];
+                                                            updatedTenure[index] = { ...updatedTenure[index], months: e.target.value };
+                                                            setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
+                                                        }}
+                                                        name={`months_${index}`}
+                                                    />
+                                                    <label htmlFor="nameControlInput" className="form-label">Interest</label>
+                                                    <input
+                                                        className='form-control mb-3'
+                                                        type="number"
+                                                        placeholder="Interest"
+                                                        value={tenure.interest}
+                                                        onChange={e => {
+                                                            const updatedTenure = [...newEligibility.tenure];
+                                                            updatedTenure[index] = { ...updatedTenure[index], interest: e.target.value };
+                                                            setNewEligibility(prevState => ({ ...prevState, tenure: updatedTenure }));
+                                                        }}
+                                                        name={`interest_${index}`}
+                                                    />
+                                                    <button className="btn-primary btn" onClick={() => handleDeleteTenure(index)}>Delete</button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div>
+                                            <button className="btn-primary btn me-2" onClick={handleAddTenure}>Add Tenure</button>
+                                            <Button variant="primary" type="submit" disabled={btnDisabled}>{editIndex !== null ? "Update" : "Submit"}</Button>
+                                        </div>
+                                    </form>
+                                </Modal.Body>
+                            </Modal>
+                        ) : null}
+                        {showDeleteConfirmation?(
+                        <Modal show={showDeleteConfirmation} onHide={handleCancelDelete}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Confirmation</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                Are you sure you want to delete this eligibility?
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleCancelDelete}>
+                                    Cancel
+                                </Button>
+                                <Button variant="danger" onClick={handleConfirmDelete}>
+                                    Delete
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        ):null}
+                    </div>
+                </div>
+            </div>
         </>
-        
     );
 }
 
 export default Loaneligibility;
-
-

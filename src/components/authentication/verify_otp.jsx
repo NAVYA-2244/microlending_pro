@@ -16,6 +16,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [current_access_ip, setcurrent_access_ip] = useState("0.0.0.0");
   const [browserId, setBrowserId] = useState("");
+  // const [resendBtnDisabled, setResendBtnDisabled] = useState(false);
   let timer;
 
   useEffect(() => {
@@ -24,7 +25,8 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
       try {
         const ip = await publicIpv4();
         setcurrent_access_ip(ip);
-      } catch (error) {
+      }
+      catch (error) {
         console.error("Error fetching IP address:", error);
       }
       return () => clearInterval(timer);
@@ -32,6 +34,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
     startCountdown();
     fetchIPAddress();
   }, []);
+
   const schema = {
     otp: Joi.string()
       .length(6)
@@ -55,7 +58,8 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
         ? Joi.string()
           .regex(/^[0-9]+$/)
           .required()
-          .label("2FA ")
+          .label("2FA")
+          .length(6)
           .options({
             language: {
               string: {
@@ -123,17 +127,15 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
       );
 
       console.log(response);
-      if (response === "Incorrect OTP. Please Try Again") {
-        console.log("Incorrect OTP. Please Try Again");
-      }
-      toast.success("otp verified successfully");
-      console.log(response, "response otp");
+
+      toast.success("Otp Verified Successfully");
+      console.log(response.message);
       navigate("/dashboard");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
 
         console.log(errors);
-        toast.error(ex.response?.data, "otp not verified failed");
+        toast.error(ex.response?.data);
       }
     } finally {
       setBtnDisabled(false);
@@ -141,20 +143,24 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   };
 
   const handleResendOtp = async () => {
+
     setBtnDisabled(true);
+
     try {
       // console.log(phone_number, otpkey, "key");
 
       const response = await authService.resendOtp(phone_number, otpkey);
 
-      setCountdown(120);
       toast.success("Otp successfull", response.message);
       console.log(response, "resend");
+      setCountdown(120)
+      // startCountdown();
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response?.data);
       }
     } finally {
+
       setBtnDisabled(false);
     }
   };
@@ -175,6 +181,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
       )}`;
     }
   };
+
   const validate = () => {
     const options = { abortEarly: false };
     const { error } = Joi.validate(data, schema, options);
@@ -186,7 +193,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
     }
     return newErrors;
   };
-
+  console.log(countdown)
   return (
     <>
       <div className="authentication-page login-form">
@@ -207,10 +214,10 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
               <div className="col-xl-6 col-lg-6 col-md-6">
                 <div className="card mb-0 shadow-none">
                   <div className="card-body">
-                    <div className="card-title text-uppercase fs-16 mt-4">
+                    <div className="card-title  fs-16 mt-4">
                       <p className="">
-                        A One time 6-digit code has been sent to your Phone
-                        Number
+                        A one time 6-digit code has been sent to your phone
+                        number
                       </p>
                       <span className="text-lowercase text-primary">
                         +{phone_number}
@@ -220,13 +227,14 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                       <div className="mb-4 mt-5 position-relative">
                         <label
                           htmlFor="otpControlInput"
-                          className="form-label text-uppercase"
+                          className="form-label "
                         >
                           Enter OTP
                         </label>
                         <input
                           type="text"
                           name="otp"
+                          placeholder="Enter OTP"
                           value={data.otp}
                           onChange={handleChange}
                           inputMode="numeric"
@@ -234,10 +242,11 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                             }`}
                           maxLength="6"
                           required
+                          autoFocus
                         />
-                        <div className="view-password-icon">
+                        {/* <div className="view-password-icon">
                           <i className="ri-lock-password-line"></i>
-                        </div>
+                        </div> */}
                         {errors.otp && (
                           <div className="invalid-feedback">{errors.otp}</div>
                         )}
@@ -249,7 +258,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           <label className="OPT-label mt-0 mb-3 fw-semibold">
                             Enter 2FA
                           </label>
-                          <div className="position-relative has-icon-right form-floating mb-5">
+                          <div className="position-relative has-icon-right  mb-5">
                             <input
                               type="text"
                               className="form-control input-shadow"
@@ -258,6 +267,9 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                               placeholder="Enter 2FA"
                               value={data.twofacode}
                               onChange={handleChange}
+                              maxLength="6"
+                              required
+                              autoFocus
                             />
                             <div className="form-control-position">
                               <i className="icon-lock"></i>
@@ -270,7 +282,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           </div>
                         </div>
                       )}
-                      <div className="fs-14">
+                      {/* <div className="fs-14">
                         {countdown > 0 ? (
                           <div className="d-flex align-items-center">
                             <p className="mb-0 me-2 fs-16">OTP Expires in  </p>
@@ -283,6 +295,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                               onComplete={handleResendOtp}
                               weight={4}
                               showMilliseconds={false}
+
                             />
 
                           </div>
@@ -292,9 +305,33 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                             <span
                               className="link text-primary link-OTP mt-5"
                               onClick={handleResendOtp}
+                              disabled={btnDisabled}
                             >
                               Click here
                             </span>
+                          </p>
+                        )}
+
+
+                      </div> */}
+                      <div className="card-footer  mt-4">
+                        {countdown > 0 ? (
+                          <>
+                            <p className="mt-3 fs-16">
+                              OTP Expires Within {" "}
+                              <span>{getFormattedCountdown(countdown)}</span> Seconds
+                            </p>
+                          </>
+                        ) : (
+                          <p className="para-otp fs-5 cursor-pointer">
+                            Didn't receive the otp?
+                            <a
+                              className="link link-OTP mt-5"
+                              onClick={btnDisabled ? null : handleResendOtp}
+                              disabled={btnDisabled}
+                            >
+                              <span id="resend-opt cursor-pointer "> Click here</span>
+                            </a>
                           </p>
                         )}
                       </div>
@@ -304,6 +341,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                         disabled={btnDisabled}
                       >
                         {btnDisabled ? "Please Wait" : "Verify"}
+
                       </button>
                     </form>
                   </div>

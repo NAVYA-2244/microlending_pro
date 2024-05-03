@@ -1,6 +1,6 @@
 import axios from "axios";
 import logger from "./logService";
-import helpers from "./crypto";
+
 
 axios.interceptors.response.use(null, (error) => {
   const expectedError =
@@ -14,7 +14,7 @@ axios.interceptors.response.use(null, (error) => {
 });
 
 function setJwt(jwt) {
-    console.log("set jwt", (jwt));
+    // console.log("set jwt", (jwt));
   axios.defaults.headers.common["Authorization"] = jwt;
   axios.defaults.headers.common["Content-type"] = "application/json";
 

@@ -8,13 +8,14 @@ import { useMovieContext } from "../comman/Context";
 import { useFunctionContext } from "../comman/FunctionsContext";
 import { toast } from "react-hot-toast";
 import { Modal, Button } from "react-bootstrap";
+import { toPadding } from 'chart.js/helpers';
 
 
 const AddAdmin = ({ show, onHide }) => {
   const navigate = useNavigate();
-  // const { adminData, setAdminData } = useMovieContext();
-  const { AddAdminlist } = useFunctionContext();
-
+  const { AddAdminData, setAddadminData } = useMovieContext();
+  // const { AddAdminlist } = useFunctionContext();
+  const [btnDisabled, setBtnDisabled] = useState(false)
   const [formData, setFormData] = useState({
     first_name: "",
 
@@ -58,9 +59,14 @@ const AddAdmin = ({ show, onHide }) => {
 
 
   };
+  const AddAdminlist = async () => {
+    const response = await backEndCallObj("/admin/admins_list");
+    setAddadminData(response);
 
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setBtnDisabled(true)
     try {
       await checkErrors(schema, formData);
       setLoading(true);
@@ -92,16 +98,16 @@ const AddAdmin = ({ show, onHide }) => {
         phone_number: "",
 
       });
-    } catch (error) {
-      console.log(error, "errror")
-      setErrorOccur(true);
-      // console.log(error.response.data || "error occured")
-      // toast.error(error.response.data || "error Occurred");
-      console.log(error.response.data, "navyua")
-      toast.error(error.response.data || "error Occurred");
-      // toast.error(error.message || "error Occurred");
-    } finally {
+    }
+
+    catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    }
+    finally {
       setLoading(false);
+      setBtnDisabled(false)
     }
   };
   const handleClose = () => {
@@ -167,10 +173,8 @@ const AddAdmin = ({ show, onHide }) => {
 
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="phone_number" className="form-label">Phone Number</label>
 
-            <div className="input-group">
+          {/* <div className="input-group">
               <span className="input-group-text font-bold">
                 +63
               </span>
@@ -186,10 +190,34 @@ const AddAdmin = ({ show, onHide }) => {
                 schema={schema["phone_number"]}
 
               />
+            </div> */}
+          <div className="mb-3">
+            <label htmlFor="phone_number" className="form-label">Phone Number</label>
+
+            <div className="position-relative applyloan">
+              <span className="apply_loan p-2 positon_absolute font-bold me-2">
+                +63
+              </span>
+              <Number_Input
+
+                type={"phone_number"}
+                value={formData["phone_number"]}
+                name={"phone_number"}
+                placeholder={"Enter phone number here"}
+                SetForm={setFormData}
+                schema={schema["phone_number"]}
+
+                maxLength={10}
+                className="phone_number"
+              />
             </div>
 
 
+
+
           </div>
+
+
 
           <div className="mb-3">
             <label htmlFor="admin_type" className="form-label">Admin Type</label>
@@ -200,14 +228,17 @@ const AddAdmin = ({ show, onHide }) => {
               id={"special_character"}
               value={formData["admin_type"]}
               schema={schema["admin_type"]}
-              options={["1", "2", "3"]}
+              options={[
+                { value: "2", label: "2" },
+                { value: "3", label: "3" },
+              ]}
             />
           </div>
           <Button variant="primary" type="submit"
-          // disabled={loading}
+            disabled={btnDisabled}
           >Submit</Button>
 
-          {/* {loading ? "Adding..." : "Add Admin"} */}
+
         </form>
       </Modal.Body>
     </Modal>

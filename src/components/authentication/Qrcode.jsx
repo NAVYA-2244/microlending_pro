@@ -23,7 +23,7 @@ const QRCode = ({ qr, secret }) => {
   const [ipAddress, setIpAddress] = useState("0.0.0.0");
   const [browserId, setBrowserId] = useState("");
   const [showModal, setShowModal] = useState(false);
-
+  const [resendBtnDisabled, setResendBtnDisabled] = useState(false);
   const navigate = useNavigate();
   let timer;
   useEffect(() => {
@@ -32,11 +32,16 @@ const QRCode = ({ qr, secret }) => {
       setBrowserId(bid);
 
       const response = await authService.getCurrentUser();
+
       setphone_number(response.phone_number);
       setTfaStatus(response.TWO_FA_Status);
+
       if (response.TWO_FA_Status === "Enable") {
+
         setSendOtp(true);
         setInputVisible(false);
+
+
       }
     };
 
@@ -48,9 +53,7 @@ const QRCode = ({ qr, secret }) => {
   useEffect(() => {
     const fetchIpAddress = async () => {
       try {
-        // const ip = await publicIp();
-        // setIpAddress(ip);
-        // console.log(ip, "ip");
+
       } catch (error) {
         console.error("Error fetching IP address:", error);
       }
@@ -63,70 +66,61 @@ const QRCode = ({ qr, secret }) => {
     setSendOtpDisable(true);
 
     const response = await authService.getCurrentUser();
+
     setphone_number(response.phone_number);
     setTfaStatus(response.TWO_FA_Status);
+
+    // localStorage.clear();
 
     try {
       const response = await backEndCallObj("/users/resend_otp", {
         phone_number: phone_number,
         key: "tfa",
       });
+      startCountdown();
+
       setInputVisible(true);
-      toast.success("OTP sent successfully. Please check your phone.");
-      setSendOtp(true);
-      setCountdown(120);
+
+      toast.success(response.message,);
+      setSendOtp(false);
+      // setCountdown(120);
+      // setSendOtp(false);
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
-        toast.error("Failed to send OTP. Please try again later.");
+        toast.error(ex.response?.data)
       }
     } finally {
       setSendOtpDisable(false);
     }
   };
 
-  // const handleResendOtp = async () => {
-  //   setBtnDisabled(true);
-  //   try {
-  //     const response = await authService.backEndCallObj("/users/resend_otp", {
-  //       phone_number: phone_number,
-  //       key: "tfa",
-  //     });
-  //     setCountdown(10);
-  //     toast.success("OTP resent successfully. Please check your phone.");
-  //   } catch (ex) {
-  //     if (ex.response && ex.response.status === 400) {
-  //       toast.error("Failed to resend OTP. Please try again later.");
-  //     }
-  //   } finally {
-  //     setBtnDisabled(false);
-  //   }
-  // };
+
+
   const handleResendOtp = async () => {
+    setResendBtnDisabled(true);
     setBtnDisabled(true);
     try {
+      // console.log(phone_number, otpkey, "key");
 
-
-      const response = await authService.resendOtp(
-        phone_number,
-        "tfa",
-      )
+      const response = await authService.resendOtp(phone_number, "tfa");
 
       setCountdown(120);
-      toast.success("Otp successfull", response.message);
+      // toast.success(response.message, "Otp successfull",);
       console.log(response, "resend");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response?.data);
       }
     } finally {
+      setResendBtnDisabled(false);
       setBtnDisabled(false);
     }
   };
+
   const startCountdown = () => {
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       setCountdown((prevCountdown) => prevCountdown - 1);
     }, 1000);
-    return timer;
   };
 
   const getFormattedCountdown = (countdown) => {
@@ -139,12 +133,10 @@ const QRCode = ({ qr, secret }) => {
       )}`;
     }
   };
-
   const doSubmit = async () => {
     setBtnDisabled(true);
 
     try {
-      startCountdown();
       const route =
         tfaStatus !== "Enable" ? "/users/verify_2fa" : "/users/disable_2fa";
       const obj =
@@ -153,13 +145,15 @@ const QRCode = ({ qr, secret }) => {
           : { two_fa_code: data.two_fa_code, otp: data.otp, key: "tfa" };
 
       const response = await backEndCallObj(route, obj);
+      // localStorage.clear();
       setShowModal(true);
-      toast.success("Two-factor authentication updated successfully.");
+
+      // toast.success(response.message,);
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
-        toast.error(
-          "Failed to update two-factor authentication. Please try again later."
-        );
+        toast.error(ex.response?.data)
+
+
       }
     } finally {
       setBtnDisabled(false);
@@ -168,6 +162,7 @@ const QRCode = ({ qr, secret }) => {
 
   const handlelogout = () => {
     navigate("/login");
+
   };
 
   const schema = {
@@ -192,6 +187,7 @@ const QRCode = ({ qr, secret }) => {
         : Joi.string().allow(""),
     two_fa_code: Joi.string()
       .regex(/^[0-9]+$/)
+      .length(6)
       .options({
         language: {
           string: {
@@ -225,14 +221,26 @@ const QRCode = ({ qr, secret }) => {
     doSubmit();
   };
 
+  // const handleChange = ({ currentTarget: input }) => {
+  //   const newData = { ...data };
+  //   newData[input.name] = input.value;
+  //   setData(newData);
+
+  //   const errorMessage = validateProperty(input);
+  //   setErrors({ ...errors, [input.name]: errorMessage });
+  // };
   const handleChange = ({ currentTarget: input }) => {
-    const newData = { ...data };
-    newData[input.name] = input.value;
-    setData(newData);
+    if (input.name === "otp" || input.name === "two_fa_code") {
+      const value = input.value.replace(/\D/g, ""); // Remove non-numeric characters
+      setData({ ...data, [input.name]: value });
+    } else {
+      setData({ ...data, [input.name]: input.value });
+    }
 
     const errorMessage = validateProperty(input);
     setErrors({ ...errors, [input.name]: errorMessage });
   };
+
 
   const validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
@@ -240,7 +248,7 @@ const QRCode = ({ qr, secret }) => {
     const { error } = Joi.validate(obj, schemaProp);
     return error ? error.details[0].message : null;
   };
-  console.log(qr, "navaneetha")
+  // console.log(qr, "navaneetha")
   return (
     <div className="col-lg-6 col-12">
       <div className="card shadow-none mt-0">
@@ -263,6 +271,7 @@ const QRCode = ({ qr, secret }) => {
               </>
             )}
           </ul>
+
           {sendOtp && (
             <>
               <h4 className="fs-16 text-capitalize">
@@ -285,11 +294,14 @@ const QRCode = ({ qr, secret }) => {
             )}
           </div>
 
-          {inputVisible && (
+          {!sendOtp && inputVisible && (
             <>
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                   <div className="position-relative has-icon-right">
+                    <label className="OPT-label mt-0 mb-3 fw-semibold">
+                      ENTER 2FA
+                    </label>
                     <input
                       type="text"
                       name="two_fa_code"
@@ -299,6 +311,8 @@ const QRCode = ({ qr, secret }) => {
                       placeholder="Enter 2FA code"
                       className="form-control input-shadow"
                       maxLength="6"
+                      inputMode="numeric"
+
                     />
                     <div className="form-control-position">
                       <i className="icon-lock"></i>
@@ -313,7 +327,14 @@ const QRCode = ({ qr, secret }) => {
 
                 {tfaStatus === "Enable" && (
                   <div className="form-group">
+
                     <div className="position-relative has-icon-right">
+                      <label
+                        htmlFor="otpControlInput"
+                        className="form-label text-uppercase"
+                      >
+                        Enter OTP
+                      </label>
                       <input
                         type="text"
                         name="otp"
@@ -323,6 +344,8 @@ const QRCode = ({ qr, secret }) => {
                         placeholder="Enter OTP"
                         className="form-control input-shadow"
                         maxLength="6"
+                        inputMode="numeric"
+                        autoFocus
                       />
                       <div className="form-control-position">
                         <i className="icon-lock"></i>
@@ -340,42 +363,40 @@ const QRCode = ({ qr, secret }) => {
 
                 <button
                   type="submit"
-                  className="btn btn-primary mt-3"
+                  className="btn btn-primary mt-3 mb-3"
                   disabled={btnDisabled}
                 >
                   Submit
                 </button>
 
               </form>
-              {sendOtp && (
-                <div className="fs-14">
+              {(tfaStatus === "Enable" &&
 
+
+
+
+                <div className="card-footer  mt-4">
                   {countdown > 0 ? (
-                    <div className="d-flex align-items-center">
-                      <p className="mb-0 fs-16">OTP Expires in</p>
-                      <ReactCountdownClock
-                        seconds={countdown}
-                        color="#107FAB"
-                        alpha={0.9}
-                        size={35}
-                        onComplete={handleResendOtp}
-                        weight={4}
-                        showMilliseconds={false}
-                      />
-                    </div>
-
+                    <>
+                      <p className="mt-3 fs-16">
+                        Code Expires Within{" "}
+                        {getFormattedCountdown(countdown)} seconds
+                      </p>
+                    </>
                   ) : (
-                    <p className=" fs-16">
-                      Didn't receive the otp?{" "}
-                      <span
-                        className="link text-primary link-OTP mt-5"
+                    <p className="para-otp fs-5">
+                      Didn't receive the otp?
+                      <a
+                        className="link link-OTP mt-5"
                         onClick={handleResendOtp}
                       >
-                        Click here
-                      </span>
+                        <span id="resend-opt"> Click here</span>
+                      </a>
                     </p>
                   )}
                 </div>
+
+
               )}
             </>
           )}

@@ -18,6 +18,9 @@ const LoginForm = () => {
   const [current_access_ip, setcurrent_access_ip] = useState("0.0.0.0");
 
   useEffect(() => {
+    if (authService.getCurrentUser()) {
+      navigate("/dashboard")
+    }
     const fetchIPAddress = async () => {
       try {
         const ip = await publicIpv4();
@@ -33,20 +36,25 @@ const LoginForm = () => {
   const schema = {
     phone_number: Joi.string()
       .trim()
+
       .min(10)
       .max(10)
       .regex(/[63-9]\d{9}$/)
+      .label("phone number")
       .options({
         language: {
           string: {
             regex: {
-              base: "should contain 6 digits",
+              base: "should not start with 0 ,1, 2, 3, 4 ,5 or 6 and should not contain special characters",
               test: "another description",
             },
+
           },
         },
+
       })
-      .label("Phone number"),
+    ,
+
 
     current_access_ip: Joi.string()
       .ip({
@@ -54,35 +62,49 @@ const LoginForm = () => {
       })
       .label("Current Access IP"),
   };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setData({ ...data, [name]: value });
+  //   validateField(name, value);
+  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (!isNaN(value)) {
+
+    // Only allow numeric input
+    if (/^\d+$/.test(value) || value === "") {
       setData({ ...data, [name]: value });
+      validateField(name, value);
     }
+  };
+  const validateField = (name, value) => {
     const { error } = Joi.object({ [name]: schema[name] }).validate({
       [name]: value,
     });
 
     if (error) {
-      // eslint-disable-next-line no-use-before-define
-      // const errors = { ...errors };
-      errors[name] = error.details[0].message;
-      setErrors(errors);
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: error.details[0].message }));
     } else {
-      setErrors({ ...errors, [name]: null });
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
     }
   };
-  //   const validationErrors = ;
-  //   setErrors(validationErrors || {});
-  // };
+
+  const validateForm = () => {
+    const { phone_number } = data;
+    const validationErrors = Joi.object({
+      phone_number: schema.phone_number,
+    }).validate({ phone_number }).error;
+
+    if (validationErrors) {
+      setErrors((prevErrors) => ({ ...prevErrors, phone_number: validationErrors.details[0].message }));
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const validationErrors = validate();
-    // if (validationErrors) {
-    //   setErrors(validationErrors);
-    //   return;
-    // }
+    const isValid = validateForm();
+    if (!isValid) return;
 
     setBtnDisabled(true);
     try {
@@ -94,7 +116,7 @@ const LoginForm = () => {
       console.log("response -->", response);
       setOtp(true);
       setTfa_Status(response.TWO_FA_Status);
-      toast.success("successfully done", response.message);
+      toast.success(response.message);
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response.data);
@@ -152,6 +174,9 @@ const LoginForm = () => {
                               <span className="d-flex align-items-center input-group-text font-weight-bold">
                                 +63
                               </span>
+                              {/* <span className="apply_loan p-2 positon_absolute font-bold me-3">
+                                +63
+                              </span> */}
                               <input
                                 type="text"
                                 className="form-control input-shadow"
@@ -162,6 +187,8 @@ const LoginForm = () => {
                                 name="phone_number"
                                 onChange={handleChange}
                                 inputMode="numeric"
+                                pattern="[0-9]*"
+                                autoFocus
                               />
                             </div>
                           </div>

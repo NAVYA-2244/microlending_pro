@@ -7,7 +7,7 @@ const tokenKey = "token";
 http.setJwt(getJwt());
 const apiEndpoint = process.env.REACT_APP_API_URL;
 
-console.log("enetered authservice file")
+
 export async function sendOTP(phone_number, current_access_ip) {
 http.setJwt(getJwt());
 
@@ -46,8 +46,8 @@ export function getJwt() {
 }
 export function logout() {
   localStorage.clear();
-  // window.location = "/main";
-  // localStorage.setItem('navigateLogin', true);
+  window.location = "/landing";
+  localStorage.setItem('navigateLogin', true);
 }
 export async function verifyOTP(
   phone_number,
