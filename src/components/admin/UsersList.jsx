@@ -701,7 +701,7 @@ const UsersList = () => {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
-
+    console.log("jhfghjkhj")
     return (
         <div className="container-fluid">
             <h5 className="card-title m-0">ALL USERS LIST</h5>
