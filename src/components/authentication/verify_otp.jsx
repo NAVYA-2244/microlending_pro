@@ -7,7 +7,7 @@ import { fullBrowserVersion } from "react-device-detect";
 import ReactCountdownClock from "react-countdown-clock";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import Countdown from "react-countdown-clock";
 const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(120);
@@ -20,14 +20,15 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   let timer;
 
   useEffect(() => {
-    console.log(phone_number, Tfa_Status, otpkey);
+    // console.log(phone_number, Tfa_Status, otpkey);
     const fetchIPAddress = async () => {
       try {
         const ip = await publicIpv4();
         setcurrent_access_ip(ip);
       }
       catch (error) {
-        console.error("Error fetching IP address:", error);
+
+        toast.error(error)
       }
       return () => clearInterval(timer);
     };
@@ -40,6 +41,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
       .length(6)
       .regex(/^\S(.*\S)?$/)
       .regex(/^[0-9]+$/)
+      .regex(/^\S.*\S$/)
       .options({
         language: {
           string: {
@@ -76,15 +78,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
           .allow("")
           .label("2FA Code"),
   };
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   if (!isNaN(value)) {
-  //     setData({ ...data, [name]: value });
-  //   }
 
-  //   const validationErrors = validate();
-  //   setErrors(validationErrors || {});
-  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (!isNaN(value)) {
@@ -105,19 +99,21 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   };
 
   const handleSubmit = async (e) => {
-    console.log(phone_number);
+
 
     e.preventDefault();
-    console.log("handle submit called", schema);
-    console.log("props -->", phone_number, Tfa_Status, otpkey);
+
     const validationErrors = validate();
-    console.log("Error ==>", validationErrors);
+
     setErrors(validationErrors || {});
     if (validationErrors) return;
 
     setBtnDisabled(true);
     const { otp } = data;
     try {
+
+
+
       const response = await authService.verifyOTP(
         phone_number,
         otp,
@@ -126,15 +122,15 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
         otpkey
       );
 
-      console.log(response);
+
 
       toast.success("Otp Verified Successfully");
-      console.log(response.message);
+
       navigate("/dashboard");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
 
-        console.log(errors);
+
         toast.error(ex.response?.data);
       }
     } finally {
@@ -147,14 +143,18 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
     setBtnDisabled(true);
 
     try {
-      // console.log(phone_number, otpkey, "key");
+
 
       const response = await authService.resendOtp(phone_number, otpkey);
 
       toast.success("Otp successfull", response.message);
-      console.log(response, "resend");
+
       setCountdown(120)
-      // startCountdown();
+      startCountdown();
+      setData((prevData) => ({
+        ...prevData,
+        otp: "",
+      }));
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response?.data);
@@ -166,8 +166,15 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   };
 
   const startCountdown = () => {
+    setCountdown(120)
     timer = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
+      setCountdown((prevCountdown) => {
+        if (prevCountdown === 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prevCountdown - 1;
+      });
     }, 1000);
   };
 
@@ -193,7 +200,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
     }
     return newErrors;
   };
-  console.log(countdown)
+
   return (
     <>
       <div className="authentication-page login-form">
@@ -238,10 +245,10 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           value={data.otp}
                           onChange={handleChange}
                           inputMode="numeric"
-                          className={`form-control input-shadow ${errors.otp ? "is-invalid" : ""
+                          className={`form-control input-shadow   ${errors.otp ? "is-invalid " : ""
                             }`}
                           maxLength="6"
-                          required
+                          // required
                           autoFocus
                         />
                         {/* <div className="view-password-icon">
@@ -315,11 +322,11 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
 
                       </div> */}
                       <div className="card-footer  mt-4">
-                        {countdown > 0 ? (
+                        {/* {countdown > 0 ? (
                           <>
                             <p className="mt-3 fs-16">
                               OTP Expires Within {" "}
-                              <span>{getFormattedCountdown(countdown)}</span> Seconds
+                              <span>{(countdogetFormattedCountdownwn)}</span> Seconds
                             </p>
                           </>
                         ) : (
@@ -332,6 +339,37 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                             >
                               <span id="resend-opt cursor-pointer "> Click here</span>
                             </a>
+                          </p>
+                        )} */}
+
+                        {countdown > 0 ? (
+                          <div className="fs-14">
+                            <div className="d-flex align-items-center">
+                              {/* <p className="mb-0 me-2 fs-16">OTP Expires in </p> */}
+                              {/* Using Countdown component here */}
+
+                              <span className="flex-shrink-0">OTP Expires in</span>
+                              <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 120)}deg, #d0d0d2 0deg)` }}>
+                                <div className="inner-circle"></div>
+                                <p className="percentage mb-0 fw-semibold">{countdown}</p>
+                              </div>
+                              <span>Seconds</span>
+
+
+
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="fs-16">
+                            Didn't receive the otp?{" "}
+                            <span
+                              className="link text-primary link-OTP mt-5 cursor-pointer"
+                              onClick={handleResendOtp}
+                              disabled={btnDisabled}
+
+                            >
+                              Click here
+                            </span>
                           </p>
                         )}
                       </div>
@@ -356,3 +394,4 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
 };
 
 export default OTPForm;
+

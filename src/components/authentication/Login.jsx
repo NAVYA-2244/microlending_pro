@@ -26,7 +26,7 @@ const LoginForm = () => {
         const ip = await publicIpv4();
         setcurrent_access_ip(ip);
       } catch (error) {
-        console.error("Error fetching IP address:", error);
+
       }
     };
 
@@ -113,7 +113,7 @@ const LoginForm = () => {
         63 + phone_number,
         current_access_ip
       );
-      console.log("response -->", response);
+
       setOtp(true);
       setTfa_Status(response.TWO_FA_Status);
       toast.success(response.message);

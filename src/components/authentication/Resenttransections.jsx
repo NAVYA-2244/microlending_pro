@@ -5,6 +5,7 @@ import { backEndCall } from '../../services/mainServiceFile';
 import { useMovieContext } from '../comman/Context';
 import TransactionHistory from './Transection_history';
 import { Navigate } from 'react-router-dom';
+import moment from 'moment';
 
 function Resenttransections() {
     const { RecenttransactionHistory, setRecentTransactionHistory, error, setError } = useMovieContext();
@@ -41,7 +42,9 @@ function Resenttransections() {
     //         fetchTransactionHistory();
     //     }
     // }, [setRecentTransactionHistory, setLoading, setError]);
-
+    const formattedDate = (date) => {
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    };
     return (
         <div className="user-details-container">
             <h5 className="mb-4"> Recent Transactions</h5>
@@ -84,7 +87,7 @@ function Resenttransections() {
                                             <td>{history.transactionType}</td>
                                             <td>{history.transaction_status}</td>
                                             <td>{history.amount}</td>
-                                            <td>{new Date(history.transactionDate).toLocaleString()}</td>
+                                            <td>{formattedDate(history.transactionDate)}</td>
 
                                         </tr>
 
@@ -98,7 +101,11 @@ function Resenttransections() {
 
                             </tbody>
 
-                        </table>
+                        </table>{RecenttransactionHistory.length !== 0 &&
+                            <div className='text-center '>
+                                <a href="/transection_history">show more....</a>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

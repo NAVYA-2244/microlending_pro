@@ -43,7 +43,7 @@ class App extends Component {
             <Route path="/" element={protect(<AppLayout />)}>
             <Route index element={<Dashboard />} />
               <Route path="/dashboard" exact element={<Dashboard />}></Route>
-              <Route path="/Settings" element={<Settings/>}></Route>
+              <Route path="/settings" element={<Settings/>}></Route>
               <Route path="/updateprofile" element={<Updateprofile />}></Route>
               <Route path="/userdetails" element={<Userdetails />}></Route>
               <Route path="/userlist" element={<UsersList />}></Route>
@@ -53,15 +53,15 @@ class App extends Component {
               <Route path="/loaneligibility" element={<Loaneligibility />}></Route>
               <Route path="/loaneligibilitydetails" element={<LoaneligibilityDetails />}></Route>
               <Route path="/applyloan" element={<ApplyLoan/>}></Route>
-              <Route path="/AplyloanOtp" element={<AplyloanOtp/>}></Route>
+             
               <Route path="/aplyloanLogin" element={<AplyloanLogin/>}></Route>
-              <Route path="/Transection_history" element={<Transection_history/>}></Route>
-              <Route path="/Emihistory" element={<EmiHistory/>}></Route>
+              <Route path="/transection_history" element={<Transection_history/>}></Route>
+              <Route path="/emihistory" element={<EmiHistory/>}></Route>
                             
-              <Route path="/RecenttransactionHistory" element={<Recenttransections></Recenttransections>}></Route>
+              <Route path="/recenttransactionHistory" element={<Recenttransections></Recenttransections>}></Route>
               <Route path="/loanstatus" element={<LoanStatus/>}></Route>
 
-              <Route path="/Userprofile" element={<Userdetails/>}></Route>
+              <Route path="/userprofile" element={<Userdetails/>}></Route>
 
               <Route path="/userinfo" element={<Userinfo/>}></Route>
 

@@ -92,29 +92,29 @@ const Sidebar = () => {
                 </NavLink>
               </li>
             )} */}
+            {!authService.IsAdmin() && (
+              <li
+                className="nav-item"
+              // onClick={() => {
+              //     pushRoute('/register');
+              //     this.handleMenuClick();
+              // }}
+              >
+                <NavLink to="/userprofile" className="nav-link">
+                  {/* <i className="ri-user-add-line"></i> */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="22"
+                    viewBox="0 -960 960 960"
+                    width="24"
+                  >
+                    <path d="M80-160v-112q0-33 17-62t47-44q51-26 115-44t141-18q30 0 58.5 3t55.5 9l-70 70q-11-2-21.5-2H400q-71 0-127.5 17T180-306q-9 5-14.5 14t-5.5 20v32h250l80 80H80Zm542 16L484-282l56-56 82 82 202-202 56 56-258 258ZM400-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm10 240Zm-10-320q33 0 56.5-23.5T480-640q0-33-23.5-56.5T400-720q-33 0-56.5 23.5T320-640q0 33 23.5 56.5T400-560Zm0-80Z" />
+                  </svg>
+                  <span>User Profile</span>
+                </NavLink>
+              </li>
 
-            <li
-              className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/register');
-            //     this.handleMenuClick();
-            // }}
-            >
-              <NavLink to="/Userprofile" className="nav-link">
-                {/* <i className="ri-user-add-line"></i> */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="22"
-                  viewBox="0 -960 960 960"
-                  width="24"
-                >
-                  <path d="M80-160v-112q0-33 17-62t47-44q51-26 115-44t141-18q30 0 58.5 3t55.5 9l-70 70q-11-2-21.5-2H400q-71 0-127.5 17T180-306q-9 5-14.5 14t-5.5 20v32h250l80 80H80Zm542 16L484-282l56-56 82 82 202-202 56 56-258 258ZM400-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm10 240Zm-10-320q33 0 56.5-23.5T480-640q0-33-23.5-56.5T400-720q-33 0-56.5 23.5T320-640q0 33 23.5 56.5T400-560Zm0-80Z" />
-                </svg>
-                <span>User Profile</span>
-              </NavLink>
-            </li>
-
-
+            )}
 
             {!authService.IsAdmin() && (
               <li
@@ -251,7 +251,7 @@ const Sidebar = () => {
             //     this.handleMenuClick();
             // }}
             >
-              <NavLink to="/Transection_history" className="nav-link">
+              <NavLink to="/transection_history" className="nav-link">
                 {/* <i className="ri-user-add-line"></i> */}
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
                 <span> Transaction History</span>
@@ -264,10 +264,10 @@ const Sidebar = () => {
             //     this.handleMenuClick();
             // }}
             >
-              <NavLink to="/Emihistory" className="nav-link">
+              <NavLink to="/emihistory" className="nav-link">
                 {/* <i className="ri-user-add-line"></i> */}
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
-                <span> Emi History</span>
+                <span> EMI History</span>
               </NavLink>
             </li>
 
@@ -279,7 +279,7 @@ const Sidebar = () => {
             // }}
             >
               <NavLink
-                to="/Settings"
+                to="/settings"
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
@@ -332,7 +332,7 @@ const Sidebar = () => {
                   >
                     <path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z" />
                   </svg>
-                  <span>logout</span>
+                  <span>Logout</span>
                 </NavLink>
               )}
             </li>

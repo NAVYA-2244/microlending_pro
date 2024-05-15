@@ -236,16 +236,16 @@
 
 
 // export default AdminList;
+
 import React, { useEffect, useState } from 'react';
 import { backEndCallObj } from '../../services/mainServiceFile';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "react-hot-toast";
 import AddAdmin from './Addadmin';
 import { useMovieContext } from "../comman/Context";
-import authService from "./../../services/authService";
 import moment from 'moment';
 import { Modal, Button } from 'react-bootstrap';
-
+import { Input_email, Input_text, Number_Input, Select_input } from '../comman/All-Inputs';
 
 function AdminList() {
     const navigate = useNavigate();
@@ -253,17 +253,21 @@ function AdminList() {
     const { AddadminData, setAddadminData } = useMovieContext();
     const [showAddAdminModal, setShowAddAdminModal] = useState(false);
     const [deletingAdmin, setDeletingAdmin] = useState(null);
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false); // New state for showing the confirmation modal
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [btnDisabled, setBtnDisabled] = useState(false);
-
+    const [showEditAdminModal, setShowEditAdminModal] = useState(false);
+    const [editingAdmin, setEditingAdmin] = useState(null);
+    const [formData, setFormData] = useState({});
+    const [options, setOptions] = useState([]);
     const fetchData = async () => {
         try {
             setLoading(true);
             const response = await backEndCallObj("/admin/admins_list");
             setAddadminData(response);
-        } catch (error) {
-            console.error("Error fetching user profile:", error);
-            toast.error("Failed to fetch admin list. Please try again later.");
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
         } finally {
             setLoading(false);
         }
@@ -277,10 +281,9 @@ function AdminList() {
 
     const handleDeleteAdmin = async (user_id) => {
         try {
-            // Disable the button before showing the confirmation modal
-            setBtnDisabled(true);
+
             setDeletingAdmin(user_id);
-            setShowConfirmationModal(true); // Show the confirmation modal
+            setShowConfirmationModal(true);
         } catch (error) {
             console.error("Error deleting admin:", error);
             toast.error("Failed to delete admin. Please try again later.");
@@ -288,35 +291,74 @@ function AdminList() {
     };
 
     const handleConfirmDelete = async () => {
-        console.log("hello")
-        setBtnDisabled(true)
+        setBtnDisabled(true);
         try {
             const response = await backEndCallObj("/admin/admin_remove", { user_id: deletingAdmin });
-            console.log(response, "admin delete");
             fetchData();
             toast.success("Admin deleted successfully.");
-        } catch (error) {
-            console.error("Error deleting admin:", error);
-            toast.error("Failed to delete admin. Please try again later.");
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
         } finally {
-            // Enable the button after the deletion process is complete
             setBtnDisabled(false);
             setDeletingAdmin(null);
-            setShowConfirmationModal(false); // Close the confirmation modal after deletion
+            setShowConfirmationModal(false);
         }
     };
 
     const handleCancelDelete = () => {
-        // Enable the button when the deletion is canceled
         setBtnDisabled(true);
-        setShowConfirmationModal(false); // Close the confirmation modal
+        setShowConfirmationModal(false);
     };
 
-    const formatDateTime = (Date) => {
-        let x = moment(Number(Date)).toDate();
-        return moment(x).format("DD-MMM-YYYY hh:mm A");
+    const formattedDate = (date) => {
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
 
+    const handleEditAdmin = (admin) => {
+        setEditingAdmin(admin);
+        setShowEditAdminModal(true);
+        setFormData({
+            first_name: admin.first_name,
+            member_email: admin.member_email,
+            admin_type: admin.admin_type,
+            phone_number: admin.phone_number,
+            user_id: admin.user_id
+        });
+    };
+
+    const handleUpdateAdmin = async () => {
+
+        setBtnDisabled(true)
+        try {
+            const { user_id, first_name, member_email, phone_number, admin_type } = formData;
+
+            // Create the payload with the required fields
+            const payload = {
+                user_id,
+                first_name,
+                member_email,
+                phone_number,
+                admin_type
+            };
+            const response = await backEndCallObj("/admin/create_admin",
+                payload
+            );
+            console.log(response, "edite admin")
+
+            setShowEditAdminModal(false);
+            setAddadminData(response)
+
+            fetchData()
+            setBtnDisabled(false)
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+            setBtnDisabled(false)
+        }
+    }
     return (
         <div className="user-details-container">
             <h5 className="mb-4">Admin List</h5>
@@ -330,73 +372,164 @@ function AdminList() {
                         >
                             Add Admin
                         </button>
-                        {loading ? (
-                            <p><div className="text-center mt-3">
-                                <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-                                    <span className="sr-only"></span>
-                                </div>
-                            </div></p>
-                        ) : (
-                            <table className="table border table-bordered table-centered">
-                                <thead>
-                                    <tr className="table-head text-center">
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Admin ID</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Phone Number</th>
-                                        <th scope="col">Admin Type </th>
-                                        <th scope="col">Action </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-body text-center">
-                                    {AddadminData.map((admin) => (
-                                        <tr key={admin.user_id}>
-                                            <td>{formatDateTime(admin.date_of_register)}</td>
-                                            <td>{admin.user_id}</td>
-                                            <td>{admin.first_name}</td>
-                                            <td>{admin.phone_number}</td>
-                                            <td>{admin.admin_type}</td>
-                                            <td>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-danger btn-block"
-                                                    onClick={() => handleDeleteAdmin(admin.user_id)}
-                                                // disabled={btnDisabled}
-                                                >
-                                                    {/* data-bs-toggle="modal" data-bs-target="#exampleModal"                                               > */}
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                        {showAddAdminModal && (
-                            <AddAdmin show={showAddAdminModal} onHide={() => setShowAddAdminModal(false)} />
-                        )}
 
-                        {showConfirmationModal ? (
-                            <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Confirm Action</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body> <p>Are you sure you want to delete this admin?</p></Modal.Body>
-                                <Modal.Footer>
-                                    <Button variant="secondary" onClick={() => setShowConfirmationModal
-                                        (false)}>Cancel</Button>
-                                    <Button variant="primary" onClick={handleConfirmDelete} >Confirm</Button>
-                                </Modal.Footer>
-                            </Modal>
-                        ) : null}
+                        <table className="table border table-bordered table-centered">
+                            <thead>
+                                <tr className="table-head text-center">
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Admin ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Admin Type</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody className="table-body text-center">
+                                {AddadminData?.map((admin) => (
+                                    <tr key={admin.user_id}>
+                                        <td>{formattedDate(admin.date_of_register)}</td>
+                                        <td>{admin.user_id}</td>
+                                        <td>{admin.first_name}</td>
+                                        <td>{admin.phone_number}</td>
+                                        <td>{admin.admin_type}</td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger btn-block me-2 mb-2"
+                                                onClick={() => handleDeleteAdmin(admin.user_id)}
+                                            >
+                                                Delete
+                                            </button>
+                                            <Button className="btn btn-danger btn-block me-2 mb-2" onClick={() => handleEditAdmin(admin)}>Edit</Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
+                    {loading && (
+                        <div className="text-center mt-3">
+                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                <span className="sr-only"></span>
+                            </div>
+                        </div>
+                    )}
+                    {AddadminData.length == 0 && <p className="text-center">there is no data found</p>}
                 </div>
+                {showEditAdminModal &&
+                    <Modal show={showEditAdminModal} onHide={() => setShowEditAdminModal(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit Admin</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <form>
+                                <div className="mb-3">
+                                    <label htmlFor="first_name" className="form-label">Name</label>
+                                    <input
+                                        type="text"
+                                        name="first_name"
+                                        value={formData.first_name}
+                                        onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                                        placeholder="Enter name here"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="member_email" className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        value={formData.member_email}
+                                        name="member_email"
+                                        placeholder="Enter email here"
+                                        onChange={(e) => setFormData({ ...formData, member_email: e.target.value })}
+                                        className="form-control"
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+
+                                    <label htmlFor="phone_number" className="form-label">Phone Number</label>
+                                    <div className="position-relative applyloan">
+                                        {/* <span className="apply_loan p-2 positon_absolute font-bold me-2">+63</span> */}
+                                        <input
+                                            type="phone_number"
+                                            value={formData.phone_number}
+                                            name="phone_number"
+                                            placeholder="Enter phone number here"
+                                            onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
+                                            maxLength={12}
+
+                                            className="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="admin_type" className="form-label">Admin Type</label>
+                                    {/* <select
+                                        name="admin_type"
+                                        className="form-control"
+                                        onChange={(e) => setFormData({ ...formData, admin_type: e.target.value })}
+                                        value={formData.admin_type}
+                                        options={[
+                                            { value: "2", label: "2" },
+                                            { value: "3", label: "3" },
+                                        ]}
+                                    /> */}
+                                    <select
+                                        onChange={(e) => setFormData({ ...formData, admin_type: e.target.value })}
+                                        name="admin_type"
+                                        className="form-control"
+                                        value={formData.admin_type}
+
+
+
+                                    // Make sure this value is correctly set
+                                    >
+                                        <option value="">-- Select --</option>
+                                        <option value="2"> 2</option>
+                                        <option value="3"> 3</option>
+
+                                        {options && options.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* <Button variant="primary" type="submit" disabled={btnDisabled}>Submit</Button> */}
+                            </form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => setShowEditAdminModal(false)}>
+                                Close
+                            </Button>
+                            <Button variant="primary" disabled={btnDisabled} onClick={handleUpdateAdmin}>
+                                Save Changes
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                }
+                {showAddAdminModal && (
+                    <AddAdmin show={showAddAdminModal} onHide={() => setShowAddAdminModal(false)} />
+                )}
+
+                {showConfirmationModal && (
+                    <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirm Action</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>Are you sure you want to delete this admin?</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleCancelDelete}>Cancel</Button>
+                            <Button variant="primary" onClick={handleConfirmDelete} disabled={btnDisabled} >Confirm</Button>
+                        </Modal.Footer>
+                    </Modal>
+                )}
             </div>
         </div>
     );
 }
 
 export default AdminList;
-
-
-

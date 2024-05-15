@@ -12,10 +12,13 @@ import ApplyLoan from "../authentication/ApplyLoan";
 import CreditScorePieChart from '../comman/CreditScorePieChart';
 
 // import numeral from "numeral";
+import Updateprofile from './../authentication/Updateprofile';
+import TabComponent from "../authentication/forgot_password";
 
 
 const Dashboard = () => {
   const { userData, setUserData, adminData, setAdminData, userprofileData, setUserprofileData } = useMovieContext();
+  const [bkcall, setbkcall] = useState(false)
   const creditScores = {
     'Excellent': 250,
     'Good': 350,
@@ -35,9 +38,11 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       if (userprofileData <= 0 || !userprofileData) {
+        setbkcall(true)
         const response = await backEndCall("/users/user_profile");
         console.log(response, "userdateails")
         setUserprofileData(response);
+        setbkcall(false)
       }
       // else {
       //   setUserprofileData(userprofileData)
@@ -49,6 +54,8 @@ const Dashboard = () => {
       }
     }
   };
+
+
   const fetchAdminData = async () => {
     try {
       if (adminData <= 0 || !adminData) {
@@ -65,9 +72,11 @@ const Dashboard = () => {
       }
     }
   };
+
   const fetchUserData = async () => {
     try {
       if (userData <= 0 || !userData) {
+
         const response = await backEndCall("/users/user_stats");
         console.log(response, "userdeta")
         setUserData(response);
@@ -116,8 +125,18 @@ const Dashboard = () => {
     return formattedDate;
   }
   // console.log(userprofileData?.cibil_score, "pai")
+  const handlerefresh = (() => {
+    console.log("hhhhhhhhhhhh")
+    window.location.reload();
+  })
+
+  console.log(bkcall, "bkcall")
+  console.log(userprofileData, "userprofiledata")
+
+
   return (
     <>
+      {/* <TabComponent></TabComponent> */}
       <div className="d-sm-flex d-block align-items-center justify-content-between mb-4">
         <div>
           <h4 className="mb-2 mb-sm-0">Dashboard  </h4>
@@ -169,6 +188,8 @@ const Dashboard = () => {
       </div >
 
 
+
+
       {!authService.IsAdmin() && (
         <>
           <div className="row">
@@ -183,9 +204,10 @@ const Dashboard = () => {
                       As on {month} {year}
                     </span>
                   </div>
-                  <Link to="/dashboard">
-                    <i className="ri-loop-right-line text-primary fs-22"></i>
-                  </Link>
+
+                  {/* <a href="/dashboard"> */}
+                  <i className="ri-loop-right-line text-primary fs-22" onClick={handlerefresh}></i>
+                  {/* </a> */}
                 </div>
                 <div className="card-body">
                   <div className="row overflow-auto">
@@ -213,7 +235,7 @@ const Dashboard = () => {
                     <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                       <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                         <div className="d-flex justify-content-between mt-2 align-items-center">
-                          <p className="mb-0 fs-12">Remaining Loans Amount</p>
+                          <p className="mb-0 fs-12">Active Loans Amount</p>
                           <span className="dashboard-icons">
                             <i className="ri-wallet-3-line p-2 rounded-circle bg-white-light fs-24"></i>
                           </span>
@@ -250,7 +272,7 @@ const Dashboard = () => {
 
                         </p>
                         <p className="text-muted mb-0 mt-3 fw-normal fs-14">
-                          {userData?.nextEMIDate ? "Date" : ""} : <span className="text-white fw-semibold">
+                          {userData?.nextEMIDate ? "Date" : ""}   <span className="text-white fw-semibold">
                             {formatDate(userData?.nextEMIDate)}
                           </span>
                         </p>
@@ -487,7 +509,7 @@ const Dashboard = () => {
                   {/* <Link to="/" className="text-white">
                     <i className="ri-arrow-right-s-line fs-22"></i>
                   </Link> */}
-                  <h5>Credit Score</h5>
+                  {/* <h5>Credit Score</h5> */}
                 </div>
                 <div className="card-body">
                   {/* <span className="mb-0">
@@ -520,7 +542,33 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div> */}
-                  <CreditScorePieChart creditScores={userprofileData?.cibil_score} />
+
+
+
+                  {bkcall ? (
+                    <div className="text-center mt-3">
+                      <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                        <span className="sr-only"></span>
+                      </div>
+                    </div>
+                  ) : (
+                    userprofileData?.kyc_status === "pending" ? (
+                      <div className="text-center ">
+                        <h6>KYC Not Updated Please Update</h6>
+                        <button
+                          className="btn btn-primary text-capitalize apply-loan-buttton"
+                          onClick={() => navigate("/updateprofile")}
+                          style={{ height: "38px" }}>
+                          Kyc Update
+                        </button>
+                      </div>
+                    ) : (
+                      <CreditScorePieChart creditScores={userprofileData?.cibil_score} />
+                    )
+                  )}
+
+
+
                 </div>
               </div>
 
@@ -615,13 +663,14 @@ const Dashboard = () => {
                     As on {month} {year}
                   </span>
                 </div>
-                <Link to="/dashboard">
-                  <i className="ri-loop-right-line text-primary fs-22"></i>
-                </Link>
+
+                {/* <a href="/dashboard"> */}
+                <i className="ri-loop-right-line text-primary fs-22" onClick={handlerefresh}></i>
+                {/* </a> */}
               </div>
               <div className="card-body">
                 <div className="row">
-                  <div className="col-xl-3 col-12 col-sm-12 col-lg-3 col-md-3">
+                  {/* <div className="col-xl-3 col-12 col-sm-12 col-lg-3 col-md-3">
                     <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2">
                       <div className="d-flex justify-content-between align-items-center">
                         <p className="mb-0 fs-12">
@@ -632,13 +681,23 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span>{adminData?.users_count}
+                        <span> </span>{adminData?.users_count || "0.00"}
                       </p>
-                      <p className="text-muted mb-0 mt-3 fw-normal fs-14">
-                        {/* Limits{" "} */}
-                        <span className="text-white fw-semibold">
-                          {/* <span>₱ </span> 0 */}
+
+
+                    </div>
+
+                  </div> */}
+                  <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                    <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                      <div className="d-flex justify-content-between mt-2 align-items-center">
+                        <p className="mb-0 fs-12">Total Users</p>
+                        <span className="dashboard-icons">
+                          <i className="ri-luggage-deposit-line p-2 rounded-circle bg-white-light fs-24"></i>
                         </span>
+                      </div>
+                      <p className="mb-0 fw-semibold mt-3 fs-18">
+                        <span> </span> {adminData?.users_count || "0.00"}
                       </p>
                     </div>
                   </div>
@@ -651,7 +710,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span> {adminData?.countProcessingLoans}
+                        <span> </span> {adminData?.countProcessingLoans || "0.00"}
                       </p>
                     </div>
                   </div>
@@ -664,7 +723,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span></span> {adminData?.countRejectedLoans}
+                        <span></span> {adminData?.countRejectedLoans || "0.00"}
                       </p>
                     </div>
                   </div>
@@ -677,7 +736,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span> {adminData?.countApprovedLoans}
+                        <span> </span> {adminData?.countApprovedLoans || "0.00"}
                       </p>
                     </div>
                   </div>
@@ -698,12 +757,12 @@ const Dashboard = () => {
                   </div>
                   <div className="card-body">
                     <h4 className="fw-semibold mb-4">
-                      <span>₱ </span> {userprofileData?.amount}
+                      <span>₱ </span> {userprofileData?.amount || "0.00"}
                     </h4>
                     <div className="availabel-balance">
                       <span className="fs-12">Available Balance</span>
                       <p className="mb-0 fw-semibold mt-2 fs-16">
-                        <span>₱ </span>{userprofileData?.amount}
+                        <span>₱ </span>{userprofileData?.amount || "0.00"}
                       </p>
                     </div>
                     <div className="d-grid mt-4">

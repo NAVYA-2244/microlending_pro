@@ -76,7 +76,7 @@ function LoaneligibilityDetails() {
                             <table className="table table-bordered mb-5">
                                 <thead className='text-center'>
                                     <tr>
-                                        <th>Cibil Score</th>
+                                        <th>Credit Score</th>
                                         <th>Min Loan Amount</th>
                                         <th>Max Loan Amount</th>
 
@@ -99,7 +99,7 @@ function LoaneligibilityDetails() {
 
                                     ) : (
                                         <tr>
-                                            <td className='position-relative'>
+                                            <td className='position-relative' >
                                                 <div className='loan_eligibility'>
                                                     {/* <img src='' alt="logo" /> */}
                                                     <span>{usereligibility?.cibilScore}</span>
@@ -118,37 +118,37 @@ function LoaneligibilityDetails() {
                                             <td>{usereligibility?.maxLoanAmount}</td>
 
 
-                                            <td>
+                                            <td >
                                                 <div className="d-flex flex-column gap-3 justify-content-between align-items-center">
                                                     {usereligibility?.tenure && usereligibility?.tenure.map((tenureItem, tenureIndex) => (
                                                         <div key={tenureIndex} >
-                                                            <td>{tenureItem?.months} months at {tenureItem?.interest}% interest</td>
+                                                            <td className='border-bottom'>{tenureItem?.months} months at {tenureItem?.interest}% interest</td>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td >
                                                 <div className="d-flex flex-column gap-3 justify-content-between align-items-center">
                                                     {usereligibility?.tenure && usereligibility?.tenure.map((tenureItem, tenureIndex) => (
-                                                        <div key={tenureIndex}>{tenureItem?.interest}%</div>
+                                                        <td className='border-bottom' key={tenureIndex}>{tenureItem?.interest}%</td>
                                                     ))}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div className="d-flex flex-column gap-3 justify-content-between align-items-center">
                                                     {usereligibility?.tenure && usereligibility?.tenure.map((tenureItem, tenureIndex) => (
-                                                        <div key={tenureIndex}>
+                                                        <td className='border-bottom' key={tenureIndex}>
                                                             {calculateEMI(usereligibility?.maxLoanAmount, tenureItem?.interest, tenureItem?.months)}
-                                                        </div>
+                                                        </td>
                                                     ))}
                                                 </div>
                                             </td>
                                             <td>
                                                 <div className="d-flex flex-column gap-1 justify-content-between align-items-center">
                                                     {usereligibility?.tenure && usereligibility?.tenure.map((tenureItem, tenureIndex) => (
-                                                        <div key={tenureIndex}>
+                                                        <td key={tenureIndex}>
                                                             <Button onClick={() => handleApplyLoan(tenureItem)}>Apply</Button>
-                                                        </div>
+                                                        </td>
                                                     ))}
                                                 </div>
                                             </td>

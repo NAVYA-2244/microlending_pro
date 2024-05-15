@@ -1,54 +1,124 @@
-import React, { Component } from 'react'
+
+import React, { useState, useEffect } from 'react';
+import { toast } from "react-hot-toast";
+import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
+import authService from '../../services/authService';
+import moment from 'moment';
+import Joi from 'joi';
+import { Date_Input, SearchInput } from '../comman/All-Inputs';
 import { Link } from 'react-router-dom';
 
-class ForgotPassowrd extends Component {
-    state = {}
-    render() {
-        return (
-            <>
-                <div className='authentication-page login-form'>
-                    <div className=''>
-                        <div className='container bg-white rounded-3'>
-                            <div className='row'>
-                                <div className='col-xl-6 col-lg-6 col-md-6'>
-                                    <div className='card mb-0 shadow-none forgotpassword-image'>
-                                        <Link
-                                            to="/"
-                                            className="text-decoration-none mt-3"
-                                        >
-                                            <img src="assets/images/light-logo.png" className="login-logo" alt="logo" />
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className='col-xl-6 col-lg-6 col-md-6 my-auto'>
-                                    <div className='card mb-0 shadow-none'>
-                                        <div className='card-body'>
-                                            <h5 className='fw-semibold mb-1 text-uppercase'>Forgot Password</h5>
+import { useMovieContext } from '../comman/Context';
+import { useFunctionContext } from '../comman/FunctionsContext';
 
-                                            <form>
-                                                <p className="pb-2 fw-normal text-capitalize mt-3">Please enter your registered Email Id </p>
-                                                <div className="mb-3 mt-2 position-relative">
-                                                    <label htmlFor="emailControlInput" className="form-label">Email</label>
-                                                    <input type="email" className="form-control" id="emailControlInput" placeholder="Enter username here" />
-                                                    <div className='view-password-icon'>
-                                                        <i className="ri-user-line"></i>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            <div className='d-flex flex-wrap gap-2 mt-4'>
-                                                <Link className='btn btn-lg btn-primary'>Forgot Password</Link>
-                                                <Link to="/login" className='btn btn-lg btn-outline-primary'>Login</Link>
+function TransactionHistory() {
+
+    const { transactionHistory, setTransactionHistory, errors, setErrors, setErrorOccur } = useMovieContext();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [filterDisabled, setFilterDisabled] = useState(false);
+
+    const { checkErrors } = useFunctionContext()
+
+
+    const fetchTransactionHistory = async () => {
+
+        console.log(transactionHistory.length)
+        try {
+
+            console.log("yes")
+            setLoading(true);
+            const response = await backEndCall('/users/transaction_history');
+
+            setLoading(false);
+            setTransactionHistory(response || []);
+        }
+
+
+        catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+            setError(ex.message);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // if (transactionHistory <= 0) {
+        fetchTransactionHistory();
+        // }
+    }, []);
+
+
+
+    console.log(transactionHistory)
+    const formattedDate = (date) => {
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    };
+
+    return (
+        <>
+            <h5 className="mb-4">Transaction History</h5>
+            <div className='card'>
+                <div className="card-body">
+
+                    <div className="table-responsive">
+
+
+
+                        <table className="table border table-bordered table-centered">
+                            <thead>
+                                <tr className="table-head">
+                                    <th scope="col">Transaction Id</th>
+                                    <th scope="col">Receiver Id</th>
+                                    <th scope="col">Sender Id</th>
+                                    <th scope="col">Transaction Type</th>
+                                    <th scope="col">Transaction Status</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Comment</th>
+                                    <th scope="col">Transaction Date</th>
+                                </tr>
+                            </thead>
+                            <tbody className="table-body text-center">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="7" className="text-center">
+                                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                                <span className="sr-only"></span>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </>
-        );
-    }
+                                        </td>
+                                    </tr>
+
+                                ) : transactionHistory.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="7" className="text-center">No transactions found.</td>
+                                    </tr>
+                                ) : (
+
+
+                                    transactionHistory?.map(history => (
+                                        <tr key={history.transaction_id}>
+                                            <td>{history.transaction_id}</td>
+                                            <td>{history.receiver_id}</td>
+                                            <td>{history.sender_id}</td>
+                                            <td>{history.transactionType}</td>
+                                            <td>{history.transaction_status}</td>
+                                            <td>{history.amount}</td>
+                                            <td>{history.comment}</td>
+                                            <td>{formattedDate(history.transactionDate)}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+
+                    </div >
+                </div >
+            </div>
+        </>
+    );
 }
 
-export default ForgotPassowrd;
+
+export default TransactionHistory;

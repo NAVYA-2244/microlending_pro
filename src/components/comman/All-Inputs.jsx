@@ -312,7 +312,8 @@ export function Number_Input({
   maxLength,
   inputMode,
   autoFocus,
-  placeholder
+  placeholder,
+  style
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
@@ -337,6 +338,7 @@ export function Number_Input({
         inputMode={inputMode}
         onChange={handleNumberChange}
         autoFocus={autoFocus}
+        style={style}
       />
       <div>
         <p className="error">{errors[name]}</p>
@@ -351,15 +353,26 @@ export function SearchInput({
   SetForm,
   schema,
   autoFocus,
-  placeholder
+  placeholder,
+  maxLength
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
 
+  // const handleInputChange = (e) => {
+  //   const { value } = e.target;
+
+  //     handleChange(e, schema, SetForm);
+  // };
   const handleInputChange = (e) => {
     const { value } = e.target;
-    handleChange(e, schema, SetForm);
+    const isValid = /^[A-Za-z0-9]*$/.test(value);
+    if (isValid) {
+
+      handleChange(e, schema, SetForm);
+    }
   };
+  const showError = errors[name] && errors[name].length < 12;
 
   return (
     <>
@@ -369,8 +382,9 @@ export function SearchInput({
         name={name}
         placeholder={placeholder}
         value={value}
-        onChange={handleInputChange} // Use handleInputChange here
+        onChange={handleInputChange}
         autoFocus={autoFocus}
+        maxLength={maxLength}
       />
       <div>
         <p className="error">{errors[name]}</p>

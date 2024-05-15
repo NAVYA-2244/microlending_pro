@@ -4,12 +4,16 @@ import { toast } from "react-hot-toast";
 import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
 import { useMovieContext } from '../comman/Context';
 import moment from 'moment';
-import Joi from 'joi-browser';
+// import Joi from 'joi-browser';
+import Joi from 'joi';
+
 import { Date_Input, SearchInput } from '../comman/All-Inputs';
 import { Link } from 'react-router-dom';
+import { useFunctionContext } from '../comman/FunctionsContext';
 
 function EmiHistory() {
-    const { EmiHistory, setEmiHistory } = useMovieContext();
+    const { EmiHistory, setEmiHistory, } = useMovieContext();
+    const { checkErrors } = useFunctionContext()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
     const [filterDisabled, setFilterDisabled] = useState(false);
@@ -19,15 +23,21 @@ function EmiHistory() {
         id: ""
     });
 
-    const schema = Joi.object({
-        start_date: Joi.date().required(),
-        end_date: Joi.date().min(Joi.ref('start_date')).required(),
-        id: Joi.string().min(12).max(12).allow('').optional()
-    });
+    // const schema = {
+    //     start_date: Joi.date().required(),
+    //     end_date: Joi.date().min(Joi.ref('start_date')).required(),
+    //     id: Joi.string().min(4).max(12).allow('').optional().length(12)
+    // };
+    const schema = {
+        start_date: Joi.date().allow('').optional(),
+        end_date: Joi.date().allow('').optional(),
+        id: Joi.string().min(4).max(12).required().allow('').optional()
+    };
 
     const fetchEmiHistory = async () => {
         try {
             setLoading(true);
+
             const response = await backEndCall('/emi/emi_history');
             if (Array.isArray(response)) {
                 setEmiHistory(response);
@@ -58,11 +68,16 @@ function EmiHistory() {
             setLoading(true);
             setFilterDisabled(true);
 
+            await checkErrors(schema, formData);
 
+            const formDataToSend = {
+                ...formData,
+                id: formData.id.toUpperCase()
+            };
 
-            const response = await backEndCallObj("/emi/emi_filters", formData);
+            const response = await backEndCallObj("/emi/emi_filters", formDataToSend);
             setEmiHistory(response);
-
+            console.log(response, "filteremi")
             setFormData({
                 start_date: "",
                 end_date: "",
@@ -109,7 +124,9 @@ function EmiHistory() {
 
         };
     }
-
+    const formattedDate = (date) => {
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    };
     return (
         <div className="user-details-container">
             <h5 className="mb-4">EMI History</h5>
@@ -118,7 +135,7 @@ function EmiHistory() {
                     < div className='d-flex'>
                         <div onClick={handleRefresh}>
                             {/* <Link to="/Emihistory">  */}
-                            <i className="ri-loop-right-line text-primary fs-22" onClick={handleRefresh}></i>
+                            <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2" onClick={handleRefresh}></i>
                             {/* </Link> */}
                         </div>
                         <form onSubmit={handleSubmit} className='flex-fill'>
@@ -158,9 +175,10 @@ function EmiHistory() {
                                         type="text"
                                         name="id"
                                         value={formData["id"]}
-                                        placeholder="Emi Id "
+                                        placeholder="Payment Id "
                                         SetForm={setFormData}
                                         schema={schema["id"]}
+
                                     />
                                 </div>
                                 <div className='col-12 col-xl-2 col-md-2 col-sm-12 my-auto'>
@@ -209,7 +227,7 @@ function EmiHistory() {
                                     </tr>
                                 ) : (
                                     EmiHistory.map(history => (
-                                        <tr key={history.emi_id}>
+                                        <tr key={history.payment_id}>
                                             <td>{history.payment_id}</td>
                                             <td>{history.receved_id}</td>
                                             <td>{history.sender_id}</td>
@@ -217,7 +235,7 @@ function EmiHistory() {
                                             <td>{history.transactionType}</td>
                                             <td>{history.emi_status}</td>
                                             <td>{history.paymentAmount}</td>
-                                            <td>{new Date(parseInt(history.paymentDate)).toLocaleString()}</td>
+                                            <td>{formattedDate(history.paymentDate)}</td>
                                         </tr>
                                     ))
                                 )}

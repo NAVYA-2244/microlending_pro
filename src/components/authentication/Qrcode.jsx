@@ -70,7 +70,7 @@ const QRCode = ({ qr, secret }) => {
     setphone_number(response.phone_number);
     setTfaStatus(response.TWO_FA_Status);
 
-    // localStorage.clear();
+    localStorage.clear();
 
     try {
       const response = await backEndCallObj("/users/resend_otp", {
@@ -105,6 +105,7 @@ const QRCode = ({ qr, secret }) => {
       const response = await authService.resendOtp(phone_number, "tfa");
 
       setCountdown(120);
+      startCountdown()
       // toast.success(response.message, "Otp successfull",);
       console.log(response, "resend");
     } catch (ex) {
@@ -117,12 +118,24 @@ const QRCode = ({ qr, secret }) => {
     }
   };
 
+  // const startCountdown = () => {
+  //   timer = setInterval(() => {
+  //     setCountdown((prevCountdown) => prevCountdown - 1);
+  //   }, 1000);
+  // };
+
   const startCountdown = () => {
+    setCountdown(120)
     timer = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
+      setCountdown((prevCountdown) => {
+        if (prevCountdown === 0) {
+          clearInterval(timer); // Clear the interval when countdown reaches 0
+          return 0;
+        }
+        return prevCountdown - 1;
+      });
     }, 1000);
   };
-
   const getFormattedCountdown = (countdown) => {
     if (countdown > 0) {
       const minutes = Math.floor(countdown / 60);
@@ -145,7 +158,7 @@ const QRCode = ({ qr, secret }) => {
           : { two_fa_code: data.two_fa_code, otp: data.otp, key: "tfa" };
 
       const response = await backEndCallObj(route, obj);
-      // localStorage.clear();
+      localStorage.clear();
       setShowModal(true);
 
       // toast.success(response.message,);
@@ -375,28 +388,87 @@ const QRCode = ({ qr, secret }) => {
 
 
 
+                // <div className="card-footer  mt-4">
+                //   {countdown > 0 ? (
+                //     <>
+                //       {/* <p className="mt-3 fs-16">
+                //         Code Expires Within{" "}
+                //         {getFormattedCountdown(countdown)} seconds
+                //       </p> */}
+                //       <p>
+                //         <span className="flex-shrink-0">OTP Expires in</span>
+                //         <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 120)}deg, #d0d0d2 0deg)` }}>
+                //           <div className="inner-circle"></div>
+                //           <p className="percentage mb-0 fw-semibold">{countdown}</p>
+                //         </div>
+                //         <span>Seconds</span>
+
+                //       </p>
+                //     </>
+                //   ) : (
+                //     <p className="para-otp fs-5">
+                //       Didn't receive the otp?
+                //       <a
+                //         className="link link-OTP mt-5"
+                //         onClick={handleResendOtp}
+                //       >
+                //         <span id="resend-opt"> Click here</span>
+                //       </a>
+                //     </p>
+                //   )}
+                // </div>
+
                 <div className="card-footer  mt-4">
+                  {/* {countdown > 0 ? (
+                  <>
+                    <p className="mt-3 fs-16">
+                      OTP Expires Within {" "}
+                      <span>{(countdogetFormattedCountdownwn)}</span> Seconds
+                    </p>
+                  </>
+                ) : (
+                  <p className="para-otp fs-5 cursor-pointer">
+                    Didn't receive the otp?
+                    <a
+                      className="link link-OTP mt-5"
+                      onClick={btnDisabled ? null : handleResendOtp}
+                      disabled={btnDisabled}
+                    >
+                      <span id="resend-opt cursor-pointer "> Click here</span>
+                    </a>
+                  </p>
+                )} */}
+
                   {countdown > 0 ? (
-                    <>
-                      <p className="mt-3 fs-16">
-                        Code Expires Within{" "}
-                        {getFormattedCountdown(countdown)} seconds
-                      </p>
-                    </>
+                    <div className="fs-14">
+                      <div className="d-flex align-items-center">
+                        {/* <p className="mb-0 me-2 fs-16">OTP Expires in </p> */}
+                        {/* Using Countdown component here */}
+
+                        <span className="flex-shrink-0">OTP Expires in</span>
+                        <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 120)}deg, #d0d0d2 0deg)` }}>
+                          <div className="inner-circle"></div>
+                          <p className="percentage mb-0 fw-semibold">{countdown}</p>
+                        </div>
+                        <span>Seconds</span>
+
+
+
+                      </div>
+                    </div>
                   ) : (
-                    <p className="para-otp fs-5">
-                      Didn't receive the otp?
-                      <a
-                        className="link link-OTP mt-5"
+                    <p className="fs-16">
+                      Didn't receive the otp?{" "}
+                      <span
+                        className="link text-primary link-OTP mt-5"
                         onClick={handleResendOtp}
+                        disabled={btnDisabled}
                       >
-                        <span id="resend-opt"> Click here</span>
-                      </a>
+                        Click here
+                      </span>
                     </p>
                   )}
                 </div>
-
-
               )}
             </>
           )}

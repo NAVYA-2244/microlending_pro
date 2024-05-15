@@ -714,9 +714,9 @@ ul {
   color: #fff;
 }
 
-.applyloan .form-control::placeholder {
+/* .applyloan .form-control::placeholder {
   padding-left: 24px;
-}
+} */
 
 .Recentttransections-hisroty {
   overflow: auto;
@@ -828,3 +828,58 @@ ul {
   border-radius: 15px;
   background-color: rgba(0, 0, 0, 0.15);
 }
+
+.circular-progress {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.inner-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(40px - 5px);
+  height: calc(40px - 5px);
+  border-radius: 50%;
+  background-color: white;
+}
+
+.percentage {
+  position: relative;
+  font-size: 0.875rem;
+}
+
+/* styles.module.css */
+.rangeLabels {
+  text-align: center;
+}
+
+.rangeLabel {
+  margin-right: 20px;
+}
+
+.chartContainer {
+  margin-top: 20px;
+  position: relative;
+}
+
+.chartLabel {
+  position: absolute;
+  color: #0b0a0a;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.addAdmin_form input[type="number"] {
+  display: flex;
+  padding-left: 50px !important;
+}
+
+
+/* .addAdmin_form input[type="number"]::placeholder {} */

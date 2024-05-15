@@ -237,7 +237,7 @@ function AddminControlls() {
             const response = await backEndCall("/admin/get_admin_controls");
             const controls = ["login", "register", "withdraw"].map(key => ({
                 value: response[key].toUpperCase(),
-                originalValue: response[key].toUpperCase(), // Store original value for comparison
+                originalValue: response[key].toUpperCase(),
                 key,
                 heading: key.charAt(0).toUpperCase() + key.slice(1),
             }));
@@ -337,7 +337,13 @@ function AddminControlls() {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="card-footer d-flex justify-content-end">
+                            {loading && (
+                                <div className="text-center mt-3">
+                                    <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                            )}                        <div className="card-footer d-flex justify-content-end">
                                 <button
                                     className="btn btn-primary"
                                     onClick={handleSubmitButton}
@@ -349,6 +355,7 @@ function AddminControlls() {
                         </div>
                     </div>
                     {/* Modal for confirmation */}
+
                     {showModal && (
                         <Modal show={true}>
 

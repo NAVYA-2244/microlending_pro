@@ -26,7 +26,9 @@ export const MovieContextProvider = ({ children }) => {
   const [adminData, setAdminData] = useState(null);
   // verifyloans
   const [loanStatus, setLoanStatus] = useState("");
-  const [verifyloan, setVerifyloan] = useState([]);
+  const [verifyloan, setVerifyloan] = useState(
+    []
+  );
   const [eligibility, setEligibility] = useState([]);
   const [usereligibility, setUserEligibility] = useState(null)
   const [loanList, setLoanList] = useState(null);

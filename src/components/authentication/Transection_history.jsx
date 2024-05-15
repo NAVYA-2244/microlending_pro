@@ -4,19 +4,22 @@ import { toast } from "react-hot-toast";
 import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
 import authService from '../../services/authService';
 import moment from 'moment';
-import Joi from 'joi-browser';
+import Joi from 'joi';
 import { Date_Input, SearchInput } from '../comman/All-Inputs';
 import { Link } from 'react-router-dom';
-import EmiHistory from './EmiHistory';
+
 import { useMovieContext } from '../comman/Context';
+import { useFunctionContext } from '../comman/FunctionsContext';
+import { log } from 'numeric';
 
 function TransactionHistory() {
 
-    const { transactionHistory, setTransactionHistory } = useMovieContext();
+    const { transactionHistory, setTransactionHistory, errors, setErrors, setErrorOccur } = useMovieContext();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [filterDisabled, setFilterDisabled] = useState(false);
 
+    const { checkErrors } = useFunctionContext()
     const [formData, setFormData] = useState({
         start_date: "",
         end_date: "",
@@ -24,12 +27,11 @@ function TransactionHistory() {
 
     });
 
-    const schema = Joi.object({
-        start_date: Joi.date().required(),
-        end_date: Joi.date().min(Joi.ref('start_date')).required(),
-
-        id: Joi.string().min(12).max(12).required().allow('').optional()
-    });
+    const schema = {
+        start_date: Joi.date().allow('').optional(),
+        end_date: Joi.date().allow('').optional(),
+        id: Joi.string().min(4).max(12).required().allow('').optional()
+    };
 
     const fetchTransactionHistory = async () => {
 
@@ -65,19 +67,43 @@ function TransactionHistory() {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
+
+        //  const { error } = schema.validate(formData);
+        //     if (error) {
+        //         toast.error(error.details[0].message)
+        //         throw new Error(error.details[0].message);
+        //     }
+
         if (moment(formData.end_date).isBefore(formData.start_date)) {
             toast.error("End Date cannot be less than Start Date");
             return;
         }
 
+
         try {
             setFilterDisabled(true)
             setLoading(true);
-            console.log(formData)
+            // const { errors } = schema.validate(...formData);
+            // console.log(errors, "errors")
+            // if (errors) {
+            //     console.log(errors, "error")
+            //     toast.error(error.details[0].message)
+            //     throw new Error(error.details[0].message);
+            // }
+            await checkErrors(schema, formData);
 
-            const response = await backEndCallObj("/users/transaction_filtered", formData);
+            console.log(formData)
+            const formDataToSend = {
+                ...formData,
+                id: formData.id.toUpperCase()
+            };
+
+            const response = await backEndCallObj("/users/transaction_filtered", formDataToSend);
             console.log(response, "responsedate")
-            setTransactionHistory(response)
+
+            setTransactionHistory(response || []);
+
+            // setTransactionHistory(response)
             setFormData({
                 start_date: "",
                 end_date: "",
@@ -87,7 +113,10 @@ function TransactionHistory() {
             setLoading(false);
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
+                setTransactionHistory([])
+
                 toast.error(ex.response.data);
+                setLoading(false);
             }
 
         }
@@ -100,6 +129,7 @@ function TransactionHistory() {
                 id: ""
             })
         }
+
     };
     const handleRefresh = async () => {
         console.log("hello")
@@ -127,16 +157,19 @@ function TransactionHistory() {
 
 
     console.log(transactionHistory)
+    const formattedDate = (date) => {
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+    };
 
     return (
         <>
             <h5 className="mb-4">Transaction History</h5>
             <div className='card'>
                 <div className="card-body">
-                    <div className='d-flex'>
+                    <div className='d-flex '>
 
                         <div onClick={handleRefresh}>
-                            <i className="ri-loop-right-line text-primary fs-22"
+                            <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"
 
                             ></i></div>
                         {/* </Link> */}
@@ -161,7 +194,7 @@ function TransactionHistory() {
                                     <label htmlFor="endtDate" className="form-label">End Date</label>
                                     <Date_Input
                                         type={"date"}
-                                        value={formData["end_date"]}
+                                        value={formData["end_date"].toUpperCase()}
                                         name={"end_date"}
                                         SetForm={setFormData}
                                         schema={schema["end_date"]}
@@ -181,6 +214,7 @@ function TransactionHistory() {
                                         placeholder="transaction id "
                                         SetForm={setFormData}
                                         schema={schema["id"]}
+
                                     />
                                 </div>
                                 <div className='col-12 col-xl-2 col-md-2 col-sm-12 my-auto'>
@@ -243,7 +277,7 @@ function TransactionHistory() {
                                             <td>{history.transaction_status}</td>
                                             <td>{history.amount}</td>
                                             <td>{history.comment}</td>
-                                            <td>{new Date(history.transactionDate).toLocaleString()}</td>
+                                            <td>{formattedDate(history.transactionDate)}</td>
                                         </tr>
                                     ))
                                 )}

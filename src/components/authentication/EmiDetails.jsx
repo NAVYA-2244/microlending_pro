@@ -56,6 +56,7 @@ function EmiDetails() {
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
+
             }
 
         }
@@ -88,6 +89,8 @@ function EmiDetails() {
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
+                setBtnDisabled(false)
+                setShowModal(false);
             }
         }
         finally {
@@ -214,7 +217,7 @@ function EmiDetails() {
                 </div>
 
             </div>
-            {showModal ? (<Modal show={true} onHide={handleClose}>
+            {showModal ? (<Modal show={true} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>PAY EMI</Modal.Title>
                 </Modal.Header>
