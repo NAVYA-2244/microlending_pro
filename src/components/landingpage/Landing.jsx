@@ -9,7 +9,14 @@ import ContactUs from './ContactUs'
 import Blog from './Blog'
 import ScrollToTop from '../comman/ScrollToTop'
 
+import { Navigate } from 'react-router-dom'
+import authService from '../../services/authService'
+
+
 const Landing = () => {
+  if (authService.getCurrentUser()) {
+    return <Navigate to="/dashboard" />
+  }
   return (
     <div className='micro_landingpage'>
       <Header />

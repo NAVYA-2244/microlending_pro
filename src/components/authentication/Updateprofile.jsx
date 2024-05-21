@@ -577,7 +577,8 @@
 
 // export default Updateprofile;
 /* eslint-disable react/jsx-pascal-case */
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useRef, useState } from "react";
 import Joi from "joi";
 import { backEndCall, backEndCallObj } from "../../services/mainServiceFile";
 import { Link, useNavigate } from "react-router-dom";
@@ -589,6 +590,7 @@ import { useMovieContext } from "../comman/Context";
 import { useFunctionContext } from "../comman/FunctionsContext";
 import { toast } from "react-hot-toast";
 import moment, { max } from "moment";
+import authService from "../../services/authService";
 
 
 const Updateprofile = () => {
@@ -618,7 +620,7 @@ const Updateprofile = () => {
   const { errors, setErrors, setLoading, setErrorOccur, } = useMovieContext()
   const { checkErrors } = useFunctionContext()
   // const { handleChange } = useFunctionContext()
-
+  const fileInputRef = useRef(null);
   const [updateddata, setUpdateddata] = useState(false);
   // const [errors, setErrors] = useState({});
 
@@ -703,7 +705,7 @@ const Updateprofile = () => {
     // currentAddress: Joi.string().min(10).max(50).required().label("Current Address"),
     state: Joi.string()
       .min(5)
-      .max(20)
+      .max(50)
       .required()
       .label("state")
 
@@ -712,7 +714,7 @@ const Updateprofile = () => {
 
     city: Joi.string()
       .min(5)
-      .max(12)
+      .max(50)
       .required()
       .label("city")
       .regex(/^[A-Za-z ]+$/)
@@ -731,10 +733,8 @@ const Updateprofile = () => {
   };
 
 
-
-
-
   const handleChange = async (e) => {
+    console.log(e)
 
     const { name, value, type, files } = e.target;
     try {
@@ -742,13 +742,12 @@ const Updateprofile = () => {
         const file = e.target.files[0];
         if (file) {
 
-          // console.log(errors, name)
 
           setErrors(prevErrors => ({
             ...prevErrors,
-            [name]: "" // Here, [name] is the computed property name
+            [name]: " "
           }));
-          // console.log(file, "filess")
+
           if (file.type.slice(-3) === 'pdf') {
             const pdfs = { ...formData };
             const res = URL.createObjectURL(file);
@@ -771,12 +770,17 @@ const Updateprofile = () => {
             );
           }
         } else {
-          // Clear the input field if no file is selected
-          setFormData({ ...formData, [name]: "" });
+
+          deleting(name);
+
+          fileInputRef.current.value = "";
         }
       } else {
-        setFormData({ ...formData, [name]: value });
-        setErrorOccur({ ...formData, [name]: "" })
+
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value
+        }));
       }
     } catch (error) {
 
@@ -785,13 +789,59 @@ const Updateprofile = () => {
   };
 
 
-  // const deleting = (property) => {
 
-  //   return setFormData((prevForm) => {
-  //     return { ...prevForm, [property]: "" }
+  // const handleChange = async (e) => {
 
-  //   })
-  // }
+  //   const { name, value, type, files } = e.target;
+  //   try {
+  //     if (type === "file") {
+  //       const file = e.target.files[0];
+  //       if (file) {
+
+  //         // console.log(errors, name)
+
+  //         setErrors(prevErrors => ({
+  //           ...prevErrors,
+  //           [name]: "" // Here, [name] is the computed property name
+  //         }));
+  //         // console.log(file, "filess")
+  //         if (file.type.slice(-3) === 'pdf') {
+  //           const pdfs = { ...formData };
+  //           const res = URL.createObjectURL(file);
+  //           pdfs[name] = res;
+  //           setFormData(pdfs);
+  //         } else {
+  //           Compress.imageFileResizer(
+  //             file,
+  //             480,
+  //             480,
+  //             'JPEG',
+  //             40,
+  //             0,
+  //             (uri) => {
+  //               const images = { ...formData };
+  //               images[name] = uri;
+  //               setFormData(images);
+  //             },
+  //             'base64'
+  //           );
+  //         }
+  //       } else {
+  //         // Clear the input field if no file is selected
+  //         setFormData({ ...formData, [name]: "" });
+  //       }
+  //     } else {
+  //       setFormData({ ...formData, [name]: value });
+  //       setErrorOccur({ ...formData, [name]: "" })
+  //     }
+  //   } catch (error) {
+
+  //     console.error("Error:", error);
+  //   }
+  // };
+
+
+
 
 
 
@@ -922,30 +972,26 @@ const Updateprofile = () => {
   }, []);
 
   const capitalize = (string) => {
-    // console.log(string)
-    // console.log(
-    //   string.charAt(0).toUpperCase() + string.slice(1)
-    // )
+
     return string?.charAt(0).toUpperCase() + string?.slice(1);
 
   }
 
   const deleting = (property) => {
-    console.log(property, "-------->");
+
     setFormData((prevForm) => {
-      console.log(prevForm, "--------->");
+
       const updatedForm = { ...prevForm };
-      updatedForm[property] = ""; // Clearing the property in the form data
-      console.log(updatedForm, "--------- updated data");
-      // Assuming setUserData is a function that updates user data
+      updatedForm[property] = "";
+
       setUserData(schema, updatedForm);
-      setErrorOccur(true); // Resetting error state
+      setErrorOccur(true);
       return updatedForm;
     });
-    // Assuming ‘property’ corresponds to the id of the input element
+
     const input = document.getElementById(property);
     if (input) {
-      input.value = ""; // Resetting the value of the input field
+      input.value = "";
     }
   };
 
@@ -954,6 +1000,7 @@ const Updateprofile = () => {
 
 
       <div className="container">
+
         <div className="row justify-content-center">
           <div className="col-lg-10">
             <div className="card shadow-sm">
@@ -1175,7 +1222,7 @@ const Updateprofile = () => {
                   <h5 className="mb-4">Upload documents <span className="text-danger">*</span></h5>
                   <div className="row mb-4">
 
-                    <div className="col-md-6 mb-3 position-relative">
+                    {/* <div className="col-md-6 mb-3 position-relative">
                       <label htmlFor="income_proof" className="form-label">Income Proof <span className="text-danger">*</span></label>
                       <input
                         type="file"
@@ -1195,8 +1242,45 @@ const Updateprofile = () => {
                       {errors.income_proof && (
                         <div className="error">{errors.income_proof}</div>
                       )}
-                    </div>
+                    </div> */}
+                    <div className="col-md-6 mb-3 position-relative">
+                      <label htmlFor="income_proof" className="form-label">Income Proof <span className="text-danger">*</span></label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="income_proof"
+                        name="income_proof"
+                        ref={fileInputRef}
+                        accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.doc,.docx,.pdf"
 
+                        onChange={handleChange}
+
+                      />
+                      {errors.income_proof && (
+                        <div className="error">{errors.income_proof}</div>
+                      )}
+                      <span className="delete_image" onClick={() => deleting("income_proof")} ><i className="ri-delete-bin-5-line"></i></span>
+
+                      <div className="position-relative">
+
+
+
+                        <div>
+                          {formData && formData.income_proof && (
+                            formData.income_proof.includes("image") ? (
+                              <img src={formData.income_proof} className="document_image mt-1 rounded-2" />
+                            ) : (
+                              <embed src={formData.income_proof} className="document_image1 mt-1 rounded-2" />
+                            )
+                          )}
+                        </div>
+                        {formData.income_proof && <a href={formData.income_proof} target="_blank" rel="noopener noreferrer">view pay slip</a>
+
+                        }
+                      </div>
+
+
+                    </div>
                     <div className="col-md-6 mb-3 position-relative">
                       <label htmlFor="photo" className="form-label">Photo<span className="text-danger">*</span></label>
                       <input
@@ -1210,7 +1294,14 @@ const Updateprofile = () => {
                       />
                       <span className="delete_image" onClick={() => deleting("photo")} ><i className="ri-delete-bin-5-line"></i></span>
                       <div className="position-relative">
-                        <img src={formData?.photo} className="document_image mt-1 rounded-2" />
+                        <div>
+                          {formData.photo ? (
+                            <img src={formData?.photo} className="document_image mt-1 rounded-2" />
+                          ) : ""}
+                        </div>
+                        {formData.photo && <a href={formData.photo} target="_blank" rel="noopener noreferrer">view photo</a>
+
+                        }
                       </div>
                       {errors.photo && (
                         <div className="error">{errors.photo}</div>

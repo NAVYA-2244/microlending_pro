@@ -376,6 +376,7 @@ function VerifyLoan() {
         end_date: "",
         id: ""
     });
+    const [isFetching, setIsFetching] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
     // const [tabData, setTabData] = useState({
     //     0: [],
@@ -486,6 +487,7 @@ function VerifyLoan() {
         }
 
         try {
+
             setFilterDisabled(true);
             setLoading(true);
             const formDataToSend = {
@@ -533,23 +535,31 @@ function VerifyLoan() {
         setActiveTab(index);
 
         try {
+            if (isFetching) return;
+            setBtnDisabled(true);
+            setIsFetching(true);
+
             setLoading(true)
 
-            const response = await backEndCallObj("/admin/loan_filters", { loan_status });
+            if (!verifyloan[loan_status]) {
+                const response = await backEndCallObj("/admin/loan_filters", { loan_status });
 
-            setVerifyloan(response);
+                setVerifyloan(response);
 
-            setVerifyloan(prevTabData => ({ ...prevTabData, [0]: response || [] }));
+                setVerifyloan(prevTabData => ({ ...prevTabData, [0]: response || [] }));
 
 
+            }
+            setBtnDisabled(false)
         } catch (ex) {
             console.error("Error filtering transactions:", ex);
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
             }
         } finally {
-
+            setIsFetching(false)
             setLoading(false);
+            setBtnDisabled(false)
         }
     };
     const formattedDate = (date) => {
@@ -638,9 +648,9 @@ function VerifyLoan() {
                         </div>
                     </form>
                     <span className="tabs d-flex ">
-                        <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabClick(0, "Processing")} ><button className='btn btn-primary me-2 mb-3'  >Processing</button></div>
-                        <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabClick(1, "Approved")}><button className='btn btn-success  me-2 mb-3'>Approved</button></div>
-                        <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabClick(2, "Rejected")}><button className='btn btn-danger  me-2 mb-3'>Rejected</button></div>
+                        <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabClick(0, "Processing")} ><button className='btn btn-primary me-2 mb-3' disabled={btnDisabled} >Processing</button></div>
+                        <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabClick(1, "Approved")}><button className='btn btn-success  me-2 mb-3' disabled={btnDisabled} >Approved</button></div>
+                        <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabClick(2, "Rejected")}><button className='btn btn-danger  me-2 mb-3' disabled={btnDisabled} >Rejected</button></div>
                     </span>
 
                     <div className="table-responsive">
@@ -657,7 +667,7 @@ function VerifyLoan() {
                                     <th>Loan Amount</th>
                                     <th>Months</th>
                                     <th>Loan Status</th>
-                                    {verifyloan.loan_status === "Processing" && <th>Action</th>}
+                                    <th>Action</th>
 
                                 </tr>
                             </thead>
@@ -683,23 +693,28 @@ function VerifyLoan() {
                                                     : loan.loan_status === "Processing"
                                                         ? "bg-warning fw-bold"
                                                         : loan.loan_status === "Rejected"
-                                                            ? "bg-danger fw-bold"
-                                                            : loan.loan_status === "Approved"
-                                                                ? "bg-info fw-bold"
-                                                                : "bg-dark fw-bold"
+                                                            ? "bg-secondary fw-bold"
+                                                            : loan.loan_status === "Cancelled"
+
+                                                                ? "bg-danger fw-bold"
+                                                                : loan.loan_status === "Approved"
+                                                                    ? "bg-info fw-bold"
+                                                                    : "bg-dark fw-bold"
                                                     }`}
                                             >
                                                 {loan.loan_status}
                                             </div>
                                         </td>
-                                        {loan.loan_status === "Processing" && <td>
-                                            {loan.loan_status === "Processing" && (
+
+                                        <td>
+
+                                            {loan.loan_status === "Processing" ?
                                                 <>
                                                     <Button variant="success" onClick={() => handleApproveLoan(loan.form_id)} disabled={btnDisabled} className='mb-2 me-2'>Approve</Button>
                                                     <Button variant="danger" onClick={() => handleRejectLoan(loan.form_id)} disabled={btnDisabled}>Reject</Button>
                                                 </>
-                                            )}
-                                        </td>}
+                                                : (loan.loan_status)
+                                            }</td>
 
                                     </tr>
                                 ))}

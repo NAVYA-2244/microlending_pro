@@ -652,7 +652,10 @@ select {
 }
 
 .document_image {
-  width: 50px;
+
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
 }
 
 .phone_number {
@@ -660,8 +663,9 @@ select {
 }
 
 .document_image1 {
-  height: 100%;
-  width: 100%;
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
 }
 
 ul {
@@ -881,5 +885,13 @@ ul {
   padding-left: 50px !important;
 }
 
+/* .speedometer .pointer path {
+  transform: rotate(37deg) !important;
+} */
+
+
+/* .react_speedo_meter svg .pointer path {
+  transform: rotate(36deg);
+} */
 
 /* .addAdmin_form input[type="number"]::placeholder {} */

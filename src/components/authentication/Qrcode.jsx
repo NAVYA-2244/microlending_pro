@@ -311,6 +311,41 @@ const QRCode = ({ qr, secret }) => {
             <>
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
+
+                  {tfaStatus === "Enable" && (
+                    <div className="form-group">
+
+                      <div className="position-relative has-icon-right mb-3">
+                        <label
+                          htmlFor="otpControlInput"
+                          className="form-label text-uppercase"
+                        >
+                          Enter OTP
+                        </label>
+                        <input
+                          type="text"
+                          name="otp"
+                          id="otp"
+                          value={data.otp}
+                          onChange={handleChange}
+                          placeholder="Enter OTP"
+                          className="form-control input-shadow"
+                          maxLength="6"
+                          inputMode="numeric"
+                          autoFocus
+                        />
+                        <div className="form-control-position">
+                          <i className="icon-lock"></i>
+                        </div>
+                      </div>
+                      {errors.otp && (
+                        <div className="text-danger mt-1 errorsClass">
+                          {errors.otp}
+                        </div>
+                      )}
+
+                    </div>
+                  )}
                   <div className="position-relative has-icon-right">
                     <label className="OPT-label mt-0 mb-3 fw-semibold">
                       ENTER 2FA
@@ -337,41 +372,6 @@ const QRCode = ({ qr, secret }) => {
                     </div>
                   )}
                 </div>
-
-                {tfaStatus === "Enable" && (
-                  <div className="form-group">
-
-                    <div className="position-relative has-icon-right">
-                      <label
-                        htmlFor="otpControlInput"
-                        className="form-label text-uppercase"
-                      >
-                        Enter OTP
-                      </label>
-                      <input
-                        type="text"
-                        name="otp"
-                        id="otp"
-                        value={data.otp}
-                        onChange={handleChange}
-                        placeholder="Enter OTP"
-                        className="form-control input-shadow"
-                        maxLength="6"
-                        inputMode="numeric"
-                        autoFocus
-                      />
-                      <div className="form-control-position">
-                        <i className="icon-lock"></i>
-                      </div>
-                    </div>
-                    {errors.otp && (
-                      <div className="text-danger mt-1 errorsClass">
-                        {errors.otp}
-                      </div>
-                    )}
-
-                  </div>
-                )}
 
 
                 <button

@@ -18,6 +18,8 @@ function TransactionHistory() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [filterDisabled, setFilterDisabled] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+
 
     const { checkErrors } = useFunctionContext()
     const [formData, setFormData] = useState({
@@ -37,14 +39,15 @@ function TransactionHistory() {
 
         console.log(transactionHistory.length)
         try {
-            if (transactionHistory.length == 0) {
-                console.log("yes")
-                setLoading(true);
-                const response = await backEndCall('/users/transaction_history');
-                // if (Array.isArray(response)) {
-                setLoading(false);
-                setTransactionHistory(response || []);
-            }
+            // if (transactionHistory.length == 0) {
+            console.log("yes")
+            setLoading(true);
+            const response = await backEndCall('/users/transaction_history_all');
+            console.log(response)
+            // if (Array.isArray(response)) {
+            setLoading(false);
+            setTransactionHistory(response || []);
+            // }
             // else {
             //     setTransactionHistory([]);
             // }
@@ -59,9 +62,9 @@ function TransactionHistory() {
     };
 
     useEffect(() => {
-        // if (transactionHistory <= 0) {
-        fetchTransactionHistory();
-        // }
+        if (transactionHistory.length == 0) {
+            fetchTransactionHistory();
+        }
     }, []);
 
     const handleSubmit = async (e) => {
@@ -131,32 +134,21 @@ function TransactionHistory() {
         }
 
     };
+
     const handleRefresh = async () => {
-        console.log("hello")
+        if (isFetching) return;
 
+        setIsFetching(true);
         try {
-            setLoading(true)
-
-            const response = await backEndCall('/users/transaction_history');
-            console.log(response, "response")
-            if (Array.isArray(response)) {
-                setTransactionHistory(response);
-            } else {
-                setTransactionHistory([]);
-            }
-            setLoading(false);
-        } catch (ex) {
-            if (ex.response && ex.response.status === 400) {
-                toast.error(ex.response.data);
-            }
-            setError(ex.message);
-            setLoading(false);
+            await fetchTransactionHistory();
+        } finally {
+            setIsFetching(false);
         }
-
     };
 
 
     console.log(transactionHistory)
+
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
@@ -168,11 +160,16 @@ function TransactionHistory() {
                 <div className="card-body">
                     <div className='d-flex '>
 
-                        <div onClick={handleRefresh}>
-                            <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"
+                        <div onClick={handleRefresh} disabled={isFetching}>
+                            {isFetching ? (
+                                <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
 
-                            ></i></div>
-                        {/* </Link> */}
+                                </div>
+                            ) : (
+                                <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                            )}
+                        </div>
+
                         <form onSubmit={handleSubmit} className='flex-fill'>
                             <div className="row mb-3 d-flex justify-content-end">
                                 <div className="col-12 col-xl-2 col-md-2 col-sm-12">
@@ -240,7 +237,7 @@ function TransactionHistory() {
 
                         <table className="table border table-bordered table-centered">
                             <thead>
-                                <tr className="table-head">
+                                <tr className="table-head text-center">
                                     <th scope="col">Transaction Id</th>
                                     <th scope="col">Receiver Id</th>
                                     <th scope="col">Sender Id</th>
@@ -261,14 +258,14 @@ function TransactionHistory() {
                                         </td>
                                     </tr>
 
-                                ) : transactionHistory.length === 0 ? (
+                                ) : transactionHistory?.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="text-center">No transactions found.</td>
+                                        <td colSpan="7" className="text-center justify-content-center">No transactions found.</td>
                                     </tr>
                                 ) : (
 
 
-                                    transactionHistory?.map(history => (
+                                    transactionHistory && transactionHistory.length > 0 && transactionHistory.map(history => (
                                         <tr key={history.transaction_id}>
                                             <td>{history.transaction_id}</td>
                                             <td>{history.receiver_id}</td>

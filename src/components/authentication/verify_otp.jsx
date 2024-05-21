@@ -231,6 +231,8 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                       </span>
                     </div>
                     <form onSubmit={handleSubmit}>
+
+
                       <div className="mb-4 mt-5 position-relative">
                         <label
                           htmlFor="otpControlInput"
@@ -251,9 +253,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           // required
                           autoFocus
                         />
-                        {/* <div className="view-password-icon">
-                          <i className="ri-lock-password-line"></i>
-                        </div> */}
+
                         {errors.otp && (
                           <div className="invalid-feedback">{errors.otp}</div>
                         )}
@@ -276,7 +276,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                               onChange={handleChange}
                               maxLength="6"
                               required
-                              autoFocus
+
                             />
                             <div className="form-control-position">
                               <i className="icon-lock"></i>
@@ -289,74 +289,20 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           </div>
                         </div>
                       )}
-                      {/* <div className="fs-14">
-                        {countdown > 0 ? (
-                          <div className="d-flex align-items-center">
-                            <p className="mb-0 me-2 fs-16">OTP Expires in  </p>
-
-                            <ReactCountdownClock
-                              seconds={countdown}
-                              color="#107FAB"
-                              alpha={0.9}
-                              size={35}
-                              onComplete={handleResendOtp}
-                              weight={4}
-                              showMilliseconds={false}
-
-                            />
-
-                          </div>
-                        ) : (
-                          <p className=" fs-16">
-                            Didn't receive the otp?{" "}
-                            <span
-                              className="link text-primary link-OTP mt-5"
-                              onClick={handleResendOtp}
-                              disabled={btnDisabled}
-                            >
-                              Click here
-                            </span>
-                          </p>
-                        )}
 
 
-                      </div> */}
+
+
                       <div className="card-footer  mt-4">
-                        {/* {countdown > 0 ? (
-                          <>
-                            <p className="mt-3 fs-16">
-                              OTP Expires Within {" "}
-                              <span>{(countdogetFormattedCountdownwn)}</span> Seconds
-                            </p>
-                          </>
-                        ) : (
-                          <p className="para-otp fs-5 cursor-pointer">
-                            Didn't receive the otp?
-                            <a
-                              className="link link-OTP mt-5"
-                              onClick={btnDisabled ? null : handleResendOtp}
-                              disabled={btnDisabled}
-                            >
-                              <span id="resend-opt cursor-pointer "> Click here</span>
-                            </a>
-                          </p>
-                        )} */}
-
                         {countdown > 0 ? (
                           <div className="fs-14">
                             <div className="d-flex align-items-center">
-                              {/* <p className="mb-0 me-2 fs-16">OTP Expires in </p> */}
-                              {/* Using Countdown component here */}
-
                               <span className="flex-shrink-0">OTP Expires in</span>
                               <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 120)}deg, #d0d0d2 0deg)` }}>
                                 <div className="inner-circle"></div>
                                 <p className="percentage mb-0 fw-semibold">{countdown}</p>
                               </div>
                               <span>Seconds</span>
-
-
-
                             </div>
                           </div>
                         ) : (
@@ -365,14 +311,13 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                             <span
                               className="link text-primary link-OTP mt-5 cursor-pointer"
                               onClick={handleResendOtp}
-                              disabled={btnDisabled}
-
-                            >
+                              disabled={btnDisabled} >
                               Click here
                             </span>
                           </p>
                         )}
                       </div>
+
                       <button
                         type="submit"
                         className="btn btn-primary py-2 mb-3 mt-4"
@@ -382,6 +327,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
 
                       </button>
                     </form>
+
                   </div>
                 </div>
               </div>

@@ -112,7 +112,8 @@ export function Input_text({
 
   const handleInputChange = (e) => {
     const { value } = e.target;
-    const isValid = /^[a-zA-Z]*$/.test(value); // Regular expression to allow only alphabetic characters without spaces
+    // const isValid = /^[a-zA-Z]*$/.test(value); // Regular expression to allow only alphabetic characters without spaces
+    const isValid = /^[a-zA-Z\s]*$/.test(value);
     if (!isValid) return; // If the input contains invalid characters, do not update the value
     handleChange(e, schema, SetForm);
   };
@@ -152,10 +153,6 @@ export function Input_address({
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
-
-
-
-
   return (
     <>
       <input
@@ -428,4 +425,43 @@ export function File_Input({
       </div>
     </>
   );
-}  
+}
+
+
+export function Radio_input({
+  name,
+  options,
+  value,
+  SetForm,
+  schema
+}) {
+  const { errors } = useMovieContext();
+  const { handleChange } = useFunctionContext();
+
+  const handleRadioChange = (e) => {
+    const { value } = e.target;
+    handleChange(e, schema, SetForm);
+  };
+
+  return (
+    <>
+      {options.map((option, index) => (
+        <div key={index} className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            id={`${name}_${option.value}`}
+            name={name}
+            value={option.value}
+            checked={value === option.value}
+            onChange={handleRadioChange}
+          />
+          <label className="form-check-label" htmlFor={`${name}_${option.value}`}>
+            {option.label}
+          </label>
+        </div>
+      ))}
+      <p className="error"> {errors[name]}</p>
+    </>
+  );
+}

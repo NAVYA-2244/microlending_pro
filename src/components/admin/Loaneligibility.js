@@ -378,6 +378,7 @@ function Loaneligibility() {
         try {
             setLoading(true);
             const response = await backEndCall("/admin/get_admin_controls");
+            console.log(response,"response")
             setEligibility(response?.eligibility || []);
             setLoading(false);
         } catch (ex) {
@@ -525,6 +526,7 @@ function Loaneligibility() {
                                     <thead className='text-center'>
                                         <tr>
                                             <th>Credit Score</th>
+                                            <th>Present credit score</th>
                                             <th>Min Loan Amount</th>
                                             <th>Max Loan Amount</th>
                                             <th>Tenure</th>

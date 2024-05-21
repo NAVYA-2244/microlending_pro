@@ -230,16 +230,16 @@ function AddminControlls() {
         const hasChanges = adminControlsList.some(control => control.value !== control.originalValue);
         setBtnDisabled(!hasChanges); // Disable if no changes, enable if changes
     }, [adminControlsList]);
-
     const fetchData = async () => {
         try {
             setLoading(true);
             const response = await backEndCall("/admin/get_admin_controls");
-            const controls = ["login", "register", "withdraw"].map(key => ({
-                value: response[key].toUpperCase(),
-                originalValue: response[key].toUpperCase(),
+            console.log(response, "response")
+            const controls = ["login", "register", "withdraw", "emi_type"].map(key => ({
+                value: response[key]?.toUpperCase(),
+                originalValue: response[key]?.toUpperCase(),
                 key,
-                heading: key.charAt(0).toUpperCase() + key.slice(1),
+                heading: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' '),
             }));
             setAdminControlsList(controls);
             setLoading(false);
@@ -249,11 +249,52 @@ function AddminControlls() {
             }
         }
     };
+    // const fetchData = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await backEndCall("/admin/get_admin_controls");
+    //         console.log(response, "resposne")
+    //         const controls = ["login", "register", "withdraw", "emi_type"].map(key => ({
+    //             value: response[key].toUpperCase(),
+    //             originalValue: response[key].toUpperCase(),
+    //             key,
+    //             heading: key.charAt(0).toUpperCase() + key.slice(1),
+    //         }));
+    //         setAdminControlsList(controls);
+    //         setLoading(false);
+    //     } catch (ex) {
+    //         if (ex.response && ex.response.status === 400) {
+    //             toast.error(ex.response.data);
+    //         }
+    //     }
+    // };
+
+    // const handleAdminControls = (key, value) => {
+    //     const updatedControls = adminControlsList.map(control => {
+    //         if (control.key === key) {
+    //             control.value = control.value === "ENABLE" ? "DISABLE" : "ENABLE";
+    //             control.value = control.value === "standard" ? "floating’" : "ENABLE";
+
+    //             if (selectedControls.includes(key)) {
+    //                 setSelectedControls(selectedControls.filter(controlKey => controlKey !== key));
+    //             } else {
+    //                 setSelectedControls([...selectedControls, key]);
+    //             }
+    //         }
+    //         return control;
+    //     });
+    //     setAdminControlsList(updatedControls);
+    // };
 
     const handleAdminControls = (key, value) => {
         const updatedControls = adminControlsList.map(control => {
             if (control.key === key) {
-                control.value = control.value === "ENABLE" ? "DISABLE" : "ENABLE";
+                if (control.key === "emi_type") {
+                    control.value = control.value === "STANDARD" ? "FLOATING" : "STANDARD";
+                } else {
+                    control.value = control.value === "ENABLE" ? "DISABLE" : "ENABLE";
+                }
+
                 if (selectedControls.includes(key)) {
                     setSelectedControls(selectedControls.filter(controlKey => controlKey !== key));
                 } else {
@@ -276,6 +317,8 @@ function AddminControlls() {
                 login: adminControlsList[0].value,
                 register: adminControlsList[1].value,
                 withdraw: adminControlsList[2].value,
+                emi_type: adminControlsList[3].value,
+
 
             };
             const response = await backEndCallObj("/admin/admin_status", payload);
@@ -324,12 +367,21 @@ function AddminControlls() {
                                                         type="button"
                                                         className="btn btn-light"
                                                         onClick={() => handleAdminControls(control.key, control.value)}
+                                                        // style={{
+                                                        //     width: "150px",
+                                                        //     backgroundColor: Object.values(control)[0].toUpperCase() === "DISABLE" ? "#28a745a8" : "rgb(240 110 32 / 76%)",
+                                                        // }}
                                                         style={{
                                                             width: "150px",
-                                                            backgroundColor: Object.values(control)[0].toUpperCase() === "DISABLE" ? "#28a745a8" : "rgb(240 110 32 / 76%)",
+                                                            backgroundColor: control.key === "emi_type"
+                                                                ? (control.value === "STANDARD" ? "rgb(240 110 32 / 76%)" : "#28a745a8") // Blue for STANDARD, Yellow for FLOATING
+                                                                : (control.value === "DISABLE" ? "#28a745a8" : "rgb(240 110 32 / 76%)"),
                                                         }}
                                                     >
-                                                        {control.value.toUpperCase() === "ENABLE" ? "DISABLE" : "ENABLE"}
+                                                        {/* {control.value.toUpperCase() === "ENABLE" ? "DISABLE" : "ENABLE"} */}
+                                                        {control.key === "emi_type"
+                                                            ? (control.value === "STANDARD" ? "FLOATING" : "STANDARD")
+                                                            : (control.value === "ENABLE" ? "DISABLE" : "ENABLE")}
                                                     </button>
                                                 </td>
                                             </tr>
@@ -391,7 +443,7 @@ function AddminControlls() {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

@@ -11,10 +11,10 @@ class Layout extends Component {
       <>
         <Header></Header>
         <Sidebar></Sidebar>
-         {/* <Dashboard/> */}
+        {/* <Dashboard/> */}
         <div className="main-panel">
           <div className="content-wrapper container-fluid">
-           
+
             <Outlet />
           </div>
         </div>

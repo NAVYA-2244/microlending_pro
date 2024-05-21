@@ -31,6 +31,7 @@ import VerifyLoan from "./components/admin/VerifyLoan";
 import EmiDetails from "./components/authentication/EmiDetails";
 import Userinfo from "./components/admin/Userinfo";
 import EmiHistory from "./components/authentication/EmiHistory";
+import LoanDetails from "./components/authentication/LoanDetails";
 
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
@@ -67,6 +68,7 @@ class App extends Component {
 
               <Route path="/verifyloan" element={<VerifyLoan/>}></Route>
               <Route path="/emaidetails" element={<EmiDetails/>}></Route>
+              <Route path="/Loanedetails" element={<LoanDetails></LoanDetails>}></Route>
 
             </Route>
             

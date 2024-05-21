@@ -65,6 +65,8 @@ const Header = () => {
               </label>
             </button>
             <div className="d-none d-sm-block">
+
+
               <div className="input-group border rounded-2 ms-4 flex-nowrap header-search">
                 <span className="input-group-text bg-transparent border-0 cursor-pointer" id="header-search-btn"><i className="ri-search-line"></i></span>
                 <form
@@ -81,7 +83,7 @@ const Header = () => {
               </div>
             </div>
           </div>
-
+          <h5 className="text-left">{authService.getCurrentUser ? "user" : "admin"}</h5>
           <ul className="nav mb-md-0 header-right">
             <li className="dropdown header-dropdown d-none d-sm-block">
               <Link to="" className="nav-link px-2 link-body-emphasis" data-bs-auto-close="outside" role="button" data-bs-toggle="dropdown" aria-expanded="false">

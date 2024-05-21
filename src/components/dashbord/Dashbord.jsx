@@ -14,36 +14,35 @@ import CreditScorePieChart from '../comman/CreditScorePieChart';
 // import numeral from "numeral";
 import Updateprofile from './../authentication/Updateprofile';
 import TabComponent from "../authentication/forgot_password";
+import AddFundsModal from "../authentication/AddFundsModal";
 
 
 const Dashboard = () => {
   const { userData, setUserData, adminData, setAdminData, userprofileData, setUserprofileData } = useMovieContext();
   const [bkcall, setbkcall] = useState(false)
-  const creditScores = {
-    'Excellent': 250,
-    'Good': 350,
-    'Fair': 150,
-    'Poor': 50,
-  };
-  // const { fetchUserData, fetchAdminData } = useFunctionContext()
-  // const [userprofileData, setUserprofileData] = useState([])
+  const { usereligibility, setUserEligibility, } = useMovieContext()
+  const [loading, setLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false);
+  const [showAddFundsModal, setShowAddFundsModal] = useState(false);
+  const [showAddAdminModal, setShowAddAdminModal] = useState(false);
+  const [actionType, setActionType] = useState('');
 
   const navigate = useNavigate();
 
   const handleApplyLoan = () => {
-    // Navigate to the Apply Loan page
+
     navigate("/loaneligibilitydetails");
   };
 
   const fetchData = async () => {
     try {
-      if (userprofileData <= 0 || !userprofileData) {
-        setbkcall(true)
-        const response = await backEndCall("/users/user_profile");
-        console.log(response, "userdateails")
-        setUserprofileData(response);
-        setbkcall(false)
-      }
+      // if (userprofileData <= 0 || !userprofileData) {
+      setbkcall(true)
+      const response = await backEndCall("/users/user_profile");
+      console.log(response, "userdateails")
+      setUserprofileData(response);
+      setbkcall(false)
+      // }
       // else {
       //   setUserprofileData(userprofileData)
       // }
@@ -57,52 +56,70 @@ const Dashboard = () => {
 
 
   const fetchAdminData = async () => {
-    try {
-      if (adminData <= 0 || !adminData) {
-        const response = await backEndCall("/admin/admin_stats");
+    console.log("entered into admindata", adminData)
 
-        setAdminData(response);
-      }
+    try {
+
+      // if (adminData <= 0 || !adminData) {
+      const response = await backEndCall("/admin/admin_stats");
+      console.log(response, "admindata")
+      setAdminData(response);
+
+      // }
       // else {
       //   setAdminData(adminData)
       // }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response.data);
+
       }
     }
   };
 
   const fetchUserData = async () => {
+    console.log("user")
     try {
-      if (userData <= 0 || !userData) {
 
-        const response = await backEndCall("/users/user_stats");
-        console.log(response, "userdeta")
-        setUserData(response);
-        // console.log(response, "total amount")
-      }
+      // if (userData <= 0 || !userData) {
+      const response = await backEndCall("/users/user_stats");
+      console.log(response, "userdeta")
+      setUserData(response);
+
+      // console.log(response, "total amount")
+      // }
       // else {
       //   setUserData(userData)
       // }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response.data);
+
+
       }
     }
   };
 
   useEffect(() => {
-    // if (userData <= 0) {
-    { !authService.IsAdmin() && fetchUserData() };
-    // }
-    // if (adminData <=0) {
-    { authService.IsAdmin() && fetchAdminData() };
-    // }
-    // if (userprofileData<=0) {
-    fetchData();
-    // }
+
+    if (userData <= 0 || !userData) {
+
+      !authService.IsAdmin() &&
+        fetchUserData()
+
+    }
+
+    if (adminData <= 0 || !adminData) {
+
+      authService.IsAdmin() &&
+        fetchAdminData()
+
+    }
+    if (userprofileData <= 0 || !userprofileData) {
+      fetchData();
+    }
   }, []);
+
 
 
 
@@ -112,28 +129,86 @@ const Dashboard = () => {
       Navigate("/landing");
     }
   });
+
+
+
+  const handlerefresh = async () => {
+    console.log("reload");
+    if (isFetching) return; // Prevent multiple calls if already fetching
+
+    setIsFetching(true); // Set fetching state to true
+
+    try {
+      if (!authService.IsAdmin()) {
+
+        setUserData(null);
+        await fetchUserData();
+      }
+
+      if (authService.IsAdmin()) {
+
+        setAdminData(null);
+        await fetchAdminData();
+      }
+      // setUserprofileData(null)
+      // await fetchData();
+
+    } catch (error) {
+      console.error("Error while fetching data:", error);
+    } finally {
+      setIsFetching(false); // Reset fetching state regardless of success or failure
+    }
+  };
+  useEffect(() => {
+    if (usereligibility <= 0 || !usereligibility) {
+      fetchDatadashbord();
+    }
+  }, []);
+
+  const fetchDatadashbord = async () => {
+
+    try {
+      setLoading(true)
+      const response = await backEndCall("/users/matching_eligibility");
+
+      setUserEligibility(response);
+      setLoading(false)
+    }
+
+    catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+
+      }
+
+    }
+  };
+
+
   const currentDate = new Date();
 
-  // Extract the month and year from the current date
+
   const month = currentDate.toLocaleString('default', { month: 'long' });
   const year = currentDate.getFullYear();
   function formatDate(dateString) {
-    if (!dateString) return ''; // Handle the case where the date string is undefined or null
+    if (!dateString) return '';
 
     const date = new Date(dateString);
-    const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`; // Adjust the format as needed
+    const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     return formattedDate;
   }
-  // console.log(userprofileData?.cibil_score, "pai")
-  const handlerefresh = (() => {
-    console.log("hhhhhhhhhhhh")
-    window.location.reload();
-  })
 
-  console.log(bkcall, "bkcall")
-  console.log(userprofileData, "userprofiledata")
+  const navigateuser = () => {
+    navigate("/userlist")
+  }
+  const navigateloans = () => {
+    navigate("/verifyloan")
+  }
 
-
+  const handleAddFundsClick = (type) => {
+    setActionType(type);
+    setShowAddFundsModal(true);
+  };
   return (
     <>
       {/* <TabComponent></TabComponent> */}
@@ -195,6 +270,7 @@ const Dashboard = () => {
           <div className="row">
             <div className="col-xl-8">
               <div className="card">
+
                 <div className="card-header border-bottom-0 justify-content-between">
                   <div className="card-title">
                     Your Micro lending Portfolio{" "}
@@ -204,30 +280,36 @@ const Dashboard = () => {
                       As on {month} {year}
                     </span>
                   </div>
+                  <div onClick={handlerefresh} disabled={isFetching} className="cursor-pointer">
+                    {isFetching ? (
+                      <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
 
-                  {/* <a href="/dashboard"> */}
-                  <i className="ri-loop-right-line text-primary fs-22" onClick={handlerefresh}></i>
-                  {/* </a> */}
+                      </div>
+                    ) : (
+                      <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                    )}
+                  </div>
                 </div>
                 <div className="card-body">
+
                   <div className="row overflow-auto">
                     <div className="col-xl-3 col-12 col-sm-12 col-lg-3 col-md-3">
                       <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2">
                         <div className="d-flex justify-content-between align-items-center">
                           <p className="mb-0 fs-12">
-                            Loans Total Amount
+                            Total  Loans  Amount
                           </p>
                           <span className="dashboard-icons">
                             <i className="ri-luggage-deposit-line p-2 rounded-circle bg-white-light fs-24"></i>
                           </span>
                         </div>
                         <p className="mb-0 fw-semibold mt-3 fs-18">
-                          <span>₱</span>  {userData?.loansTotalAmount || "0.00"}
+                          <span>₱</span>  {userData?.loansTotalAmount || "0"}
                         </p>
                         <p className="text-muted mb-0 mt-3 fw-normal fs-14">
                           Limit{" "}
                           <span className="text-white fw-semibold">
-                            <span>₱ </span>{userData?.userLimit || "0.00"}
+                            <span>₱ </span>{userData?.userLimit || "0"}
                           </span>
                         </p>
                       </div>
@@ -241,7 +323,7 @@ const Dashboard = () => {
                           </span>
                         </div>
                         <p className="mb-0 fw-semibold mt-3 fs-18">
-                          <span>₱ </span>{userData?.remainingLoanAmount || "0.00"}
+                          <span>₱ </span>{userData?.remainingLoanAmount || "0"}
                         </p>
                       </div>
                     </div>
@@ -254,7 +336,7 @@ const Dashboard = () => {
                           </span>
                         </div>
                         <p className="mb-0 fw-semibold mt-3 fs-18">
-                          <span>₱ </span>{userData?.paidAmount || "0.00"}
+                          <span>₱ </span>{userData?.paidAmount || "0"}
                         </p>
                       </div>
                     </div>
@@ -268,7 +350,7 @@ const Dashboard = () => {
                         </div>
                         <p className="mb-0 fw-semibold mt-3 fs-18">
 
-                          <span>₱ </span>{userData?.totalInstallmentAmount || "0.00"}
+                          <span>₱ </span>{userData?.totalInstallmentAmount || "0"}
 
                         </p>
                         <p className="text-muted mb-0 mt-3 fw-normal fs-14">
@@ -280,6 +362,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
+                {/* {loading ? (
+                  <div className="text-center mt-3">
+                    <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                      <span className="sr-only"></span>
+                    </div>
+                  </div>
+                ) : ""} */}
               </div>
               <div className="row">
                 <div className="col-xl-6">
@@ -297,17 +386,26 @@ const Dashboard = () => {
                       <h4 className="fw-semibold mb-4">
                         <span>₱ </span>{userprofileData?.amount}
                       </h4>
-                      <div className="availabel-balance">
+                      {/* <div className="availabel-balance">
                         <span className="fs-12">Available Balance</span>
                         <p className="mb-0 fw-semibold mt-2 fs-16">
                           <span>₱ </span> {userprofileData?.amount}
                         </p>
-                      </div>
-                      <div className="d-grid mt-4">
-                        <button type="button" className="btn btn-primary">
+                      </div> */}
+                      <div className="d-grid mt-4 mb-3"
+                      //  d-flex  justify-content-center"
+                      >
+                        <button type="button" className="btn btn-primary me-3 mb-3" onClick={() => handleAddFundsClick('add')}>
                           Add Funds
                         </button>
+
+
+                        <button type="button" className="btn btn-primary me-3 mb-2" onClick={() => handleAddFundsClick('withdraw')}>
+                          Withdraw Funds
+                        </button>
                       </div>
+                      {showAddFundsModal &&
+                        <AddFundsModal show={showAddFundsModal} onHide={() => setShowAddFundsModal(false)} actionType={actionType} />}
                     </div>
                   </div>
                   <div className="card">
@@ -338,162 +436,80 @@ const Dashboard = () => {
 
                 </div>
                 <div className="col-xl-6">
+
                   <div className="card">
                     <div className="card-header border-bottom-0 justify-content-between">
-                      <div className="card-title">Total Transaction</div>
+                      <div className="card-title">Months</div>
                       <Link to="/" className="text-primary">
                         <i className="ri-arrow-right-s-line fs-22"></i>
                       </Link>
                     </div>
                     <div className="card-body">
-                      <ul className="list-group list-unstled">
-                        <li className="list-group-item mb-2 p-0">
-                          <div className="p-3 card-item border rounded-2">
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                              <div className="fs-16">
-                                <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
-                                <span>6 months</span>
-                              </div>
-                              <div className="dropdown">
-                                <span
-                                  data-bs-auto-close="outside"
-                                  role="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                >
-                                  <i className="ri-more-2-line"></i>
-                                </span>
-                                <ul className="dropdown-menu">
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Edit
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      View all
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Cancel
-                                    </Link>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="fs-14">
-                                <i className="ri-bar-chart-2-line text-success"></i>{" "}
-                                <span>15%</span>
-                              </div>
-                              <div className="fs-14">
-                                <i className="ri-calendar-check-line text-info"></i>{" "}
-                                <span>6 months</span>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                        <li className="list-group-item mb-2 p-0">
-                          <div className="p-3 card-item border rounded-2">
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                              <div className="fs-16">
-                                <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
-                                <span>12 months</span>
-                              </div>
-                              <div className="dropdown">
-                                <span
-                                  data-bs-auto-close="outside"
-                                  role="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                >
-                                  <i className="ri-more-2-line"></i>
-                                </span>
-                                <ul className="dropdown-menu">
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Edit
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      View all
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Cancel
-                                    </Link>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="fs-14">
-                                <i className="ri-bar-chart-2-line text-success"></i>{" "}
-                                <span>11%</span>
-                              </div>
-                              <div className="fs-14">
-                                <i className="ri-calendar-check-line text-info"></i>{" "}
-                                <span>12 months</span>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                        <li className="list-group-item p-0">
-                          <div className="p-3 card-item border rounded-2">
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                              <div className="fs-16">
-                                <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
-                                <span>24 months</span>
-                              </div>
-                              <div className="dropdown">
-                                <span
-                                  data-bs-auto-close="outside"
-                                  role="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                >
-                                  <i className="ri-more-2-line"></i>
-                                </span>
-                                <ul className="dropdown-menu">
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Edit
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      View all
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="dropdown-item" href="#">
-                                      Cancel
-                                    </Link>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="fs-14">
-                                <i className="ri-bar-chart-2-line text-success"></i>{" "}
-                                <span>05%</span>
-                              </div>
-                              <div className="fs-14">
-                                <i className="ri-calendar-check-line text-info"></i>{" "}
-                                <span>24 months</span>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
 
+
+                      {usereligibility?.tenure ? (
+                        <ul className="list-group list-unstled">
+                          {usereligibility?.tenure && usereligibility?.tenure.map((tenureItem, tenureIndex) => (
+                            <li key={tenureIndex} className="list-group-item mb-2 p-0">
+                              <div className="p-3 card-item border rounded-2">
+                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                  <div className="fs-16">
+                                    <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
+                                    <span>{tenureItem?.months} months</span>
+                                  </div>
+                                  <div className="dropdown">
+                                    <span
+                                      data-bs-auto-close="outside"
+                                      role="button"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="ri-more-2-line"></i>
+                                    </span>
+                                    <ul className="dropdown-menu">
+                                      <li>
+                                        <Link className="dropdown-item" href="#">
+                                          Edit
+                                        </Link>
+                                      </li>
+                                      <li>
+                                        <Link className="dropdown-item" href="#">
+                                          View all
+                                        </Link>
+                                      </li>
+                                      <li>
+                                        <Link className="dropdown-item" href="#">
+                                          Cancel
+                                        </Link>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <div className="fs-14">
+                                    <i className="ri-bar-chart-2-line text-success"></i>{" "}
+                                    <span>{tenureItem?.interest}%</span>
+                                  </div>
+                                  <div className="fs-14">
+                                    <i className="ri-calendar-check-line text-info"></i>{" "}
+                                    <span>{tenureItem?.months} months</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (<div className="text-center">
+                        <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      </div>)}
                     </div>
                   </div>
 
                 </div>
+
               </div>
             </div>
             <div className="col-xl-4">
@@ -638,6 +654,7 @@ const Dashboard = () => {
 
 
           </div >
+
           <div className="row">
             <div className="col-xl-12 col-lg-12 col-sm-12 col-md-12">
               <div className="card ">
@@ -664,9 +681,15 @@ const Dashboard = () => {
                   </span>
                 </div>
 
-                {/* <a href="/dashboard"> */}
-                <i className="ri-loop-right-line text-primary fs-22" onClick={handlerefresh}></i>
-                {/* </a> */}
+                <div onClick={handlerefresh} disabled={isFetching} className="cursor-pointer">
+                  {isFetching ? (
+                    <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
+
+                    </div>
+                  ) : (
+                    <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                  )}
+                </div>
               </div>
               <div className="card-body">
                 <div className="row">
@@ -696,8 +719,9 @@ const Dashboard = () => {
                           <i className="ri-luggage-deposit-line p-2 rounded-circle bg-white-light fs-24"></i>
                         </span>
                       </div>
+
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span> {adminData?.users_count || "0.00"}
+                        <span onClick={navigateuser}> {adminData?.users_count || "0"}</span>
                       </p>
                     </div>
                   </div>
@@ -710,7 +734,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span> {adminData?.countProcessingLoans || "0.00"}
+                        <span onClick={navigateloans}>  {adminData?.countProcessingLoans || "0"}</span>
                       </p>
                     </div>
                   </div>
@@ -723,10 +747,11 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span></span> {adminData?.countRejectedLoans || "0.00"}
+                        <span onClick={navigateloans}>{adminData?.countRejectedLoans || "0"}</span>
                       </p>
                     </div>
                   </div>
+
                   <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                     <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                       <div className="d-flex justify-content-between mt-2 align-items-center">
@@ -736,12 +761,13 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span> {adminData?.countApprovedLoans || "0.00"}
+                        <span onClick={navigateloans}> </span> {adminData?.countApprovedLoans || "0"}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
             <div className="row">
               <div className="col-xl-6">
@@ -757,14 +783,14 @@ const Dashboard = () => {
                   </div>
                   <div className="card-body">
                     <h4 className="fw-semibold mb-4">
-                      <span>₱ </span> {userprofileData?.amount || "0.00"}
+                      <span>₱ </span> {userprofileData?.amount || "0"}
                     </h4>
-                    <div className="availabel-balance">
+                    {/* <div className="availabel-balance">
                       <span className="fs-12">Available Balance</span>
                       <p className="mb-0 fw-semibold mt-2 fs-16">
-                        <span>₱ </span>{userprofileData?.amount || "0.00"}
+                        <span>₱ </span>{userprofileData?.amount || "0"}
                       </p>
-                    </div>
+                    </div> */}
                     <div className="d-grid mt-4">
                       <button type="button" className="btn btn-primary">
                         Add Funds

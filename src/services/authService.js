@@ -129,14 +129,13 @@ http.setJwt(getJwt());
 }
 export function IsAdmin() {
 http.setJwt(getJwt());
-
+console.log("hhhhh")
   
   try {
     const jwt = localStorage.getItem(tokenKey);
    
     const decryptedToken = helpers.decryptobj(jwt);
     const jwtDeco=jwtDecode(decryptedToken).isAdmin;
-    
     return jwtDeco
     
   } catch (ex) {

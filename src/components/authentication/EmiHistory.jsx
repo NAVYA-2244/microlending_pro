@@ -17,17 +17,15 @@ function EmiHistory() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
     const [filterDisabled, setFilterDisabled] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+
     const [formData, setFormData] = useState({
         start_date: "",
         end_date: "",
         id: ""
     });
 
-    // const schema = {
-    //     start_date: Joi.date().required(),
-    //     end_date: Joi.date().min(Joi.ref('start_date')).required(),
-    //     id: Joi.string().min(4).max(12).allow('').optional().length(12)
-    // };
+
     const schema = {
         start_date: Joi.date().allow('').optional(),
         end_date: Joi.date().allow('').optional(),
@@ -35,21 +33,25 @@ function EmiHistory() {
     };
 
     const fetchEmiHistory = async () => {
+        console.log("hi")
         try {
             setLoading(true);
 
             const response = await backEndCall('/emi/emi_history');
-            if (Array.isArray(response)) {
-                setEmiHistory(response);
-            } else {
-                setEmiHistory([]);
-            }
-            setLoading(false);
+            setLoading(false)
+            setEmiHistory(response || []);
+
+
         } catch (ex) {
-            toast.error("An error occurred while fetching data.");
-            setLoading(false);
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+        }
+        finally {
+            setLoading(false)
         }
     };
+
 
     useEffect(() => {
         if (EmiHistory.length <= 0) {
@@ -84,7 +86,7 @@ function EmiHistory() {
                 id: ""
             });
 
-            // toast.success("Search successful.");
+
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
@@ -104,26 +106,18 @@ function EmiHistory() {
 
         }
     };
-
     const handleRefresh = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         try {
-            setLoading(true);
-            const response = await backEndCall('/emi/emi_history');
-            if (Array.isArray(response)) {
-                setEmiHistory(response);
-            } else {
-                setEmiHistory([]);
-            }
-            setLoading(false);
+            await fetchEmiHistory();
+        } finally {
+            setIsFetching(false);
+        }
+    };
 
-        } catch (ex) {
-            if (ex.response && ex.response.status === 400) {
-                toast.error(ex.response.data.massage);
-            }
-            setLoading(false)
 
-        };
-    }
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
@@ -133,10 +127,16 @@ function EmiHistory() {
             <div className='card transections-hisroty'>
                 <div className='card-body'>
                     < div className='d-flex'>
-                        <div onClick={handleRefresh}>
-                            {/* <Link to="/Emihistory">  */}
-                            <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2" onClick={handleRefresh}></i>
-                            {/* </Link> */}
+                        <div onClick={handleRefresh} disabled={isFetching}>
+
+                            {/* <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i> */}
+                            {isFetching ? (
+                                <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
+
+                                </div>
+                            ) : (
+                                <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                            )}
                         </div>
                         <form onSubmit={handleSubmit} className='flex-fill'>
                             <div className="row mb-3 d-flex justify-content-end">
@@ -223,7 +223,7 @@ function EmiHistory() {
 
                                 ) : EmiHistory.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="text-center">No transactions found.</td>
+                                        <td colSpan="7" className="text-center justify-content-center">No transactions found.</td>
                                     </tr>
                                 ) : (
                                     EmiHistory.map(history => (

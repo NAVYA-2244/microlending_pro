@@ -19,6 +19,8 @@ function EmiDetails() {
 
         fetchEMIDetails();
     }, [formId]);
+
+
     const fetchEMIDetails = async () => {
         // setBtnDisabled(true)
         try {
@@ -56,7 +58,7 @@ function EmiDetails() {
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
-
+                setBtnDisabled(false)
             }
 
         }
@@ -69,13 +71,15 @@ function EmiDetails() {
         setBtnDisabled(true)
         try {
             const payload = {
-                emi_id: emis.emi_id,
-                loan_id: emis.loan_id,
-                paymentAmount: emis.installmentAmount,
-                instalmentNumber: emis.installmentNumber,
-                delayDays: emis.delayDays,
-                delayedAmount: emis.delayedAmount
+
+                loan_id: emis?.form_id,
+                paymentAmount: emis?.emi_detals.totalInstallmentAmount,
+                instalmentNumber: emis?.emi_detals.installmentNumber,
+
+                delayedAmount: emis?.emi_detals.delayedAmount
             };
+
+            console.log(payload, "payload")
             const response = await backEndCallObj("/emi/pay_emi", payload);
             setUserprofileData(null)
             setUserData(null)
@@ -100,130 +104,72 @@ function EmiDetails() {
 
 
     const formatDateTime = (date) => {
-        if (!date) return ""; // handle case when date is not available
+        if (!date) return "";
         return moment(date).format("DD-MMM-YYYY hh:mm A");
     };
     return (
-        <div className='container'>
 
+        <div className="user-details-container">
+            <h5>EMI Details</h5>
 
-            <div className='card'>
-                <div className='card-body  shadow-sm'>
-                    <div className='row '>
-                        <h4>EMI Details</h4>
+            <div className="row">
+                <div className="col-12">
 
+                    <div className='card'>
+                        <div className='card-body shadow-sm'>
 
+                            <div className='table-responsive'>
+                                <table className='table table-bordered table'>
+                                    <thead>
+                                        <tr className='text-center'>
 
-                        <div className='col-xl-4 col-lg-4 col-sm-12 '>
-
-
-                            <div className="my-4">
-                                <strong className='px-2'>Emi Id :</strong>
-                                <span>{emis.emi_id}</span>
-                            </div>
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Loan Id :</strong>
-                                <span>{emis.loan_id}</span>
-                            </div>
-
-                            {/* <div className='my-4'>
-                                <strong className='px-2'>Total Amount :</strong>
-                                <span>{emis.loanTotalAmount}</span>
-                            </div> */}
-                            <div className='my-4'>
-                                <strong className='px-2'>Loan Amount:</strong>
-                                <span>{emis.loanAmount}</span>
-                            </div>
-                            <div className='my-4'>
-                                <strong className='px-2'>Interest Rate:</strong>
-                                <span>{emis.interestRate}</span>
-                            </div>
-                            <div className='my-4'>
-                                <strong className='px-2'>Duration Time:</strong>
-                                <span>{emis.tenureMonths}</span>
+                                            <th>Loan Id</th>
+                                            <th>Loan Amount</th>
+                                            <th>Interest Rate</th>
+                                            {/* <th>Duration Time</th> */}
+                                            {/* <th>Delay Days</th> */}
+                                            <th>Delayed Amount</th>
+                                            {/* <th>Emi Status</th> */}
+                                            <th>Installment Amount</th>
+                                            {/* <th> Total Installment Amount</th> */}
+                                            <th>Installment Number</th>
+                                            {/* <th>Remaining EMI Amount</th> */}
+                                            {/* <th>Emi Start Date</th>
+                                            <th>Emi End Date</th>
+                                            <th>Next Emi Date</th> */}
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className='text-center'>
+                                            <td>{emis?.form_id || "NA"}</td>
+                                            <td>{emis?.loan_amount || "NA"}</td>
+                                            <td>{emis?.emi_detals?.interestRate || "NA"}</td>
+                                            <td>{emis?.emi_detals?.delayedAmount || "0"}</td>
+                                            <td>{emis?.emi_detals?.totalInstallmentAmount || "0"}</td>
+                                            <td>{emis?.emi_detals?.installmentNumber || "0"}</td>
+                                            {/* <td>{formatDateTime(emis?.startDate) || "NA"}</td>
+                                            <td>{formatDateTime(emis?.endDate) || "NA"}</td>
+                                            <td>{formatDateTime(emis?.nextEMIDate) || "NA"}</td> */}
+                                            <td>
+                                                <div className='my-4'>
+                                                    <button className='btn-primary btn' onClick={showModel} disabled={btnDisabled}>PAY EMI</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div className='col-xl-4 col-lg-4 col-sm-12 '>
-                            <div className='my-4'>
-                                <strong className='px-2'>Delay Days:</strong>
-                                <span>{emis.delayDays}</span>
-                            </div>
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Delayed Amount:</strong>
-                                <span>{emis.delayedAmount}</span>
-                            </div>
-
-
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Emi Status:</strong>
-                                <span>{emis.emiStatus}</span>
-                            </div>
-
-                            <div className='my-4'>
-                                <strong className='px-2'> Installment Amount:</strong>
-                                <span>{emis.totalInstallmentAmount}</span>
-                            </div>
-                            <div className='my-4'>
-                                <strong className='px-2'>Installment Number:</strong>
-                                {/* <span>{formatDateTime(emis.nextEMIDate)}</span> */}
-                                <span className='px-2'>{emis.installmentNumber}</span>
-                            </div>
-                            {/* <div className='my-4'>
-                                <strong className='px-2'>Emi Amount:</strong>
-                                <span>{emis.installmentAmount}</span>
-                            </div> */}
-
-                            <div className='my-4'>
-                                <strong className='px-2'> Remaining EMI Amount:</strong>
-                                <span>{emis.remainingLoanAmount}</span>
-                            </div>
-
-
-
-                        </div>
-
-                        <div className='col-xl-4 col-lg-4 col-sm-12 '>
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Emi Start Date:</strong>
-
-                                <span>{formatDateTime(emis.startDate)}</span>
-                            </div>
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Emi End Date</strong>
-                                <span>{formatDateTime(emis.endDate)}</span>
-                            </div>
-
-
-
-                            <div className='my-4'>
-                                <strong className='px-2'>Next Emi Date:</strong>
-                                {/* <span>{formatDateTime(emis.nextEMIDate)}</span> */}
-                                <span className='px-2'>{formatDateTime(emis.nextEMIDate)}</span>
-                            </div>
-
-
-                        </div>
-                        <div className='my-4'>
-                            <button className='btn-primary btn' onClick={showModel} disabled={btnDisabled}>PAY EMI</button>
-                        </div>
-
                     </div>
-
-                </div>
-
-            </div>
+                </div></div>
             {showModal ? (<Modal show={true} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>PAY EMI</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p>Do you want to proceed with the EMI payment?</p>
-                    <h5><span>₱ </span>{emis.totalInstallmentAmount}</h5>
+                    <h5><span>₱ </span>{emis.emi_detals.totalInstallmentAmount}</h5>
                 </Modal.Body>
                 <Modal.Footer>
                     <button className='btn btn-secondary' onClick={handleClose} disabled={btnDisabled}>Cancel</button>
@@ -231,7 +177,6 @@ function EmiDetails() {
                 </Modal.Footer>
             </Modal>) : null}
         </div>
-
     );
 }
 

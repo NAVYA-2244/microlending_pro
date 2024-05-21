@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import authService, { tfa } from "../../services/authService";
 import { toast } from "react-hot-toast";
-// import { backEndCallObj } from "../../services/mainServiceFile";
+
 import { useNavigate } from "react-router-dom";
-// import ChangePassword from "../authentication/ChangePassword";
+
 import Qrcode from "../authentication/Qrcode";
 
 const Settings = () => {
@@ -14,21 +14,19 @@ const Settings = () => {
   const [qr, setQr] = useState("");
   const navigate = useNavigate();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const fetchUserData = async () => {
       setBtnDisabled(true)
       try {
         const response = await authService.getCurrentUser();
-        // console.log(response, "enable disable");
+
 
         setTfaStatus(response.TWO_FA_Status);
-        // console.log(response, "two ");
+
         setphone_number(response.phone_number);
       }
-      // catch (error) {
-      //   console.error("Error fetching user data:", error);
-      // }
+
       catch (ex) {
         if (ex.response && ex.response.status === 400) {
           toast.error(ex.response.data);
@@ -57,7 +55,7 @@ const Settings = () => {
         }
       } else {
         setQrData(true);
-        // toast.success("Two-factor authentication disabled successfully.");
+
       }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
@@ -105,18 +103,7 @@ const Settings = () => {
       {qrData && <Qrcode qr={qr} />}
 
 
-      {/* {!authService.IsAdmin() && (
-        <div className="col-lg-6 border-start">
-          <ChangePassword />
-          <button
-            type="button"
-            className="btn btn-primary mt-3"
-            onClick={() => navigateTo("/some-path")}
-          >
-            Go to Some Path
-          </button>
-        </div>
-      )} */}
+
     </div>
   );
 };
