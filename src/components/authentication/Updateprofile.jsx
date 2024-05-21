@@ -1294,12 +1294,27 @@ const Updateprofile = () => {
                       />
                       <span className="delete_image" onClick={() => deleting("photo")} ><i className="ri-delete-bin-5-line"></i></span>
                       <div className="position-relative">
-                        <div>
+                        {/* <div>
                           {formData.photo ? (
                             <img src={formData?.photo} className="document_image mt-1 rounded-2" />
-                          ) : ""}
+                          ) : formData.photo ? <embed src={formData.photo} className="document_image1 mt-1 rounded-2" /> : ""
+
+                          }
                         </div>
                         {formData.photo && <a href={formData.photo} target="_blank" rel="noopener noreferrer">view photo</a>
+
+                        }
+                      </div> */}
+                        <div>
+                          {formData && formData.photo && (
+                            formData.income_proof.includes("image") ? (
+                              <img src={formData.photo} className="document_image mt-1 rounded-2" />
+                            ) : (
+                              <embed src={formData.photo} className="document_image1 mt-1 rounded-2" />
+                            )
+                          )}
+                        </div>
+                        {formData.photo && <a href={formData.photo} target="_blank" rel="noopener noreferrer">view pay slip</a>
 
                         }
                       </div>

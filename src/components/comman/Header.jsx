@@ -29,17 +29,9 @@ const Header = () => {
       }
     };
 
-    // const delayFetch = setTimeout(fetchData, 1000);
-    // return () => clearTimeout(delayFetch);
+
     fetchData();
   }, []);
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  //   if (!userData) {
-  //     return <div>Error fetching user profile. Please try again.</div>;
-  //   }
 
 
 

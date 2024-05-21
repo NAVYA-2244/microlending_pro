@@ -392,7 +392,8 @@ const ApplyLoan = () => {
                                                     <div>
                                                         {formData.photo.includes("image") ? (
                                                             <img src={formData?.photo} className="document_image1 mt-1 rounded-2" />
-                                                        ) : ""}
+                                                        ) : formData.photo ? <embed src={formData.photo} className="document_image1 mt-1 rounded-2" /> : ""
+                                                        }
                                                     </div>
                                                     {formData.photo && <a href={formData.photo} target="_blank" rel="noopener noreferrer">view photo</a>
 

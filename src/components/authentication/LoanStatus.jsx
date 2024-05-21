@@ -733,19 +733,18 @@ function LoanStatus() {
 
                             <td>
                               <div
-                                className={`loan_status ${
-                                  loan?.loan_status === "completed"
+                                className={`loan_status ${loan?.loan_status === "completed"
                                     ? "bg-success fw-bold"
                                     : loan.loan_status === "Processing"
-                                    ? "bg-warning fw-bold"
-                                    : loan.loan_status === "Rejected"
-                                    ? "bg-danger fw-bold"
-                                    : loan.loan_status === "Cancelled"
-                                    ? "bg-secondary fw-bold"
-                                    : loan.loan_status === "Approved"
-                                    ? "bg-info fw-bold"
-                                    : "bg-dark fw-bold"
-                                }`}
+                                      ? "bg-warning fw-bold"
+                                      : loan.loan_status === "Rejected"
+                                        ? "bg-danger fw-bold"
+                                        : loan.loan_status === "Cancelled"
+                                          ? "bg-secondary fw-bold"
+                                          : loan.loan_status === "Approved"
+                                            ? "bg-info fw-bold"
+                                            : "bg-dark fw-bold"
+                                  }`}
                               >
                                 {loan?.loan_status}
                               </div>
@@ -817,7 +816,7 @@ function LoanStatus() {
           show={showModal}
           onHide={handleCloseModal}
           dialogClassName="modal-dialog "
-          //  dialogClassName="modal-xl"
+        //  dialogClassName="modal-xl"
         >
           <Modal.Header closeButton>
             <Modal.Title>Loan Details</Modal.Title>
