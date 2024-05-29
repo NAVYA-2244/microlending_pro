@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import helpers from "./crypto";
 import httpService from "./httpService";
 import http from "./httpService";
@@ -44,11 +45,15 @@ export async function ApplyLoanOTP(phone_number, current_access_ip) {
 export function getJwt() {
   return localStorage.getItem(tokenKey);
 }
+
 export function logout() {
   localStorage.clear();
   window.location = "/landing";
   localStorage.setItem('navigateLogin', true);
+ 
 }
+
+
 export async function verifyOTP(
   phone_number,
   otp,
@@ -129,20 +134,35 @@ http.setJwt(getJwt());
 }
 export function IsAdmin() {
 http.setJwt(getJwt());
-console.log("hhhhh")
-  
+
   try {
     const jwt = localStorage.getItem(tokenKey);
    
     const decryptedToken = helpers.decryptobj(jwt);
     const jwtDeco=jwtDecode(decryptedToken).isAdmin;
+    
     return jwtDeco
     
   } catch (ex) {
     return null;
   }
 }
-
+// export function Admin_type() {
+//   http.setJwt(getJwt());
+//   console.log("hhhhh")
+    
+//     try {
+//       const jwt = localStorage.getItem(tokenKey);
+     
+//       const decryptedToken = helpers.decryptobj(jwt);
+//       const jwtDeco=jwtDecode(decryptedToken).isAdmin;
+//       console.log(jwtDeco,"jwt");
+//       return jwtDeco
+      
+//     } catch (ex) {
+//       return null;
+//     }
+//   }
 export function getCurrentUser() {
 http.setJwt(getJwt());
 

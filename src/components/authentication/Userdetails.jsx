@@ -42,7 +42,7 @@ const Userdetails = () => {
     // if (userprofileData <= 0) {
     fetchData();
     // }
-  });
+  }, []);
 
   if (loading) {
     return <div><div className="text-center mt-3">
@@ -66,15 +66,19 @@ const Userdetails = () => {
   // );
   // }
 
-  console.log(userprofileData, "hhhhhhhhhhhhh");
+  // console.log(userprofileData, "hhhhhhhhhhhhh");
 
   // if (userprofileData?.kyc_status == "pending") {
   //   console.log(userprofileData?.kyc_status)
   //   Navigate("/updateprofile")
   // }
+  function capitalizeFirstLetter(string) {
+    if (!string) return ""; // Handle cases where string is undefined or null
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   return (
     <>
-      {userprofileData?.kyc_status == "pending" ? <Updateprofile></Updateprofile> :
+      {userprofileData?.topwallet_user_id == "0" ? <Updateprofile></Updateprofile> :
         <div className="user-details-container ">
 
 
@@ -98,8 +102,7 @@ const Userdetails = () => {
                       {/* </span> */}
                     </div>
                     <h5 className="mb-0 ms-3 text-white text-capitalize">
-                      {userprofileData?.first_name
-                        && ""} {userprofileData?.last_name && ""}
+                      {userprofileData?.first_name == "0" ? "" : userprofileData?.first_name} {userprofileData?.last_name == "0" ? "" : userprofileData?.last_name}
                     </h5>
                   </div>
                   <span className="badge bg-success fs-12 ms-auto">
@@ -109,7 +112,7 @@ const Userdetails = () => {
                 <div className="card-body">
 
                   <div className="my-3">
-                    Income Proof: {userprofileData?.income_proof && (
+                    Income Proof : {userprofileData?.income_proof && (
                       <div className="mt-2">
                         <a href={userprofileData?.income_proof} target="_blank" rel="noopener noreferrer">
                           View Income Proof
@@ -140,6 +143,28 @@ const Userdetails = () => {
                       <label className="form-label me-1">Amount :</label>
                       <span className="text-primary">
                         {userprofileData?.amount === "0" ? "NA" : userprofileData?.amount}
+                      </span>
+                    </>
+                  </div>
+                  <div className="mt-3">
+                    <>
+                      <label className="form-label me-1">Topwallet User Id
+                        :</label>
+                      <span className="text-primary">
+                        {userprofileData?.topwallet_user_id
+                          === "0" ? "NA" : userprofileData?.topwallet_user_id
+                        }
+                      </span>
+                    </>
+                  </div>
+                  <div className="mt-3">
+                    <>
+                      <label className="form-label me-1">Email Id
+                        :</label>
+                      <span className="text-primary">
+                        {userprofileData?.member_email
+                          === "0" ? "NA" : userprofileData?.member_email
+                        }
                       </span>
                     </>
                   </div>
@@ -183,17 +208,17 @@ const Userdetails = () => {
                   <div className="d-sm-flex justify-content-between align-items-center mb-3">
                     <h6 className="fs-18">Personal Information</h6>
 
-                    <button
+                    {/* <button
                       className="btn btn-primary"
                       onClick={() => navigate("/updateprofile")}
                     >
                       <i class="ri-edit-line"></i> Update Profile
-                    </button>
+                    </button> */}
                     <button
                       className="btn btn-primary"
                       onClick={() => navigate("/loaneligibilitydetails")}
                     >
-                      ApplyLoan
+                      Apply Loan
                     </button>
                   </div>
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
@@ -250,7 +275,7 @@ const Userdetails = () => {
 
 
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                    <h6 className="mb-2 fs-17">Documents Details</h6>
+
                     <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
@@ -269,7 +294,7 @@ const Userdetails = () => {
                     </div>
                   </div>
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                    <h6 className="mb-2 fs-17">Loan Types</h6>
+                    {/* <h6 className="mb-2 fs-17">Loan Types</h6> */}
                     {/* <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                   <p>
                     <strong>Purpose of loan:</strong> {userData.purpose_of_loan}
@@ -285,13 +310,13 @@ const Userdetails = () => {
                     </div>
                   </div>
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                    <h6 className="mb-2 fs-17">Adrress Details</h6>
+                    <h6 className="mb-2 fs-17">Address Details</h6>
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
                           Permanent Address :
                         </label>
-                        <span>{userprofileData?.residence?.permanentAddress == "0" ? "NA" : userprofileData?.residence?.permanentAddress}</span>
+                        <span>{userprofileData?.residence?.permanentAddress == "0" ? "NA" : capitalizeFirstLetter(userprofileData?.residence?.permanentAddress)}</span>
                       </div>
                     </div>
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
@@ -299,7 +324,7 @@ const Userdetails = () => {
                         <label className="text-muted fw-normal form-label me-2">
                           Current Address :
                         </label>
-                        <span>{userprofileData?.residence?.currentAddress == "0" ? "NA" : userprofileData?.residence?.currentAddress}</span>
+                        <span>{userprofileData?.residence?.currentAddress == "0" ? "NA" : capitalizeFirstLetter(userprofileData?.residence?.currentAddress)}</span>
                       </div>
                     </div>
 
@@ -309,23 +334,40 @@ const Userdetails = () => {
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
-                          State :
+                          Province :
                         </label>
-                        <span>{userprofileData?.residence?.state == 0 ? "NA" : userprofileData?.residence?.state}</span>
+                        <span>{userprofileData?.residence?.province == 0 ? "NA" : capitalizeFirstLetter(userprofileData?.residence?.province)}</span>
                       </div>
+
+                      <div>
+                        <label className="text-muted fw-normal form-label me-2">
+                          Barangay :
+                        </label>
+                        <span>{userprofileData?.residence?.barangay == 0 ? "NA" : capitalizeFirstLetter(userprofileData?.residence?.barangay)}</span>
+                      </div>
+
                     </div>
+
+
+
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
                           City :
                         </label>
-                        <span>{userprofileData?.residence?.city == 0 ? "NA" : userprofileData?.residence?.city}</span>
+                        <span>{userprofileData?.residence?.city == 0 ? "NA" : capitalizeFirstLetter(userprofileData?.residence?.city)}</span>
                       </div>
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
                           Pincode :
                         </label>
                         <span>{userprofileData?.residence?.pin_code == 0 ? "NA" : userprofileData?.residence?.pin_code}</span>
+                      </div>
+                      <div>
+                        <label className="text-muted fw-normal form-label me-2">
+                          House No :
+                        </label>
+                        <span>{userprofileData?.houseno == 0 ? "NA" : userprofileData?.houseno}</span>
                       </div>
                     </div>
                   </div>

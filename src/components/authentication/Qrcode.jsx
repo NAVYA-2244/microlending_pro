@@ -1,14 +1,17 @@
 
-import React, { useState, useEffect } from "react";
+
 import authService from "../../services/authService";
 import { backEndCallObj } from "../../services/mainServiceFile";
 import Joi from "joi-browser";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { publicIp } from "public-ip";
+
 import { fullBrowserVersion } from "react-device-detect";
-import ReactCountdownClock from "react-countdown-clock";
+
 import { Modal, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+
+
 
 const QRCode = ({ qr, secret }) => {
   const [data, setData] = useState({ otp: "", two_fa_code: "" });
@@ -24,6 +27,7 @@ const QRCode = ({ qr, secret }) => {
   const [browserId, setBrowserId] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [resendBtnDisabled, setResendBtnDisabled] = useState(false);
+
   const navigate = useNavigate();
   let timer;
   useEffect(() => {
@@ -33,8 +37,8 @@ const QRCode = ({ qr, secret }) => {
 
       const response = await authService.getCurrentUser();
 
-      setphone_number(response.phone_number);
-      setTfaStatus(response.TWO_FA_Status);
+      setphone_number(response?.phone_number);
+      setTfaStatus(response?.TWO_FA_Status);
 
       if (response.TWO_FA_Status === "Enable") {
 
@@ -70,7 +74,8 @@ const QRCode = ({ qr, secret }) => {
     setphone_number(response.phone_number);
     setTfaStatus(response.TWO_FA_Status);
 
-    localStorage.clear();
+    // localStorage.clear();
+
 
     try {
       const response = await backEndCallObj("/users/resend_otp", {
@@ -158,7 +163,7 @@ const QRCode = ({ qr, secret }) => {
           : { two_fa_code: data.two_fa_code, otp: data.otp, key: "tfa" };
 
       const response = await backEndCallObj(route, obj);
-      localStorage.clear();
+      localStorage.removeItem("token");
       setShowModal(true);
 
       // toast.success(response.message,);
@@ -174,8 +179,8 @@ const QRCode = ({ qr, secret }) => {
   };
 
   const handlelogout = () => {
-    navigate("/login");
 
+    navigate("/login");
   };
 
   const schema = {

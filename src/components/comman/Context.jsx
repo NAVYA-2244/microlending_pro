@@ -39,7 +39,8 @@ export const MovieContextProvider = ({ children }) => {
   const [userprofileData, setUserprofileData] = useState(null)
 
   const [adminprofileData, setAdminprofileData] = useState(null)
-
+  const [kycRoot, setKycRoot] = useState("");
+  const [bkcall, setbkcall] = useState(false)
   return (
     <MovieContext.Provider
       value={{
@@ -75,7 +76,9 @@ export const MovieContextProvider = ({ children }) => {
         emis, setEmis,
         userprofileData, setUserprofileData,
         EmiHistory, setEmiHistory,
-        adminprofileData, setAdminprofileData
+        adminprofileData, setAdminprofileData,
+        kycRoot, setKycRoot,
+        bkcall, setbkcall
       }}
     >
       {children}

@@ -121,6 +121,10 @@ function EmiHistory() {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
+    function capitalizeFirstLetter(string) {
+        if (!string) return ""; // Handle cases where string is undefined or null
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     return (
         <div className="user-details-container">
             <h5 className="mb-4">EMI History</h5>
@@ -204,7 +208,7 @@ function EmiHistory() {
                                     <th scope="col">Payment Id</th>
                                     <th scope="col">Receiver Id</th>
                                     <th scope="col">Sender Id</th>
-                                    <th scope="col">Instalment Number</th>
+                                    <th scope="col">installment Number</th>
                                     <th scope="col">Transaction Type</th>
                                     <th scope="col">Emi Status</th>
                                     <th scope="col">Amount</th>
@@ -232,9 +236,9 @@ function EmiHistory() {
                                             <td>{history.receved_id}</td>
                                             <td>{history.sender_id}</td>
                                             <td>{history.instalmentNumber}</td>
-                                            <td>{history.transactionType}</td>
-                                            <td>{history.emi_status}</td>
-                                            <td>{history.paymentAmount}</td>
+                                            <td>{capitalizeFirstLetter(history.transactionType)}</td>
+                                            <td>{capitalizeFirstLetter(history.emi_status)}</td>
+                                            <td>₱{history.paymentAmount}</td>
                                             <td>{formattedDate(history.paymentDate)}</td>
                                         </tr>
                                     ))

@@ -32,6 +32,12 @@ import EmiDetails from "./components/authentication/EmiDetails";
 import Userinfo from "./components/admin/Userinfo";
 import EmiHistory from "./components/authentication/EmiHistory";
 import LoanDetails from "./components/authentication/LoanDetails";
+import Tab1 from "./components/admin/Tab1";
+import Tab2 from "./components/admin/Tab2";
+import Tab3 from "./components/admin/Tab3";
+import Userdashbord from "./components/dashbord/Userdashbord";
+import Admindashbord from "./components/dashbord/Admindashbord";
+import KycRoot from "./components/authentication/KycRoot";
 
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
@@ -39,11 +45,13 @@ class App extends Component {
     return (
       <div className="container-scroller">
         <BrowserRouter>
-          <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
+          <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
           <Routes>
             <Route path="/" element={protect(<AppLayout />)}>
             <Route index element={<Dashboard />} />
               <Route path="/dashboard" exact element={<Dashboard />}></Route>
+              <Route path="/Userdashbord" element={<Userdashbord />}></Route>
+              <Route path="/Admindashbord" element={<Admindashbord></Admindashbord>}></Route>
               <Route path="/settings" element={<Settings/>}></Route>
               <Route path="/updateprofile" element={<Updateprofile />}></Route>
               <Route path="/userdetails" element={<Userdetails />}></Route>
@@ -69,6 +77,11 @@ class App extends Component {
               <Route path="/verifyloan" element={<VerifyLoan/>}></Route>
               <Route path="/emaidetails" element={<EmiDetails/>}></Route>
               <Route path="/Loanedetails" element={<LoanDetails></LoanDetails>}></Route>
+              <Route path="/tab1"element={<Tab1></Tab1>}></Route>
+
+              <Route path="/tab2"element={<Tab2></Tab2>}></Route>
+              <Route path="/tab3"element={<Tab3></Tab3>}></Route>
+              <Route path="/KYC"element={<KycRoot></KycRoot>}></Route>
 
             </Route>
             

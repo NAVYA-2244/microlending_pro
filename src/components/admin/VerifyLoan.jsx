@@ -405,6 +405,7 @@ function VerifyLoan() {
             console.error("Error fetching loan data:", ex);
         } finally {
             setLoading(false);
+            setBtnDisabled(false)
         }
     }, [activeTab]);
 
@@ -417,8 +418,8 @@ function VerifyLoan() {
     }, []);
 
     const callLoanStatusAPI = async (transactionId) => {
-        setBtnDisabled(true);
-        setLoading(true);
+        // setBtnDisabled(true);
+
         try {
             const response = await backEndCallObj("/admin/loan_status", { transaction_id: transactionId });
             toast.success(response, "Loan status updated");
@@ -429,8 +430,8 @@ function VerifyLoan() {
                 toast.error(ex.response.data);
             }
         } finally {
-            setLoading(false);
-            setBtnDisabled(false);
+            // setLoading(false);
+            // setBtnDisabled(false);
         }
     };
 
@@ -472,7 +473,7 @@ function VerifyLoan() {
             }
         } finally {
             // setLoading(false);
-            setBtnDisabled(false);
+            // setBtnDisabled(false);
         }
     };
 
@@ -684,7 +685,7 @@ function VerifyLoan() {
                                         <td>{loan.first_name} {loan.last_name}</td>
                                         <td>{loan.gender}</td>
                                         <td>{loan.phone_number}</td>
-                                        <td>{loan.loan_amount}</td>
+                                        <td> ₱ {loan.loan_amount}</td>
                                         <td>{loan.months}</td>
                                         <td>
                                             <div

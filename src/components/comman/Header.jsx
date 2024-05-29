@@ -4,36 +4,48 @@ import authService from "../../services/authService";
 import { backEndCall } from "../../services/mainServiceFile";
 import { useEffect } from "react";
 import { useMovieContext } from "./Context";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { userprofileData, setUserprofileData } = useMovieContext();
+  const { userprofileData, setUserprofileData, adminprofileData, loanList, setLoanList, bkcall, setbkcall } = useMovieContext();
   // const [userData, setUserData] = useState({});
   // const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const headerToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.classList.toggle('menu-close');
   };
+
+
+  const fetchData = async () => {
+    try {
+      if (!userprofileData || userprofileData.length === 0) {
+        setbkcall(true)
+        const response = await backEndCall("/users/user_profile");
+        console.log(response, "userdateails")
+        setUserprofileData(response);
+        setbkcall(false)
+      }
+      else {
+        setUserprofileData(userprofileData)
+      }
+
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    }
+  };
+
+
+
   useEffect(() => {
 
-    const fetchData = async () => {
-      try {
-        const response = await backEndCall("/users/user_profile");
-        setUserprofileData(response);
-        // setLoading(false);
+    fetchData()
 
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-        // setLoading(false);
-      }
-    };
-
-
-    fetchData();
   }, []);
-
-
 
 
   const handlelogout = () => {
@@ -41,7 +53,10 @@ const Header = () => {
     authService.logout();
     navigate("/landing");
   };
-
+  function capitalizeFirstLetter(string) {
+    if (!string) return ""; // Handle cases where string is undefined or null
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   return (
     <div className="header">
       <nav className="navbar col-lg-12 col-12 p-0 d-block">
@@ -75,7 +90,9 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <h5 className="text-left">{authService.getCurrentUser ? "user" : "admin"}</h5>
+
+          {/* <h5 className="text-left">{authService.getCurrentUser ? "user" : "admin"}</h5> */}
+
           <ul className="nav mb-md-0 header-right">
             <li className="dropdown header-dropdown d-none d-sm-block">
               <Link to="" className="nav-link px-2 link-body-emphasis" data-bs-auto-close="outside" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,6 +116,7 @@ const Header = () => {
 
 
               >
+
                 <span className="fw-semibold me-2 text-capitalize"></span>
                 <span className="user-details border rounded-circle d-flex justify-content-center align-items-center">
 
@@ -110,6 +128,7 @@ const Header = () => {
                     <i className="ri-user-3-fill"></i>
                   )}
                 </span>
+
               </Link>
               <ul className="dropdown-menu text-small">
                 {/* <li>
@@ -133,8 +152,12 @@ const Header = () => {
                   </Link>
                 </li>
               </ul>
+
             </li>
+            <li> {authService.getCurrentUser ? <h6 className="text-center mt-3">{userprofileData?.first_name !== "0" ? capitalizeFirstLetter(userprofileData?.first_name) : "user"}</h6>
+              : <div className="text-center mt-3">{adminprofileData?.first_name ? capitalizeFirstLetter(adminprofileData?.first_name) : ""}</div>}</li>
           </ul>
+
         </div>
       </nav >
     </div >

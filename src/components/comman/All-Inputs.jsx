@@ -46,7 +46,7 @@ export function Input_Name({
         autoFocus={autoFocus}
       // onChange={(e) => handleChange(e, schema, SetForm)}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -90,7 +90,7 @@ export function Input_docnumbers({
         onChange={handleInputChange}
         autoFocus={autoFocus}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -107,6 +107,7 @@ export function Input_text({
   maxLength,
   autoFocus
 }) {
+
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
 
@@ -134,7 +135,7 @@ export function Input_text({
         autoFocus={autoFocus}
       // onChange={(e) => handleChange(e, schema, SetForm)}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -153,6 +154,12 @@ export function Input_address({
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    const isValid = /^[a-zA-Z0-9/ _,-]*$/.test(value); // Regular expression to allow alphanumeric characters, spaces, underscores, hyphens, and forward slashes
+    if (!isValid) return; // If the input contains invalid characters, do not update the value
+    handleChange(e, schema, SetForm);
+  };
   return (
     <>
       <input
@@ -167,9 +174,9 @@ export function Input_address({
         value={value}
         // onChange={handleInputChange}
         autoFocus={autoFocus}
-        onChange={(e) => handleChange(e, schema, SetForm)}
+        onChange={handleInputChange}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -183,7 +190,9 @@ export function Input_email({
   value,
   SetForm,
   schema,
-  autoFocus
+  autoFocus,
+  minLength,
+  maxLength
 }) {
   const { errors, } = useMovieContext();
   const { handleChange } = useFunctionContext();
@@ -200,8 +209,10 @@ export function Input_email({
         value={value}
         onChange={(e) => handleChange(e, schema, SetForm)}
         autoFocus={autoFocus}
+        minLength={minLength}
+        maxLength={maxLength}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -230,7 +241,7 @@ export function Select_input({ name, value, schema, SetForm, options }) {
             </option>
           ))}
       </select>
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -259,7 +270,7 @@ export function Password_Input({
         autoFocus={autoFocus}
         onChange={(e) => handleChange(e, schema, SetForm)}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
@@ -296,10 +307,11 @@ export function Date_Input({
 
         onChange={(e) => handleChange(e, schema, SetForm)}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }
+
 export function Number_Input({
   type,
   name,
@@ -310,7 +322,7 @@ export function Number_Input({
   inputMode,
   autoFocus,
   placeholder,
-  style
+
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
@@ -335,10 +347,10 @@ export function Number_Input({
         inputMode={inputMode}
         onChange={handleNumberChange}
         autoFocus={autoFocus}
-        style={style}
+
       />
       <div>
-        <p className="error">{errors[name]}</p>
+        <p className="error mt-2">{errors[name]}</p>
       </div>
     </>
   );
@@ -416,7 +428,7 @@ export function File_Input({
         onChange={(e) => handleChange(e, schema, newSetForm)}
         autoFocus={autoFocus}
       />
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
       <span className="delete_image" onClick={() => deleting(property)}>
         <i className="ri-delete-bin-5-line"></i>
       </span>
@@ -461,7 +473,7 @@ export function Radio_input({
           </label>
         </div>
       ))}
-      <p className="error"> {errors[name]}</p>
+      <p className="error mt-2"> {errors[name]}</p>
     </>
   );
 }

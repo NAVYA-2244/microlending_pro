@@ -1,599 +1,26 @@
-// // // import React, { useEffect, useState } from 'react';
-// // // import { toast } from "react-hot-toast";
-// // // import { backEndCall } from '../../services/mainServiceFile';
-// // // import EmiDetails from './EmiDetails';
-// // // import { useNavigate } from 'react-router-dom';
-// // // import { useMovieContext } from '../comman/Context';
 
-// // // function LoanStatus() {
-// // //     // const [loanList, setLoanList] = useState([]);
-// // //     const { loanList, setLoanList } = useMovieContext()
-// // //     const [btnDisabled, setBtnDisabled] = useState(false);
-// // //     const [loading, setLoading] = useState(false);
-// // //     const navigate = useNavigate();
 
-// // //     const fetchData = async () => {
-// // //         console.log("jjjjjjjjjjjjj")
-// // //         setBtnDisabled(true)
-// // //         try {
-// // //             if (!loanList) {
-// // //                 setLoading(true)
-// // //                 const response = await backEndCall("/users/user_loan_details");
-// // //                 console.log(response, "lans details")
-// // //                 setLoanList(response)
-// // //                 setLoading(false);
-// // //             }
-// // //             else {
-// // //                 setLoanList(loanList);
-// // //             }
-// // //             // console.log(response, "loan status");
-
-// // //         } catch (ex) {
-// // //             if (ex.response && ex.response.status === 400) {
-// // //                 toast.error(ex.response.data);
-// // //                 navigate('/loaneligibilitydetails');
-// // //                 setLoading(false);
-// // //             }
-// // //         }
-// // //         finally {
-// // //             setBtnDisabled(false)
-// // //         }
-// // //     };
-
-// // //     useEffect(() => {
-// // //         if (loanList <= 0 || !loanList) {
-// // //             fetchData();
-// // //         }
-// // //     }, []);
-
-// // //     return (
-// // //         <>
-
-// // //             <div className="user-details-container">
-// // //                 <h5 className="mb-4">Loan Status</h5>
-// // //                 <div>
-// // //                     {loading ? (
-// // //                         <div className="text-center mt-3">
-// // //                             <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-// // //                                 <span className="sr-only"></span>
-// // //                             </div>
-// // //                         </div>
-// // //                     ) : loanList?.length === 0 ? (
-// // //                         <div className="text-center mt-3">
-// // //                             <p>No data found.</p>
-// // //                         </div>
-// // //                     ) : (
-// // //                         <div className="container">
-// // //                             {loanList?.map((loan, index) => (
-// // //                                 <div key={index} className="card shadow-sm mb-4">
-// // //                                     <div className="card-body">
-
-// // //                                         <div className='row'>
-// // //                                             <div className="col-md-6 col-xl-6 col-sm-12">
-// // //                                                 <div className="my-4">
-// // //                                                     <img src={loan.photo} alt="User" style={{ width: '100px', height: '100px' }} />
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Name:</strong>
-// // //                                                     <span>{loan.first_name} {loan.last_name}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Date oF Application:</strong>
-// // //                                                     <span>{loan.date_of_applycation}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Passport Number:</strong>
-// // //                                                     <span>{loan.passport_number}</span>
-// // //                                                 </div>
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Tin Number:</strong>
-// // //                                                     <span>{loan.tin_number}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">City:</strong>
-// // //                                                     <span>{loan.city}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">State:</strong>
-// // //                                                     <span>{loan.state}</span>
-// // //                                                 </div>
-// // //                                             </div>
-
-// // //                                             <div className="col-md-6 col-xl-6 col-sm-12">
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Current Address:</strong>
-// // //                                                     <span>{loan.current_address}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Permanent Address:</strong>
-// // //                                                     <span>{loan.permanent_address}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Loan Amount:</strong>
-// // //                                                     <span>{loan.loan_amount}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Months:</strong>
-// // //                                                     <span>{loan.months}</span>
-// // //                                                 </div>
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Loan Type:</strong>
-// // //                                                     <span>{loan.loan_type}</span>
-// // //                                                 </div>
-
-// // //                                                 <div className="my-4">
-// // //                                                     <strong className="px-2">Loan Status:</strong>
-// // //                                                     <span>{loan.loan_status}</span>
-// // //                                                 </div>
-
-// // //                                                 {loan.loan_status == "Approved" &&
-// // //                                                     <button
-// // //                                                         className="btn btn-primary"
-// // //                                                         onClick={() => navigate("/emaidetails", { state: { formId: loan.form_id } })}
-// // //                                                     >
-// // //                                                         Go to Emi Details
-// // //                                                     </button>
-// // //                                                 }
-
-// // //                                             </div>
-// // //                                         </div>
-// // //                                     </div>
-// // //                                 </div>
-// // //                             ))}
-// // //                         </div>
-// // //                     )}
-// // //                 </div>
-// // //             </div>
-// // //         </>
-// // //     );
-// // // }
-
-// // // export default LoanStatus;
-
-// // import React, { useEffect, useState } from "react";
-// // import { toast } from "react-hot-toast";
-// // import { backEndCall, backEndCallObj } from "../../services/mainServiceFile";
-// // import EmiDetails from "./EmiDetails";
-// // import { useNavigate } from "react-router-dom";
-// // import { useMovieContext } from "../comman/Context";
-// // import moment from "moment";
-// // // import LoanStatus from './LoanStatus';
-// // // import LoanStatus from './LoanStatus';
-
-// // function LoanStatus() {
-// //   // const [loanList, setLoanList] = useState([]);
-// //   const { loanList, setLoanList, userprofileData } = useMovieContext();
-// //   const [btnDisabled, setBtnDisabled] = useState(false);
-// //   const [loading, setLoading] = useState(false);
-// //   const navigate = useNavigate();
-
-// //   const fetchData = async () => {
-// //     console.log("jjjjjjjjjjjjj");
-// //     setBtnDisabled(true);
-// //     try {
-// //       if (!loanList) {
-// //         setLoading(true);
-// //         const response = await backEndCall("/users/user_loan_details");
-// //         console.log(response, "lans details");
-// //         setLoanList(response);
-// //         setLoading(false);
-// //       } else {
-// //         setLoanList(loanList);
-// //       }
-// //       // console.log(response, "loan status");
-// //     } catch (ex) {
-// //       if (ex.response && ex.response.status === 400) {
-// //         toast.error(ex.response.data);
-// //         navigate("/loaneligibilitydetails");
-// //         setLoading(false);
-// //       }
-// //     } finally {
-// //       setBtnDisabled(false);
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     if (loanList <= 0 || !loanList) {
-// //       fetchData();
-// //     }
-// //     console.log(loanList);
-// //   }, []);
-// //   const formattedDate = (date) => {
-// //     return moment(date).format('YYYY-MM-DD HH:mm:ss');
-// //   };
-
-// //   const handleEdit = async (loan_id, loan_status) => {
-// //     try {
-// //       setBtnDisabled(true)
-// //       setLoading(true);
-// //       const payload = {
-// //         loan_id: loan_id,
-// //         loan_status: loan_status, // Use loanStatus instead of LoanStatus
-// //       };
-// //       const response = await backEndCallObj("/user/cancel_loan", payload);
-// //       console.log(response, "cancel")
-// //       // setLoanList((prevLoanList) => [...prevLoanList, response]);
-// //       setLoanList((prevLoanList) => {
-// //         // Find the index of the cancelled loan in the existing list
-// //         const updatedLoanList = prevLoanList.map((loan) => {
-// //           if (loan.form_id === loan_id) {
-// //             // If the loan is cancelled, update its status
-// //             return { ...loan, loan_status: "Cancelled" };
-// //           }
-// //           return loan;
-// //         });
-// //         return updatedLoanList;
-// //       });
-// //       toast.success("Loan cancelled successfully!");
-// //     } catch (ex) {
-// //       if (ex.response && ex.response.status === 400) {
-// //         toast.error(ex.response.data);
-
-// //         setLoading(false);
-// //       }
-// //     } finally {
-// //       setLoading(false);
-// //       setBtnDisabled(false)
-// //     }
-// //   };
-
-// //   return (
-// //     <>
-// //       <div className="user-details-container">
-// //         <h5 className="mb-4">Loan Status</h5>
-// //         <>
-
-// //           <>
-// //             <div className="row">
-// //               <div className="col-12">
-// //                 <div className="card">
-// //                   <div className="card-body">
-// //                     <div className="Loan_Status">
-// //                       <div className="table-responsive">
-// //                         <table className="table border table-bordered table-centered text-center">
-// //                           <thead>
-// //                             <tr>
-// //                               <th scope="col">Customer</th>
-// //                               <th scope="col">Applied Date</th>
-// //                               <th scope="col">Passport NO</th>
-// //                               <th scope="col">Tin No</th>
-// //                               {/* <th scope="col">Address</th> */}
-// //                               <th scope="col">Loan Amount</th>
-// //                               <th scope="col">Months</th>
-// //                               <th scope="col">Loan Type</th>
-// //                               <th scope="col">Loan Status</th>
-
-// //                               <th scope="col">Action</th>
-
-// //                             </tr>
-// //                           </thead>
-// //                           <tbody>
-
-// //                             {loanList && loanList.length > 0 && loanList?.map((loan, index) => (
-// //                               <tr key={index}>
-// //                                 <td>
-// //                                   <div className="d-flex">
-// //                                     <img
-// //                                       src={loan.photo}
-// //                                       alt="User"
-// //                                       className="object-fit-cover rounded-circle"
-// //                                       style={{
-// //                                         width: "45px",
-// //                                         height: "45px",
-// //                                       }}
-// //                                     />
-// //                                     <h6>{loan?.name}</h6>
-// //                                   </div>
-// //                                 </td>
-// //                                 <td>{formattedDate(loan?.date_of_applycation)}</td>
-// //                                 <td>{userprofileData?.passport_number}</td>
-// //                                 <td>{userprofileData?.tin_number}</td>
-// //                                 {/* <td>
-// //                                   <h6 className="mb-0 fw-light">
-// //                                     {loan.current_address}
-// //                                   </h6>
-// //                                   <span className="text-muted fs-12 fw-semibold">
-// //                                     {loan.permanent_address}
-// //                                   </span>
-// //                                 </td> */}
-// //                                 <td className="text-primary">
-// //                                   {loan?.loan_amount}
-// //                                 </td>
-// //                                 <td>{loan?.months}</td>
-// //                                 <td>{loan?.loan_type}</td>
-// //                                 <td>
-// //                                   <div
-// //                                     className={`loan_status ${loan?.loan_status === "completed"
-// //                                       ? "bg-success  fw-bold"
-// //                                       : loan.loan_status === "Processing"
-// //                                         ? "bg-warning fw-bold"
-// //                                         : loan.loan_status === "Rejected"
-// //                                           ? "bg-danger fw-bold"
-// //                                           : loan.loan_status === "Cancelled"
-// //                                             ? "bg-secondary fw-bold"
-// //                                             : loan.loan_status === "Approved"
-// //                                               ? "bg-info fw-bold"
-// //                                               : "bg-dark fw-bold"
-// //                                       }`}
-// //                                   >
-// //                                     {loan?.loan_status}
-
-// //                                   </div>{" "}
-
-// //                                 </td>
-// //                                 <td> {loan?.loan_status == "Approved" ? (
-// //                                   <button
-// //                                     className="btn btn-primary mt-2"
-// //                                     onClick={() =>
-// //                                       navigate("/emaidetails", {
-// //                                         state: { formId: loan?.form_id },
-// //                                       })
-// //                                     }
-// //                                   >
-// //                                     Go to Emi Details
-// //                                   </button>
-// //                                 ) : ""}
-
-// //                                   {loan?.loan_status == "Processing" &&
-// //                                     <button
-// //                                       className="btn btn-danger"
-// //                                       onClick={() => handleEdit(loan.form_id, "Cancelled")} disabled={btnDisabled}
-// //                                     >
-// //                                       Cancel Loan
-// //                                     </button>
-// //                                   }
-
-// //                                   {/* <div
-// //                                     className={`loan_status ${loan.loan_status === "completed"
-// //                                       ? "bg-success  fw-bold"
-
-// //                                       : loan.loan_status === "Rejected"
-// //                                         ? "bg-danger fw-bold"
-// //                                         : loan.loan_status === "Approved"
-// //                                           ? "bg-info fw-bold"
-// //                                           : "bg-dark fw-bold"
-// //                                       }`
-
-// //                                     }
-// //                                   >
-
-// //                                   </div> */}
-
-// //                                 </td>
-// //                               </tr>
-// //                             ))}
-// //                           </tbody>
-// //                         </table>
-
-// //                       </div>
-// //                       {loading && (
-// //                         <div className="text-center mt-3">
-// //                           <div
-// //                             className="spinner-border spiner-border-sm"
-// //                             style={{ color: "blue" }}
-// //                             role="status"
-// //                           >
-// //                             <span className="sr-only"></span>
-// //                           </div>
-// //                         </div>
-// //                       )}
-// //                       {loanList?.length == 0 &&
-// //                         <div className="text-center mt-3">
-// //                           <p>No data found.</p>
-// //                         </div>
-// //                       }
-// //                     </div>
-// //                   </div>
-// //                 </div>
-// //               </div>
-// //             </div>
-
-// //           </>
-
-// //         </>
-// //       </div>
-// //     </>
-// //   );
-// // }
-
-// // export default LoanStatus;
-
-// import React, { useEffect, useState } from "react";
-// import { toast } from "react-hot-toast";
-// import { backEndCall, backEndCallObj } from "../../services/mainServiceFile";
-// import { useNavigate } from "react-router-dom";
-// import { useMovieContext } from "../comman/Context";
-// import moment from "moment";
-
-// function LoanStatus() {
-//   const { loanList, setLoanList, userprofileData } = useMovieContext();
-//   const [btnDisabled, setBtnDisabled] = useState(false);
-//   const [loading, setLoading] = useState(false);
-//   const navigate = useNavigate();
-
-//   const fetchData = async () => {
-//     setBtnDisabled(true);
-//     try {
-//       if (!loanList) {
-//         setLoading(true);
-//         const response = await backEndCall("/users/user_loan_details");
-//         setLoanList(response);
-//         setLoading(false);
-//       } else {
-//         setLoanList(loanList);
-//       }
-//     } catch (ex) {
-//       if (ex.response && ex.response.status === 400) {
-//         toast.error(ex.response.data);
-//         navigate("/loaneligibilitydetails");
-//         setLoading(false);
-//       }
-//     } finally {
-//       setBtnDisabled(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (!loanList || loanList.length === 0) {
-//       fetchData();
-//     }
-//   }, [loanList]);
-
-//   const formattedDate = (date) => {
-//     return moment(date).format('YYYY-MM-DD HH:mm:ss');
-//   };
-
-//   const handleEdit = async (loan_id, loan_status) => {
-//     try {
-//       setBtnDisabled(true);
-//       setLoading(true);
-//       const payload = { loan_id, loan_status };
-//       const response = await backEndCallObj("/user/cancel_loan", payload);
-//       setLoanList((prevLoanList) => {
-//         const updatedLoanList = prevLoanList.map((loan) =>
-//           loan.form_id === loan_id ? { ...loan, loan_status: "Cancelled" } : loan
-//         );
-//         return updatedLoanList;
-//       });
-//       toast.success("Loan cancelled successfully!");
-//     } catch (ex) {
-//       if (ex.response && ex.response.status === 400) {
-//         toast.error(ex.response.data);
-//       }
-//     } finally {
-//       setLoading(false);
-//       setBtnDisabled(false);
-//     }
-//   };
-
-//   return (
-//     <div className="user-details-container">
-//       <h5 className="mb-4">Loan Status</h5>
-//       <div className="row">
-//         <div className="col-12">
-//           <div className="card">
-//             <div className="card-body">
-//               <div className="Loan_Status">
-//                 <div className="table-responsive">
-//                   <table className="table border table-bordered table-centered text-center">
-//                     <thead>
-//                       <tr>
-//                         <th scope="col">Customer</th>
-//                         <th scope="col">Applied Date</th>
-//                         <th scope="col">Passport NO</th>
-//                         <th scope="col">Tin No</th>
-//                         <th scope="col">Loan Amount</th>
-//                         <th scope="col">Months</th>
-//                         <th scope="col">Loan Type</th>
-//                         <th scope="col">Loan Status</th>
-//                         <th scope="col">Action</th>
-//                       </tr>
-//                     </thead>
-//                     <tbody>
-//                       {loanList && loanList.length > 0 && loanList.map((loan, index) => (
-//                         <tr key={index}>
-//                           <td>
-//                             <div className="d-flex">
-//                               <img
-//                                 src={loan.photo}
-//                                 alt="User"
-//                                 className="object-fit-cover rounded-circle"
-//                                 style={{ width: "45px", height: "45px" }}
-//                               />
-//                               <h6>{loan?.name}</h6>
-//                             </div>
-//                           </td>
-//                           <td>{formattedDate(loan?.date_of_applycation)}</td>
-//                           <td>{userprofileData?.passport_number}</td>
-//                           <td>{userprofileData?.tin_number}</td>
-//                           <td className="text-primary">{loan?.loan_amount}</td>
-//                           <td>{loan?.months}</td>
-//                           <td>{loan?.loan_type}</td>
-//                           <td>
-//                             <div className={`loan_status ${loan?.loan_status === "completed"
-//                               ? "bg-success fw-bold"
-//                               : loan.loan_status === "Processing"
-//                                 ? "bg-warning fw-bold"
-//                                 : loan.loan_status === "Rejected"
-//                                   ? "bg-danger fw-bold"
-//                                   : loan.loan_status === "Cancelled"
-//                                     ? "bg-secondary fw-bold"
-//                                     : loan.loan_status === "Approved"
-//                                       ? "bg-info fw-bold"
-//                                       : "bg-dark fw-bold"}`}>
-//                               {loan?.loan_status}
-//                             </div>
-//                           </td>
-//                           <td>
-//                             <button
-//                               className="btn btn-primary mt-2"
-//                               onClick={() =>
-//                                 navigate("/Loanedetails", {
-//                                   state: { loan },
-//                                 })
-//                               }
-//                             >
-//                               View Details
-//                             </button>
-//                             {loan?.loan_status === "Processing" && (
-//                               <button
-//                                 className="btn btn-danger"
-//                                 onClick={() => handleEdit(loan.form_id, "Cancelled")}
-//                                 disabled={btnDisabled}
-//                               >
-//                                 Cancel Loan
-//                               </button>
-//                             )}
-//                           </td>
-//                         </tr>
-//                       ))}
-//                     </tbody>
-//                   </table>
-//                 </div>
-//                 {loading && (
-//                   <div className="text-center mt-3">
-//                     <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-//                       <span className="sr-only"></span>
-//                     </div>
-//                   </div>
-//                 )}
-//                 {loanList?.length === 0 && (
-//                   <div className="text-center mt-3">
-//                     <p>No data found.</p>
-//                   </div>
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default LoanStatus;
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { backEndCall, backEndCallObj } from "../../services/mainServiceFile";
 import { useNavigate } from "react-router-dom";
 import { useMovieContext } from "../comman/Context";
-import moment from "moment";
+import moment, { months } from "moment";
 import { Modal, Button } from "react-bootstrap";
 
 function LoanStatus() {
-  const { loanList, setLoanList, userprofileData } = useMovieContext();
+  const { loanList, setLoanList, userprofileData, setUserEligibility, usereligibility } = useMovieContext();
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [cancelLoanId, setCancelLoanId] = useState(null);
+  const [interest, setInterest] = useState('');
+  const [emi, setEmi] = useState('');
+
+
+
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -612,7 +39,7 @@ function LoanStatus() {
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response.data);
-        navigate("/loaneligibilitydetails");
+        // navigate("/loaneligibilitydetails");
         setLoading(false);
       }
     } finally {
@@ -625,6 +52,45 @@ function LoanStatus() {
       fetchData();
     }
   }, [loanList]);
+  useEffect(() => {
+
+    if (usereligibility <= 0 || !usereligibility) {
+      fetchDataeligbity();
+    }
+  }, []);
+
+  const fetchDataeligbity = async () => {
+    try {
+      setLoading(true);
+      const response = await backEndCall("/users/matching_eligibility");
+      console.log(response, "response")
+
+      setUserEligibility(response);
+      setLoading(false);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    }
+  };
+  // const filteredData = usereligibility?.tenure.filter(item => item.months === 3);
+  // console.log(filteredData);
+  // console.log(filteredData?.interest, "filteredData--------------->");
+
+  const findInterest = (months, loan_amount) => {
+    // console.log(loan_amount, months);
+    const filteredData = usereligibility?.tenure.filter(item => item.months === months);
+    console.log(filteredData[0]?.interest, "-------ooooo---------------->");
+    const calculateEMI = (loan_amount * (filteredData[0]?.interest / 100 * months / 12) + loan_amount) / months
+    console.log(calculateEMI, "calculationemi");
+    setEmi(calculateEMI.toFixed(2));
+
+    setInterest(filteredData[0]?.interest)
+
+
+    return ""
+  }
+
 
   const formattedDate = (date) => {
     return moment(date).format("YYYY-MM-DD HH:mm:ss");
@@ -645,7 +111,7 @@ function LoanStatus() {
         );
         return updatedLoanList;
       });
-      toast.success("Loan cancelled successfully!");
+
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response.data);
@@ -665,7 +131,69 @@ function LoanStatus() {
     setShowModal(false);
     setSelectedLoan(null);
   };
+  const handleConfirmationModal = (loan_id) => {
+    setCancelLoanId(loan_id);
+    setShowConfirmationModal(true);
+  };
 
+  // Function to handle canceling the loan
+  const handleCancelLoan = async () => {
+    try {
+      setBtnDisabled(true);
+      setLoading(true);
+      const payload = { loan_id: cancelLoanId, loan_status: "Cancelled" };
+      const response = await backEndCallObj("/user/cancel_loan", payload);
+      console.log(response);
+      setLoanList((prevLoanList) => {
+        const updatedLoanList = prevLoanList.map((loan) =>
+          loan.form_id === cancelLoanId
+            ? { ...loan, loan_status: "Cancelled" }
+            : loan
+        );
+        return updatedLoanList;
+      });
+      toast.success("Loan cancelled successfully!");
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response.data);
+      }
+    } finally {
+      setLoading(false);
+      setBtnDisabled(false);
+      setShowConfirmationModal(false); // Close the confirmation modal
+    }
+  };
+  // const calculateEMI = (loan_amount, interest, months) => {
+
+  // const calculateEMI = (loan_amount * (interest / 100 * months / 12) + loan_amount) / months
+
+  // return calculateEMI.toFixed(2);
+  // };
+
+  // const getNextNearestEMIDate = () => {
+  //   let nearestDate = null;
+  //   loanList.forEach((loan) => {
+  //     const emiDetails = loan?.emi_detals;
+  //     if (!emiDetails || !emiDetails.nextEMIDate) return;
+
+  //     const nextEMIDateString = emiDetails.nextEMIDate;
+  //     const parsedDate = new Date(nextEMIDateString);
+
+  //     if (!nearestDate || parsedDate < nearestDate) {
+  //       nearestDate = parsedDate;
+  //     }
+  //   });
+
+  //   if (!nearestDate) return "";
+
+  //   // Format the nearest date as per your requirement
+  //   const formattedDate = moment(nearestDate).format("YYYY-MM-DD");
+
+  //   return formattedDate;
+  // };
+
+
+  console.log(usereligibility, "maching eligibily")
   return (
     <div className="user-details-container">
       <style>
@@ -697,6 +225,7 @@ function LoanStatus() {
                         <th scope="col">Loan Type</th>
                         <th scope="col">Loan Status</th>
                         <th scope="col">Loan Details</th>
+
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -705,16 +234,22 @@ function LoanStatus() {
                         loanList.length > 0 &&
                         loanList.map((loan, index) => (
                           <tr key={index}>
-                            <td>
-                              <div className="d-flex">
-                                <img
+                            <td className="text-center">
+                              {/* <div className="d-flex text-center"> */}
+                              {/* <img
                                   src={loan.photo}
                                   alt="User"
                                   className="object-fit-cover rounded-circle"
                                   style={{ width: "45px", height: "45px" }}
-                                />
-                                <h6>{loan?.name}</h6>
-                              </div>
+                                /> */}
+
+                              {loan.photo.includes("image") ? (
+                                <img src={loan?.photo} className="document_image1 mt-1 rounded-2" />
+                              ) : <embed src={loan?.photo} className="document_image1 mt-1 rounded-2" />
+                              }
+                              <h6>{loan?.name}</h6>
+                              {/* {console.log(loan.photo, "navaneetha")} */}
+                              {/* </div> */}
                             </td>
 
                             <td>{formattedDate(loan?.date_of_applycation)}</td>
@@ -724,7 +259,7 @@ function LoanStatus() {
                             <td>{userprofileData?.tin_number}</td>
 
                             <td className="text-primary">
-                              {loan?.loan_amount}
+                              ₱ {loan?.loan_amount}
                             </td>
 
                             <td>{loan?.months}</td>
@@ -734,16 +269,16 @@ function LoanStatus() {
                             <td>
                               <div
                                 className={`loan_status ${loan?.loan_status === "completed"
-                                    ? "bg-success fw-bold"
-                                    : loan.loan_status === "Processing"
-                                      ? "bg-warning fw-bold"
-                                      : loan.loan_status === "Rejected"
-                                        ? "bg-danger fw-bold"
-                                        : loan.loan_status === "Cancelled"
-                                          ? "bg-secondary fw-bold"
-                                          : loan.loan_status === "Approved"
-                                            ? "bg-info fw-bold"
-                                            : "bg-dark fw-bold"
+                                  ? "bg-success fw-bold"
+                                  : loan.loan_status === "Processing"
+                                    ? "bg-warning fw-bold"
+                                    : loan.loan_status === "Rejected"
+                                      ? "bg-danger fw-bold"
+                                      : loan.loan_status === "Cancelled"
+                                        ? "bg-secondary fw-bold"
+                                        : loan.loan_status === "Approved"
+                                          ? "bg-info fw-bold"
+                                          : "bg-dark fw-bold"
                                   }`}
                               >
                                 {loan?.loan_status}
@@ -752,19 +287,20 @@ function LoanStatus() {
 
                             <td>
                               <div
-                                onClick={() => handleShowModal(loan)}
+                                // onClick={() => { handleShowModal(loan); handleCalculate(loan.months); }}
+                                onClick={() => { handleShowModal(loan); findInterest(loan.months, loan.loan_amount); }}
+
                                 style={{ cursor: "pointer", color: "blue" }}
                               >
                                 View Details
                               </div>
                             </td>
+
                             <td>
                               {loan?.loan_status === "Processing" && (
                                 <button
                                   className="btn btn-danger mt-2"
-                                  onClick={() =>
-                                    handleEdit(loan.form_id, "Cancelled")
-                                  }
+                                  onClick={() => handleConfirmationModal(loan.form_id)} // Open the confirmation modal
                                   disabled={btnDisabled}
                                 >
                                   Cancel Loan
@@ -782,11 +318,19 @@ function LoanStatus() {
                                   Go to Emi Details
                                 </button>
                               )}
+                              {(loan?.loan_status === "Cancelled" || loan?.loan_status === "Rejected") && (
+                                "Your loan application has been " + loan.loan_status.toUpperCase()
+                                // + ". Please contact support for further assistance."
+                              )}
                             </td>
+
                           </tr>
                         ))}
                     </tbody>
                   </table>
+                  <div>
+                    {/* Next EMI Date: {getNextNearestEMIDate()} */}
+                  </div>
                 </div>
                 {loading && (
                   <div className="text-center mt-3">
@@ -833,10 +377,17 @@ function LoanStatus() {
                 <h6>{selectedLoan?.name}</h6>
               </div>
             </div>
-            <div className="row">
+            {/* {console.log(selectedLoan?.photo, "photo")}
+            {console.log(selectedLoan?.pay_slip, "payslip")} */}
+            <div className="row ">
               <div className="col-6">
                 <p>
-                  <strong>Customer Name:</strong> {userprofileData.last_name}{" "}
+                  <strong>Customer Name:</strong> {userprofileData.first_name}{userprofileData.last_name}{" "}
+                </p>
+              </div>
+              <div className="col-6">
+                <p>
+                  <strong>Loan Amount:</strong>  ₱ {selectedLoan.loan_amount}
                 </p>
               </div>
               <div className="col-6">
@@ -847,40 +398,52 @@ function LoanStatus() {
               </div>
               <div className="col-6">
                 <p>
+                  <strong>Months:</strong> {selectedLoan.months}
+                </p>
+              </div>
+
+              <div className="col-6">
+                <p>
                   <strong>Loan Id:</strong> {selectedLoan?.form_id}
                 </p>
               </div>
               <div className="col-6">
                 <p>
-                  <strong>Passport NO:</strong>{" "}
-                  {userprofileData?.passport_number}
+                  <strong>Interest:</strong> {interest}%
                 </p>
               </div>
               <div className="col-6">
                 <p>
-                  <strong>Tin NO:</strong> {userprofileData?.tin_number}
+                  <strong>Passport No:</strong>{" "}
+                  {userprofileData?.passport_number ? userprofileData?.passport_number : "NA"}
                 </p>
               </div>
               <div className="col-6">
                 <p>
-                  <strong>Loan Amount:</strong> {selectedLoan.loan_amount}
+                  <strong>EMI:</strong>  ₱ {emi}
                 </p>
               </div>
+
+
               <div className="col-6">
                 <p>
-                  <strong>Phone Number:</strong> {selectedLoan.phone_number}
+                  <strong>Tin No:</strong> {userprofileData?.tin_number ? userprofileData?.tin_number : "NA"}
                 </p>
               </div>
-              <div className="col-6">
-                <p>
-                  <strong>Months:</strong> {selectedLoan.months}
-                </p>
-              </div>
+
               <div className="col-6">
                 <p>
                   <strong>Loan Type:</strong> {selectedLoan.loan_type}
                 </p>
               </div>
+
+              <div className="col-6">
+                <p>
+                  <strong>Phone Number:</strong> {userprofileData.phone_number}
+                </p>
+              </div>
+
+
               <div className="col-6">
                 <p>
                   <strong>Loan Status:</strong> {selectedLoan.loan_status}
@@ -926,6 +489,23 @@ function LoanStatus() {
           </Modal.Footer>
         </Modal>
       )}
+      {showConfirmationModal &&
+        <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to cancel this loan?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowConfirmationModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={handleCancelLoan}>
+              Confirm
+            </Button>
+          </Modal.Footer>
+        </Modal>}
     </div>
   );
 }

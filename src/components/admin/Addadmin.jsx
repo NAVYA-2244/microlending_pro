@@ -255,6 +255,7 @@ import { useMovieContext } from "../comman/Context";
 import { useFunctionContext } from "../comman/FunctionsContext";
 import { toast } from "react-hot-toast";
 import authservice from '../../services/authService';
+import { Form } from "react-router-dom";
 
 const AddAdmin = ({ show, onHide }) => {
   const { AddAdminData, setAddadminData, errors, setLoading, setErrorOccur } = useMovieContext();
@@ -268,7 +269,7 @@ const AddAdmin = ({ show, onHide }) => {
   });
 
   const schema = {
-    first_name: Joi.string().required().label("First Name").min(2).max(50),
+    first_name: Joi.string().required().label("Name").min(2).max(50),
     admin_type: Joi.string().required().label("Admin Type"),
     member_email: Joi.string().regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       .options({
@@ -296,13 +297,25 @@ const AddAdmin = ({ show, onHide }) => {
       await checkErrors(schema, formData);
       setLoading(true);
 
-      const { phone_number } = formData;
-      const prefixedPhoneNumber = `63${phone_number}`;
+      // const { phone_number } = formData;
+      // const prefixedPhoneNumber = `63${phone_number}`;
+      const phonenumber = "63" + formData.phone_number
+      const admin = formData.first_name + " admin "
+
 
       const response = await backEndCallObj("/admin/create_admin", {
-        ...formData,
-        phone_number: prefixedPhoneNumber,
-      });
+        first_name: admin,
+        member_email: formData.member_email,
+        admin_type: formData.admin_type,
+        phone_number: phonenumber,
+
+
+
+        // ...formData,
+
+        // phone_number: prefixedPhoneNumber,
+      }
+      );
 
 
       AddAdminlist();
@@ -341,7 +354,7 @@ const AddAdmin = ({ show, onHide }) => {
     window.history.back();
   }
 
-
+  console.log(formData)
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -350,7 +363,7 @@ const AddAdmin = ({ show, onHide }) => {
       <Modal.Body>
         <form onSubmit={handleSubmit} className="addAdmin_form">
           <div className="mb-3">
-            <label htmlFor="first_name" className="form-label">Name</label>
+            <label htmlFor="Name" className="form-label">Name</label>
             <Input_text
               type="text"
               value={formData["first_name"]}

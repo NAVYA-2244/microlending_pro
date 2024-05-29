@@ -526,7 +526,7 @@ function Loaneligibility() {
                                     <thead className='text-center'>
                                         <tr>
                                             <th>Credit Score</th>
-                                            <th>Present credit score</th>
+                                            {/* <th>Present credit score</th> */}
                                             <th>Min Loan Amount</th>
                                             <th>Max Loan Amount</th>
                                             <th>Tenure</th>

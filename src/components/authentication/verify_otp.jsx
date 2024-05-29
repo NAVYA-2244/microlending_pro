@@ -310,8 +310,8 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                             Didn't receive the otp?{" "}
                             <span
                               className="link text-primary link-OTP mt-5 cursor-pointer"
-                              onClick={handleResendOtp}
-                              disabled={btnDisabled} >
+                              onClick={btnDisabled ? null : handleResendOtp}
+                            >
                               Click here
                             </span>
                           </p>

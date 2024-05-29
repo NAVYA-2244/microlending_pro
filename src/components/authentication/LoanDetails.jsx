@@ -18,7 +18,7 @@ function LoanDetails() {
                 <p><strong>Applied Date:</strong> {formattedDate(loan.date_of_applycation)}</p>
                 <p><strong>Passport NO:</strong> {loan.passport_number}</p>
                 <p><strong>Tin NO:</strong> {loan.tin_number}</p>
-                <p><strong>Loan Amount:</strong> {loan.loan_amount}</p>
+                <p><strong>Loan Amount:</strong>  ₱ {loan.loan_amount}</p>
                 <p><strong>Months:</strong> {loan.months}</p>
                 <p><strong>Loan Type:</strong> {loan.loan_type}</p>
                 <p><strong>Loan Status:</strong> {loan.loan_status}</p>

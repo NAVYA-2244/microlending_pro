@@ -208,7 +208,7 @@ const UsersList = () => {
     console.log("jhfghjkhj")
     return (
         <div className="container-fluid">
-            <h5 className="card-title m-0">ALL USERS LIST</h5>
+            <h5 className="card-title m-0">All Users List</h5>
             <div className="row">
                 <div className="col-lg-12">
                     <div className="card shadow-none mt-0">

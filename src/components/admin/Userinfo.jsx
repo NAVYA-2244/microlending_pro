@@ -9,12 +9,19 @@ import PenaltyModal from './PenaltyModal ';
 // import React, { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import Loans from './../landingpage/Loans';
+import { Button, Modal } from "react-bootstrap";
+import { Input_text, Number_Input } from './../comman/All-Inputs';
+// import Form from './../comman/Form';
+import Joi from 'joi'
+import Tab1 from "./Tab1";
+import Tab2 from "./Tab2";
+import Tab3 from "./Tab3";
+
 
 const Userinfo = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedLoan, setSelectedLoan] = useState(null);
 
-    const { adminprofileData, setAdminprofileData, setTransactionHistory, transactionHistory, EmiHistory, setEmiHistory, setError, loanList, setLoanList } = useMovieContext();
+
+    const { adminprofileData, setAdminprofileData, setTransactionHistory, transactionHistory, errorOccur, EmiHistory, checkErrors, setErrorOccur, setEmiHistory, setError, loanList, setLoanList } = useMovieContext();
     const location = useLocation(); // Use the useLocation hook to access location state
 
     const [loading, setLoading] = useState(false);
@@ -23,8 +30,36 @@ const Userinfo = () => {
     const [isZoomed, setIsZoomed] = useState(false);
     const [btndisabled, setBtnDisabled] = useState(false)
     const [isFetching, setIsFetching] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState({
+        delayedAmount: "",
+        note: "",
 
+    })
 
+    const schema = {
+        delayedAmount: Joi.number()
+            .required()
+            .min(50)
+            .messages({
+                "number.base": "Delayed amount must be a number",
+                "any.required": "Delayed amount is required",
+                "number.min": "Delayed amount must be at least {#limit}"
+            }),
+        note: Joi.string()
+            .min(10)
+            .max(100)
+            .required()
+            .pattern(/^[A-Za-z]/)
+            .messages({
+                "string.base": "Note must be a string",
+                "string.empty": "Note is required",
+                "string.min": "Note must be at least {#limit} characters long",
+                "string.max": "Note cannot be longer than {#limit} characters",
+                "string.pattern.base": "Note must contain only letters"
+            })
+
+    }
     const fetchData = async () => {
         try {
 
@@ -116,7 +151,6 @@ const Userinfo = () => {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
-    console.log(activeTab)
 
 
 
@@ -125,22 +159,54 @@ const Userinfo = () => {
         setIsZoomed(!isZoomed);
     };
 
-    const isEMIDatePast = (nextEMIDate) => {
-        const today = new Date();
-        const nextDate = new Date(nextEMIDate);
-        return today > nextDate;
-    };
+    // const isEMIDatePast = (nextEMIDate) => {
+    //     const today = new Date();
 
 
-    const handleOpenModal = (loanId) => {
-        setSelectedLoan(loanId); // Set the selected loan ID
-        setShowModal(true); // Open the modal
-    };
+    //     const nextDate = new Date(nextEMIDate);
+    //     return today > nextDate;
+    // };
 
-    const handleCloseModal = () => {
-        setShowModal(false); // Close the modal
-    };
 
+
+
+    // const handleShowModal = ({ loan_id }) => {
+    //     console.log(loan_id, "loanid")
+    //     setFormData(loan_id)
+    //     setShowModal(true);
+    // };
+
+    // const handleCloseModal = () => {
+    //     setShowModal(false);
+    // };
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setBtnDisabled(true);
+    //     try {
+    //         // await checkErrors(schema, formData);
+    //         // console.log(errorOccur, "errors")
+    //         // setLoading(true);
+    //         const response = await backEndCallObj("/admin/add_penalty", { ...formData });
+    //         setLoading(false);
+    //         setErrorOccur(false);
+    //         setFormData({
+    //             delayedAmount: "",
+    //             note: ""
+    //         });
+    //         handleCloseModal();
+    //         toast.success("Penalty added successfully!");
+    //     } catch (ex) {
+    //         if (ex.response && ex.response.status === 400) {
+    //             toast.error(ex.response.data);
+    //         } else {
+    //             toast.error("An unexpected error occurred.");
+    //         }
+    //     } finally {
+    //         setLoading(false);
+    //         setBtnDisabled(false);
+    //     }
+    // };
 
     return (
         <div className="user-details-container ">
@@ -313,7 +379,7 @@ const Userinfo = () => {
                                 </div>
                             </div>
                             <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                                <h6 className="mb-2 fs-17">Loan Types</h6>
+                                {/* <h6 className="mb-2 fs-17">Loan Types</h6> */}
                                 {/* <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                   <p>
                     <strong>Purpose of loan:</strong> {userData.purpose_of_loan}
@@ -382,7 +448,7 @@ const Userinfo = () => {
             </div>
             <div>
                 <div className="tabs d-flex">
-                    <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)} ><button className="btn btn-primary me-3 mb-2" disabled={btndisabled}>Transection histry</button></div>
+                    <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)} ><button className="btn btn-primary me-3 mb-2" disabled={btndisabled}>Transaction history</button></div>
                     <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)} ><button className="btn btn-primary me-2 mb-3" disabled={btndisabled} >EMI History</button></div>
                     <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}><button className="btn btn-primary me-2 mb-3" disabled={btndisabled}>Loan Details</button></div>
                 </div>
@@ -390,7 +456,7 @@ const Userinfo = () => {
 
 
                     <TabPanel>
-                        <div className="table-responsive">
+                        {/* <div className="table-responsive">
                             {tabclicked && <table className="table border table-bordered table-centered">
                                 <thead>
                                     <tr className="table-head">
@@ -429,10 +495,11 @@ const Userinfo = () => {
                                         </tr>)
                                 }
                             </table>}
-                        </div>
+                        </div> */}
+                        <Tab1></Tab1>
                     </TabPanel>
                     <TabPanel>
-                        <div className="table-responsive">
+                        {/* <div className="table-responsive">
                             <table className="table border table-bordered table-centered text-center">
                                 <thead>
                                     <tr className="table-head">
@@ -471,11 +538,12 @@ const Userinfo = () => {
                                 }
                             </table>
 
-                        </div>
+                        </div> */}
+                        <Tab2></Tab2>
                     </TabPanel>
                     <TabPanel>
 
-
+                        {/* 
                         <diV className="table-responsive">
                             <table className="table border table-bordered table-centered text-center">
                                 <thead>
@@ -484,17 +552,13 @@ const Userinfo = () => {
                                         <th scope="col">Date </th>
                                         <th scope="col"> Next EMI Date </th>
                                         <th scope="col">user id</th>
-                                        <th scope="col">form id</th>
+                                        <th scope="col">lone id</th>
                                         <th scope="col">loan amount</th>
                                         <th scope="col">Months</th>
                                         <th scope="col">loan type</th>
 
                                         <th scope="col">loan status</th>
-                                        {/* <th scope="col">Address</th> */}
-
-
-                                        {/* <th scope="col">pay_slip</th> */}
-
+                                      
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -521,7 +585,7 @@ const Userinfo = () => {
                                                             height: "45px",
                                                         }}
                                                     />
-                                                    {/* <h6>{loan.name}</h6> */}
+                                                  
                                                 </div>
                                             </td>
                                             <td>{formattedDate(loan?.date_of_applycation)}</td>
@@ -553,14 +617,11 @@ const Userinfo = () => {
                                                 </div>{" "}
 
                                                 {isEMIDatePast(loan?.emi_detals.nextEMIDate) && (
-                                                    <div>
-                                                        {showModal && (
-                                                            <PenaltyModal
-                                                                handleClose={handleCloseModal}
-                                                                selectedLoan={selectedLoan}
-                                                            />
-                                                        )}
-                                                    </div>
+                                                    <button className="btn btn-primary" onClick={() => handleShowModal(loan.form_id)}>
+                                                        Add PenaltyModal
+                                                    </button>
+
+
                                                 )}
                                             </td>
 
@@ -570,13 +631,56 @@ const Userinfo = () => {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> */}
+                        {/* {showModal &&
+                                <Modal show={showModal} onHide={handleCloseModal}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title> Add Penalty </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <form onSubmit={(e) => handleSubmit(e)} className="addAdmin_form">
+                                            <div className="mb-3">
+                                                <label htmlFor="delayedAmount" className="form-label">Delayed Amount</label>
+                                                <Number_Input
+                                                    type="text"
+
+                                                    placeholder="Enter delayed amount here"
+
+
+                                                    value={formData["delayedAmount"]}
+                                                    name="delayedAmount"
+
+                                                    SetForm={setFormData}
+                                                    schema={schema["delayedAmount"]}
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label htmlFor="note" className="form-label">Note</label>
+                                                <Input_text
+                                                    type="text"
+                                                    placeholder="Enter note here"
+                                                    name="note"
+                                                    value={formData["note"]}
+                                                    SetForm={setFormData}
+                                                    schema={schema["note"]}
+                                                />
+                                            </div>
+                                            <Button variant="primary" type="submit">Submit</Button>
+                                            <Button variant="secondary" onClick={handleCloseModal}>
+                                                Close
+                                            </Button>
+                                        </form>
+
+                                    </Modal.Body>
+
+                                </Modal>}
                             {loanList === 0 && (
                                 <tr>
                                     <td colSpan="7" className="text-center">No transactions found.</td>
                                 </tr>)
                             }
-                        </diV>
+                        </diV> */}
+                        <Tab3></Tab3>
                     </TabPanel>
                 </Tabs>
 

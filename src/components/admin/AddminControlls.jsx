@@ -345,7 +345,7 @@ function AddminControlls() {
                 <div className="col-lg-12">
                     <div className="card shadow-none mt-0">
                         <div className="card-header">
-                            <h5 className="card-title mb-0">ADMIN CONTROLS</h5>
+                            <h5 className="card-title mb-0">Admin Controls</h5>
                         </div>
                         <div className="card-body">
                             <div className="table-responsive">

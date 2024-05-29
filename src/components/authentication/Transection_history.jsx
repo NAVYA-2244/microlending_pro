@@ -152,7 +152,10 @@ function TransactionHistory() {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
-
+    function capitalizeFirstLetter(string) {
+        if (!string) return ""; // Handle cases where string is undefined or null
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     return (
         <>
             <h5 className="mb-4">Transaction History</h5>
@@ -208,7 +211,7 @@ function TransactionHistory() {
                                         type="text"
                                         name="id"
                                         value={formData["id"]}
-                                        placeholder="transaction id "
+                                        placeholder="Transaction id "
                                         SetForm={setFormData}
                                         schema={schema["id"]}
 
@@ -270,9 +273,9 @@ function TransactionHistory() {
                                             <td>{history.transaction_id}</td>
                                             <td>{history.receiver_id}</td>
                                             <td>{history.sender_id}</td>
-                                            <td>{history.transactionType}</td>
-                                            <td>{history.transaction_status}</td>
-                                            <td>{history.amount}</td>
+                                            <td> {capitalizeFirstLetter(history.transactionType)}</td>
+                                            <td>{capitalizeFirstLetter(history.transaction_status)}</td>
+                                            <td> ₱ {history.amount}</td>
                                             <td>{history.comment}</td>
                                             <td>{formattedDate(history.transactionDate)}</td>
                                         </tr>

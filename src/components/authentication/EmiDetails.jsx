@@ -9,7 +9,7 @@ import { useMovieContext } from '../comman/Context';
 function EmiDetails() {
     // const [emis, setEmis] = useState({});
     const { emis, setEmis, userprofileData, setUserprofileData, userData, setUserData } = useMovieContext()
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [btnDisabled, setBtnDisabled] = useState(false);
     const location = useLocation();
@@ -24,6 +24,7 @@ function EmiDetails() {
     const fetchEMIDetails = async () => {
         // setBtnDisabled(true)
         try {
+            setLoading(true)
             const response = await backEndCallObj("/emi/get_emi_details", { form_id: formId });
             console.log(response, "emaisdata")
             setEmis(response);
@@ -70,6 +71,7 @@ function EmiDetails() {
     const handlePayEMI = async () => {
         setBtnDisabled(true)
         try {
+            setLoading(true)
             const payload = {
 
                 loan_id: emis?.form_id,
@@ -88,7 +90,7 @@ function EmiDetails() {
             setShowModal(false);
             setTimeout(() => {
                 callLoanStatusAPI(response.payment_id);
-            }, 9000);
+            }, 6000);
 
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
@@ -141,27 +143,37 @@ function EmiDetails() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className='text-center'>
-                                            <td>{emis?.form_id || "NA"}</td>
-                                            <td>{emis?.loan_amount || "NA"}</td>
-                                            <td>{emis?.emi_detals?.interestRate || "NA"}</td>
-                                            <td>{emis?.emi_detals?.delayedAmount || "0"}</td>
-                                            <td>{emis?.emi_detals?.totalInstallmentAmount || "0"}</td>
-                                            <td>{emis?.emi_detals?.installmentNumber || "0"}</td>
-                                            {/* <td>{formatDateTime(emis?.startDate) || "NA"}</td>
+                                        {loading ? (
+                                            <tr>
+                                                <td colSpan="7" className="text-center">
+                                                    <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                                        <span className="sr-only"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            <tr className='text-center'>
+                                                <td>{emis?.form_id || "NA"}</td>
+                                                <td>  ₱ {emis?.loan_amount || "NA"}</td>
+                                                <td>{emis?.emi_detals?.interestRate || "NA"}%</td>
+                                                <td>{emis?.emi_detals?.delayedAmount || "0"}</td>
+                                                <td> ₱ {emis?.emi_detals?.totalInstallmentAmount || "0"}</td>
+                                                <td>  {emis?.emi_detals?.installmentNumber || "0"}</td>
+                                                {/* <td>{formatDateTime(emis?.startDate) || "NA"}</td>
                                             <td>{formatDateTime(emis?.endDate) || "NA"}</td>
                                             <td>{formatDateTime(emis?.nextEMIDate) || "NA"}</td> */}
-                                            <td>
-                                                <div className='my-4'>
-                                                    <button className='btn-primary btn' onClick={showModel} disabled={btnDisabled}>PAY EMI</button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                <td>
+                                                    <div className='my-4'>
+                                                        <button className='btn-primary btn' onClick={showModel} disabled={btnDisabled}>PAY EMI</button>
+                                                    </div>
+                                                </td>
+                                            </tr>)}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+
                 </div></div>
             {showModal ? (<Modal show={true} onHide={handleClose} centered>
                 <Modal.Header closeButton>

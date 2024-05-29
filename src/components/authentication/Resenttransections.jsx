@@ -24,15 +24,13 @@ function Resenttransections() {
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
-            } else {
-                toast.error(ex.response.data);
             }
             setError(ex.message);
             setLoading(false);
         }
     };
     useEffect(() => {
-        if (RecenttransactionHistory.length <= 0) {
+        if (RecenttransactionHistory.length == 0) {
             fetchTransactionHistory();
         }
     }, [setRecentTransactionHistory, setLoading, setError]);
@@ -45,6 +43,10 @@ function Resenttransections() {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
+    function capitalizeFirstLetter(string) {
+        if (!string) return ""; // Handle cases where string is undefined or null
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     return (
         <div className="user-details-container">
             <h5 className="mb-4"> Recent Transactions</h5>
@@ -84,9 +86,9 @@ function Resenttransections() {
                                             <td>{history.transaction_id}</td>
                                             <td>{history.receiver_id}</td>
                                             <td>{history.sender_id}</td>
-                                            <td>{history.transactionType}</td>
-                                            <td>{history.transaction_status}</td>
-                                            <td>{history.amount}</td>
+                                            <td>{capitalizeFirstLetter(history.transactionType)}</td>
+                                            <td>{capitalizeFirstLetter(history.transaction_status)}</td>
+                                            <td>₱ {history.amount}</td>
                                             <td>{formattedDate(history.transactionDate)}</td>
 
                                         </tr>
