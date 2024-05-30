@@ -217,7 +217,7 @@ const Updateprofile = () => {
 
 
   const handleChange = async (e) => {
-    console.log(e)
+
 
     const { name, value, type, files } = e.target;
     try {
@@ -287,12 +287,12 @@ const Updateprofile = () => {
       // console.log(obj)
 
       const response = await backEndCallObj("/users/profile_update", formDataWithoutPhoto);
-      console.log(response, "update profile")
+
       setTimeout(async () => {
         try {
           const response = await backEndCallObj("/users/user_profile_status");
           toast.success(response);
-          console.log(response, "response")
+
         } catch (ex) {
           if (ex.response && ex.response.status === 400) {
             // console.log(ex.response?.data);
@@ -304,7 +304,7 @@ const Updateprofile = () => {
       setTimeout(async () => {
         try {
           const filesUploadResponse = await backEndCallObj("/users/files_upload", obj);
-          console.log(filesUploadResponse, "Files upload response");
+
           setUserprofileData(null)
           setUpdateddata(true);
           setUserData(null)
@@ -355,7 +355,7 @@ const Updateprofile = () => {
 
 
       });
-      console.log(response)
+
 
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {

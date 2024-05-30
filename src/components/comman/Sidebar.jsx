@@ -2,13 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
-import { Navigate } from "react-router-dom";
-import UsersList from './../admin/UsersList';
-import AddAdmin from './../admin/Addadmin';
-import AdminList from './../admin/AdminList';
-import ApplyLoan from './../authentication/ApplyLoan';
-import Loaneligibility from './../admin/Loaneligibility';
-import VerifyLoan from './../admin/VerifyLoan';
+import Kyc_url from './../admin/kyc_url';
 
 const Sidebar = () => {
   const Navigate = useNavigate();
@@ -54,10 +48,7 @@ const Sidebar = () => {
           <ul className="sidebar-nav">
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/dashboard');
-            //     this.handleMenuClick();
-            // }}
+
             >
               <NavLink
                 to="/dashboard"
@@ -65,7 +56,7 @@ const Sidebar = () => {
                   isActive ? "nav-link active" : "nav-link"
                 }
               >
-                {/* <i className='ri-dashboard-line'></i> */}
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="22"
@@ -78,30 +69,34 @@ const Sidebar = () => {
               </NavLink>
             </li>
 
-            {/* {!authService.IsAdmin() && (
+            {!authService.IsAdmin() && (
 
-              <li
-                className="nav-item"
-             
-              >
-
-                <NavLink to="/updateprofile" className="nav-link">
-                 
+              <li className="nav-item">
+                <NavLink to="/userdetails" className="nav-link">
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-120q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-840q82 0 155.5 35T760-706v-94h80v240H600v-80h110q-41-56-101-88t-129-32q-117 0-198.5 81.5T200-480q0 117 81.5 198.5T480-200q105 0 183.5-68T756-440h82q-15 137-117.5 228.5T480-120Zm112-192L440-464v-216h80v184l128 128-56 56Z" /></svg>
                   <span>Update Profile</span>
                 </NavLink>
               </li>
-            )} */}
-            {!authService.IsAdmin() && (
+
+            )}
+
+
+
+
+
+
+
+
+
+
+
+            {/* {!authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/userprofile" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="22"
@@ -114,19 +109,16 @@ const Sidebar = () => {
                 </NavLink>
               </li>
 
-            )}
+            )} */}
 
             {!authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
 
                 <NavLink to="/loaneligibilitydetails" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M760-400v-260L560-800 360-660v60h-80v-100l280-200 280 200v300h-80ZM560-800Zm20 160h40v-40h-40v40Zm-80 0h40v-40h-40v40Zm80 80h40v-40h-40v40Zm-80 0h40v-40h-40v40ZM280-220l278 76 238-74q-5-9-14.5-15.5T760-240H558q-27 0-43-2t-33-8l-93-31 22-78 81 27q17 5 40 8t68 4q0-11-6.5-21T578-354l-234-86h-64v220ZM40-80v-440h304q7 0 14 1.5t13 3.5l235 87q33 12 53.5 42t20.5 66h80q50 0 85 33t35 87v40L560-60l-280-78v58H40Zm80-80h80v-280h-80v280Z" /></svg>
                   <span>Apply Loan</span>
                 </NavLink>
@@ -136,16 +128,13 @@ const Sidebar = () => {
             {authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/userlist" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" /></svg>
 
-                  {/* <i className="ri-id-card-line"></i>  */}
+
                   <span>Users List</span>
                 </NavLink>
               </li>
@@ -156,13 +145,10 @@ const Sidebar = () => {
             {authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/adminlist" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M680-280q25 0 42.5-17.5T740-340q0-25-17.5-42.5T680-400q-25 0-42.5 17.5T620-340q0 25 17.5 42.5T680-280Zm0 120q31 0 57-14.5t42-38.5q-22-13-47-20t-52-7q-27 0-52 7t-47 20q16 24 42 38.5t57 14.5ZM480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v227q-19-8-39-14.5t-41-9.5v-147l-240-90-240 90v188q0 47 12.5 94t35 89.5Q310-290 342-254t71 60q11 32 29 61t41 52q-1 0-1.5.5t-1.5.5Zm200 0q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q83 0 141.5 58.5T880-280q0 83-58.5 141.5T680-80ZM480-494Z" /></svg>
                   <span>Admin List</span>
                 </NavLink>
@@ -172,13 +158,10 @@ const Sidebar = () => {
             {authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/admincontrols" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M750-640h40v-160h-40v160Zm-100 0h40v-160h-40v160ZM480-480ZM80-280q50 0 85 35t35 85H80v-120Zm0-160q117 0 198.5 81.5T360-160h-80q0-83-58.5-141.5T80-360v-80Zm0-160q91 0 171 34.5T391-471q60 60 94.5 140T520-160h-80q0-75-28.5-140.5t-77-114q-48.5-48.5-114-77T80-520v-80Zm720 440H600q0-20-1.5-40t-4.5-40h206v-212q22-7 42-16.5t38-22.5v251q0 33-23.5 56.5T800-160ZM80-680v-40q0-33 23.5-56.5T160-800h292q-6 19-9 39t-3 41H160v46q-20-3-40-4.5T80-680Zm640 160q-83 0-141.5-58.5T520-720q0-83 58.5-141.5T720-920q83 0 141.5 58.5T920-720q0 83-58.5 141.5T720-520Z" /></svg>
                   <span>Admin Controls</span>
                 </NavLink>
@@ -188,13 +171,10 @@ const Sidebar = () => {
             {authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/loaneligibility" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M760-400v-260L560-800 360-660v60h-80v-100l280-200 280 200v300h-80ZM560-800Zm20 160h40v-40h-40v40Zm-80 0h40v-40h-40v40Zm80 80h40v-40h-40v40Zm-80 0h40v-40h-40v40ZM280-220l278 76 238-74q-5-9-14.5-15.5T760-240H558q-27 0-43-2t-33-8l-93-31 22-78 81 27q17 5 40 8t68 4q0-11-6.5-21T578-354l-234-86h-64v220ZM40-80v-440h304q7 0 14 1.5t13 3.5l235 87q33 12 53.5 42t20.5 66h80q50 0 85 33t35 87v40L560-60l-280-78v58H40Zm80-80h80v-280h-80v280Z" /></svg>
                   <span>Loan Eligibility</span>
                 </NavLink>
@@ -204,13 +184,10 @@ const Sidebar = () => {
             {authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/register');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink to="/verifyloan" className="nav-link">
-                  {/* <i className="ri-user-add-line"></i> */}
+
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M160-640h640v-80H160v80Zm-80-80q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v240H160v240h164v80H160q-33 0-56.5-23.5T80-240v-480ZM598-80 428-250l56-56 114 112 226-226 56 58L598-80ZM160-720v480-180 113-413Z" /></svg>
                   <span>Verify Loan</span>
                 </NavLink>
@@ -220,10 +197,7 @@ const Sidebar = () => {
             {!authService.IsAdmin() && (
               <li
                 className="nav-item"
-              // onClick={() => {
-              //     pushRoute('/login');
-              //     this.handleMenuClick();
-              // }}
+
               >
                 <NavLink
                   to="/Loanstatus"
@@ -231,7 +205,7 @@ const Sidebar = () => {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  {/* <i className="ri-user-3-line"></i> */}
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="22"
@@ -246,37 +220,44 @@ const Sidebar = () => {
 
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/register');
-            //     this.handleMenuClick();
-            // }}
+
             >
               <NavLink to="/transection_history" className="nav-link">
-                {/* <i className="ri-user-add-line"></i> */}
+
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
                 <span> Transaction History</span>
               </NavLink>
             </li>
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/register');
-            //     this.handleMenuClick();
-            // }}
+
             >
               <NavLink to="/emihistory" className="nav-link">
-                {/* <i className="ri-user-add-line"></i> */}
+
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
                 <span> EMI History</span>
               </NavLink>
             </li>
+            {authService.IsAdmin() &&
+              <li className="nav-item">
+                <NavLink to="/Kyc_url" className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path d="M12 2L2 21h20L12 2zm0 5l5.5 9h-11L12 7z" />
+                  </svg>
+                  <span>Generate Kyc Url</span>
+                </NavLink>
+              </li>
+            }
+
+
 
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/login');
-            //     this.handleMenuClick();
-            // }}
+
             >
               <NavLink
                 to="/settings"
@@ -291,17 +272,13 @@ const Sidebar = () => {
             </li>
 
 
-
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/login');
-            //     this.handleMenuClick();
-            // }}
+
             >
               {!authService.getCurrentUser() && (
                 <NavLink to="/login" className="nav-link ">
-                  {/* <i className="ri-login-circle-line"></i> */}
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="22"
@@ -316,14 +293,11 @@ const Sidebar = () => {
             </li>
             <li
               className="nav-item"
-            // onClick={() => {
-            //     pushRoute('/login');
-            //     this.handleMenuClick();
-            // }}
+
             >
               {authService.getCurrentUser() && (
                 <NavLink to="/landing" className="nav-link " onClick={handleLogout}>
-                  {/* <i className="ri-login-circle-line"></i> */}
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="22"

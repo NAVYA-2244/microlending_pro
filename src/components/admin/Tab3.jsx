@@ -209,13 +209,13 @@ const Tab3 = () => {
                                         </div>
                                     </td>
                                     <td>{formattedDate(loan?.date_of_applycation)}</td>
-                                    <td>{formattedDate(loan?.emi_detals.nextEMIDate)}</td>
+                                    <td>{formattedDate(loan?.emi_details.nextEMIDate)}</td>
 
 
                                     <td className="text-primary">
                                         {loan.user_id}
                                     </td>
-                                    <td>{loan?.form_id}</td>
+                                    <td>{loan?.loan_id}</td>
                                     <td> ₱ {loan?.loan_amount}</td>
                                     <td>{loan?.months}</td>
                                     <td>{loan?.loan_type}</td>
@@ -236,8 +236,8 @@ const Tab3 = () => {
 
                                         </div>{" "}
 
-                                        {isEMIDatePast(loan?.emi_detals.nextEMIDate) && (
-                                            <button className="btn btn-primary" onClick={() => handleShowModal(loan.form_id)}>
+                                        {isEMIDatePast(loan?.emi_details.nextEMIDate) && (
+                                            <button className="btn btn-primary" onClick={() => handleShowModal(loan.loan_id)}>
                                                 Add PenaltyModal
                                             </button>
 

@@ -25,7 +25,7 @@ function EmiDetails() {
         // setBtnDisabled(true)
         try {
             setLoading(true)
-            const response = await backEndCallObj("/emi/get_emi_details", { form_id: formId });
+            const response = await backEndCallObj("/emi/get_emi_details", { loan_id: formId });
             console.log(response, "emaisdata")
             setEmis(response);
             setLoading(false);
@@ -74,11 +74,11 @@ function EmiDetails() {
             setLoading(true)
             const payload = {
 
-                loan_id: emis?.form_id,
-                paymentAmount: emis?.emi_detals.totalInstallmentAmount,
-                instalmentNumber: emis?.emi_detals.installmentNumber,
+                loan_id: emis?.loan_id,
+                paymentAmount: emis?.emi_details.totalInstallmentAmount,
+                instalmentNumber: emis?.emi_details.installmentNumber,
 
-                delayedAmount: emis?.emi_detals.delayedAmount
+                delayedAmount: emis?.emi_details.delayedAmount
             };
 
             console.log(payload, "payload")
@@ -153,12 +153,12 @@ function EmiDetails() {
                                             </tr>
                                         ) : (
                                             <tr className='text-center'>
-                                                <td>{emis?.form_id || "NA"}</td>
+                                                <td>{emis?.loan_id || "NA"}</td>
                                                 <td>  ₱ {emis?.loan_amount || "NA"}</td>
-                                                <td>{emis?.emi_detals?.interestRate || "NA"}%</td>
-                                                <td>{emis?.emi_detals?.delayedAmount || "0"}</td>
-                                                <td> ₱ {emis?.emi_detals?.totalInstallmentAmount || "0"}</td>
-                                                <td>  {emis?.emi_detals?.installmentNumber || "0"}</td>
+                                                <td>{emis?.emi_details?.interestRate || "NA"}%</td>
+                                                <td>{emis?.emi_details?.delayedAmount || "0"}</td>
+                                                <td> ₱ {emis?.emi_details?.totalInstallmentAmount || "0"}</td>
+                                                <td>  {emis?.emi_details?.installmentNumber || "0"}</td>
                                                 {/* <td>{formatDateTime(emis?.startDate) || "NA"}</td>
                                             <td>{formatDateTime(emis?.endDate) || "NA"}</td>
                                             <td>{formatDateTime(emis?.nextEMIDate) || "NA"}</td> */}
@@ -181,7 +181,7 @@ function EmiDetails() {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Do you want to proceed with the EMI payment?</p>
-                    <h5><span>₱ </span>{emis.emi_detals.totalInstallmentAmount}</h5>
+                    <h5><span>₱ </span>{emis.emi_details.totalInstallmentAmount}</h5>
                 </Modal.Body>
                 <Modal.Footer>
                     <button className='btn btn-secondary' onClick={handleClose} disabled={btnDisabled}>Cancel</button>

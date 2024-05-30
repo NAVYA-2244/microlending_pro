@@ -154,8 +154,35 @@ const Header = () => {
               </ul>
 
             </li>
-            <li> {authService.getCurrentUser ? <h6 className="text-center mt-3">{userprofileData?.first_name !== "0" ? capitalizeFirstLetter(userprofileData?.first_name) : "user"}</h6>
-              : <div className="text-center mt-3">{adminprofileData?.first_name ? capitalizeFirstLetter(adminprofileData?.first_name) : ""}</div>}</li>
+            {/* <li> {authService.getCurrentUser ? <p className="text-center text-wrapper mt-3">{userprofileData?.first_name !== "0" ? capitalizeFirstLetter(userprofileData?.first_name) : "user"}</p>
+              : <div className="text-center mt-3">{adminprofileData?.first_name ? capitalizeFirstLetter(adminprofileData?.first_name) : ""}</div>}
+              </li> */}
+
+            <li className="d-lg-none">
+              {authService.getCurrentUser ? (
+                <p className="text-center text-wrapper mt-3">
+                  {authService.IsAdmin() ? "Admin" : "User"}
+                </p>
+              ) : (
+                <p className="text-center text-wrapper mt-3">User</p>
+              )}
+            </li>
+            <li className="d-none d-lg-block">
+              {authService.getCurrentUser ? (
+                <p className="text-center text-wrapper mt-3">
+                  {userprofileData?.first_name !== "0"
+                    ? capitalizeFirstLetter(userprofileData?.first_name)
+                    : "user"}
+                </p>
+              ) : (
+                <div className="text-center mt-3">
+                  {adminprofileData?.first_name
+                    ? capitalizeFirstLetter(adminprofileData?.first_name)
+                    : ""}
+                </div>
+              )}
+            </li>
+
           </ul>
 
         </div>

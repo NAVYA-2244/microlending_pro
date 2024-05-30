@@ -5,6 +5,7 @@ import { backEndCall } from '../../services/mainServiceFile';
 import { useMovieContext } from '../comman/Context';
 import Updateprofile from './Updateprofile';
 import authService from '../../services/authService';
+import { Navigate } from 'react-router-dom';
 
 function KycRoot() {
 
@@ -29,7 +30,8 @@ function KycRoot() {
     };
 
     useEffect(() => {
-        if (userprofileData?.kyc_status == "pending" && userprofileData?.topwallet_user_id !== "0") {
+
+        if (authService.kycStatus() == "pending" && userprofileData?.topwallet_user_id !== "0") {
             fetchData();
         }
     }, []);
@@ -39,14 +41,13 @@ function KycRoot() {
         window.open(kycRoot, '_blank');
         authService.logout()
     };
-    // if (userprofileData?.kyc_status == "pending") {
-    //   console.log(userprofileData?.kyc_status)
-    //   Navigate("/updateprofile")
-    // }
+
     return (
         <div>
             {userprofileData?.topwallet_user_id === "0" ? (
-                <Updateprofile />
+
+
+                < Updateprofile />
             ) : (
                 <div className="user-details-container">
                     <h5 className="mb-4">KYC Integration</h5>

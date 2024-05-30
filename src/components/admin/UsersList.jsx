@@ -269,7 +269,7 @@ const UsersList = () => {
                                                 </td>
                                                 <td>{user?.first_name && user.last_name == 0 ? "NA" : `${user?.first_name} ${user?.last_name}`}</td>
                                                 <td>{user?.phone_number}</td>
-                                                <td>{user?.cibil_score}</td>
+                                                <td>{user?.credit_score}</td>
                                                 <td>{user?.user_active}</td>
                                                 <td>
                                                     <button

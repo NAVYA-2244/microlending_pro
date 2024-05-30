@@ -5,6 +5,7 @@ import http from "./httpService";
 import { jwtDecode } from "jwt-decode";
 
 const tokenKey = "token";
+
 http.setJwt(getJwt());
 const apiEndpoint = process.env.REACT_APP_API_URL;
 
@@ -44,6 +45,7 @@ export async function ApplyLoanOTP(phone_number, current_access_ip) {
 
 export function getJwt() {
   return localStorage.getItem(tokenKey);
+  
 }
 
 export function logout() {
@@ -139,14 +141,36 @@ http.setJwt(getJwt());
     const jwt = localStorage.getItem(tokenKey);
    
     const decryptedToken = helpers.decryptobj(jwt);
+    // console.log(jwtDecode(decryptedToken) ,"token")
     const jwtDeco=jwtDecode(decryptedToken).isAdmin;
-    
+  
     return jwtDeco
     
   } catch (ex) {
     return null;
   }
 }
+
+export function kycStatus() {
+  http.setJwt(getJwt());
+  
+    try {
+      const jwt = localStorage.getItem(tokenKey);
+     
+      const decryptedToken = helpers.decryptobj(jwt);
+      // console.log(jwtDecode(decryptedToken) ,"tokennnnnnnn")
+      const jwtDeco=jwtDecode(decryptedToken).kyc_status;
+    console.log(jwtDecode(decryptedToken).kyc_status,"kysc status")
+    // console.log(jwtDeco,"ejfksdhfkj")
+      return jwtDeco
+     
+
+    } catch (ex) {
+      return null;
+    }
+  }
+  
+
 // export function Admin_type() {
 //   http.setJwt(getJwt());
 //   console.log("hhhhh")
@@ -223,6 +247,7 @@ export default {
   tfa,
   logout,
   IsAdmin,
+  kycStatus,
   ApplyLoanOTP,
   AplyloanverifyOTP
   

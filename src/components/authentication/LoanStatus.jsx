@@ -105,7 +105,7 @@ function LoanStatus() {
       console.log(response);
       setLoanList((prevLoanList) => {
         const updatedLoanList = prevLoanList.map((loan) =>
-          loan.form_id === loan_id
+          loan.loan_id === loan_id
             ? { ...loan, loan_status: "Cancelled" }
             : loan
         );
@@ -146,7 +146,7 @@ function LoanStatus() {
       console.log(response);
       setLoanList((prevLoanList) => {
         const updatedLoanList = prevLoanList.map((loan) =>
-          loan.form_id === cancelLoanId
+          loan.loan_id === cancelLoanId
             ? { ...loan, loan_status: "Cancelled" }
             : loan
         );
@@ -300,7 +300,7 @@ function LoanStatus() {
                               {loan?.loan_status === "Processing" && (
                                 <button
                                   className="btn btn-danger mt-2"
-                                  onClick={() => handleConfirmationModal(loan.form_id)} // Open the confirmation modal
+                                  onClick={() => handleConfirmationModal(loan.loan_id)} // Open the confirmation modal
                                   disabled={btnDisabled}
                                 >
                                   Cancel Loan
@@ -311,7 +311,7 @@ function LoanStatus() {
                                   className="btn btn-primary"
                                   onClick={() =>
                                     navigate("/emaidetails", {
-                                      state: { formId: loan.form_id },
+                                      state: { formId: loan.loan_id },
                                     })
                                   }
                                 >
@@ -404,7 +404,7 @@ function LoanStatus() {
 
               <div className="col-6">
                 <p>
-                  <strong>Loan Id:</strong> {selectedLoan?.form_id}
+                  <strong>Loan Id:</strong> {selectedLoan?.loan_id}
                 </p>
               </div>
               <div className="col-6">

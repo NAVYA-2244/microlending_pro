@@ -38,6 +38,8 @@ import Tab3 from "./components/admin/Tab3";
 import Userdashbord from "./components/dashbord/Userdashbord";
 import Admindashbord from "./components/dashbord/Admindashbord";
 import KycRoot from "./components/authentication/KycRoot";
+import Kyc_satus from "./components/authentication/Kyc_satus";
+import Kyc_url from "./components/admin/kyc_url";
 
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
@@ -81,10 +83,12 @@ class App extends Component {
 
               <Route path="/tab2"element={<Tab2></Tab2>}></Route>
               <Route path="/tab3"element={<Tab3></Tab3>}></Route>
-              <Route path="/KYC"element={<KycRoot></KycRoot>}></Route>
+              <Route path="/kyc"element={<KycRoot></KycRoot>}></Route>
+              <Route path="/Kyc_url"element={<Kyc_url/>}></Route>
+              
 
             </Route>
-            
+            <Route path="/kycstatus"element={<Kyc_satus/>}></Route>
 
             <Route path="/landing" element={<Landing></Landing>}></Route>
             <Route path="/login" element={<LoginForm></LoginForm>}></Route>

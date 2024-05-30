@@ -6,6 +6,7 @@ import { Button, Collapse } from 'react-bootstrap';
 import { backEndCall } from '../../services/mainServiceFile';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useMovieContext } from '../comman/Context';
+import authService from '../../services/authService';
 
 function LoaneligibilityDetails() {
     const navigate = useNavigate();
@@ -44,12 +45,14 @@ function LoaneligibilityDetails() {
         return calculateEMI.toFixed(2);
     };
     const handleApplyLoan = (minLoanAmount, maxLoanAmount, tenureItem) => {
-        console.log(usereligibility.kyc_status, "kyc--------------->");
-        if (usereligibility.kyc_status !== "verified") {
-            console.log("kyc not verifuyd")
+
+
+        if (userprofileData?.kyc_status !== "verified") {
+
             // navigate('/updateprofile');
-            navigate('/KYC');
-        } else if (usereligibility.kyc_status === "verified") {
+            navigate('/kyc');
+
+        } else if (userprofileData?.kyc_status === "verified") {
             // navigate(`/applyloan?minAmount=${minLoanAmount}&maxAmount=${maxLoanAmount}`);
             navigate('/applyloan', { state: { minAmount: usereligibility.minLoanAmount, maxAmount: usereligibility.maxLoanAmount } });
 
@@ -97,8 +100,8 @@ function LoaneligibilityDetails() {
                                         <tr>
                                             <td className='position-relative' >
                                                 <div className='loan_eligibility'>
-                                                    {/* <span className='text-success'>Your Credit Score : {userprofileData?.cibil_score}</span> */}
-                                                    <span> {userprofileData?.cibil_score}</span>
+                                                    {/* <span className='text-success'>Your Credit Score : {userprofileData?.credit_score}</span> */}
+                                                    <span> {userprofileData?.credit_score}</span>
                                                 </div>
                                             </td>
                                             {/* <td className='position-relative' >

@@ -2,7 +2,7 @@
 import ReactSpeedometer from "react-d3-speedometer";
 import VerifyLoan from "../admin/VerifyLoan";
 const CibilScoreGauge = (cibile_score) => {
-    console.log(cibile_score, "cibilscore")
+    // console.log(cibile_score, "cibilscore")
     const value = cibile_score.creditScores * 100;
     const creditScores = String(value / 100);
     const segmentStyles = {

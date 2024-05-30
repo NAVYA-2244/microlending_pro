@@ -264,7 +264,7 @@ const Userinfo = () => {
                                 <>
                                     <label className="form-label me-1">Credit Score :</label>
                                     <span className="text-primary">
-                                        {adminprofileData?.cibil_score === null ? "NA" : adminprofileData?.cibil_score}
+                                        {adminprofileData?.credit_score === null ? "NA" : adminprofileData?.credit_score}
                                     </span>
                                 </>
                             </div>

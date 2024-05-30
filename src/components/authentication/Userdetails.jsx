@@ -7,37 +7,39 @@ import { useMovieContext } from "../comman/Context";
 import { useNavigate } from "react-router-dom";
 import ApplyLoan from './ApplyLoan';
 import Updateprofile from "./Updateprofile";
+import authService from "../../services/authService";
+import toast from "react-hot-toast";
 
 const Userdetails = () => {
   const navigate = useNavigate();
   const { userprofileData, setUserprofileData } = useMovieContext();
-  console.log(userprofileData, "nnnnnnnnnnnnnnnnnnn");
+
   // const [userData, setUserData] = useState("0");
 
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
-    console.log("entered useeffect")
+
     try {
       if (!userprofileData) {
-        console.log(userprofileData, "bkd called");
+
         setLoading(true);
         const response = await backEndCallObj("/users/user_profile", {});
-        console.log(response, "bkd response profile");
+
         setUserprofileData(response);
         setLoading(false);
       }
-      //  else {
-      // setUserprofileData(userprofileData)
-      // }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-      setLoading(false);
+
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+
+        toast.error(ex.response?.data);
+        setLoading(false)
+      }
     }
   };
 
   useEffect(() => {
-    console.log("calling");
 
     // if (userprofileData <= 0) {
     fetchData();
@@ -51,29 +53,14 @@ const Userdetails = () => {
       </div>
     </div></div>;
   }
-  // return (
-  //   <div>
-  //     <div className="text-center mt-3">
-  //       <div
-  //         className="spinner-border spiner-border-sm"
-  //         style={{ color: "blue" }}
-  //         role="status"
-  //       >
-  //         <span className="sr-only"></span>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-  // }
 
-  // console.log(userprofileData, "hhhhhhhhhhhhh");
 
   // if (userprofileData?.kyc_status == "pending") {
   //   console.log(userprofileData?.kyc_status)
   //   Navigate("/updateprofile")
   // }
   function capitalizeFirstLetter(string) {
-    if (!string) return ""; // Handle cases where string is undefined or null
+    if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
   return (
@@ -82,7 +69,7 @@ const Userdetails = () => {
         <div className="user-details-container ">
 
 
-          <h5 className="mb-4">My Profile</h5>
+          {/* <h5 className="mb-4">My Profile</h5> */}
           <div className="row">
             <div className="col-xl-4">
               <div className="card overflow-hidden">
@@ -102,7 +89,8 @@ const Userdetails = () => {
                       {/* </span> */}
                     </div>
                     <h5 className="mb-0 ms-3 text-white text-capitalize">
-                      {userprofileData?.first_name == "0" ? "" : userprofileData?.first_name} {userprofileData?.last_name == "0" ? "" : userprofileData?.last_name}
+
+                      {userprofileData?.first_name == "0" ? "" : userprofileData?.first_name} {userprofileData?.last_name == "0" ? "" : authService.kycStatus() !== "verified" && userprofileData?.last_name}
                     </h5>
                   </div>
                   <span className="badge bg-success fs-12 ms-auto">
@@ -134,7 +122,7 @@ const Userdetails = () => {
                         {userprofileData?.phone_number === "0" ? "NA" : userprofileData?.phone_number}
                       </span>
                       <span className="text-success float-end">
-                        {userprofileData?.kyc_status === "0" ? "NA" : userprofileData?.kyc_status}
+                        {userprofileData?.kyc_status === "0" ? "NA" : capitalizeFirstLetter(userprofileData?.kyc_status)}
                       </span>
                     </div>
                   </div>
@@ -146,13 +134,35 @@ const Userdetails = () => {
                       </span>
                     </>
                   </div>
-                  <div className="mt-3">
+                  {/* <div className="mt-3">
                     <>
                       <label className="form-label me-1">Topwallet User Id
                         :</label>
                       <span className="text-primary">
                         {userprofileData?.topwallet_user_id
                           === "0" ? "NA" : userprofileData?.topwallet_user_id
+                        }
+                      </span>
+                    </>
+                  </div> */}
+                  <div className="mt-3">
+                    <>
+                      <label className="form-label me-1">Bank Id
+                        :</label>
+                      <span className="text-primary">
+                        {userprofileData?.bank_id
+                          === "0" ? "NA" : userprofileData?.bank_id
+                        }
+                      </span>
+                    </>
+                  </div>
+                  <div className="mt-3">
+                    <>
+                      <label className="form-label me-1">Bank Code
+                        :</label>
+                      <span className="text-primary">
+                        {userprofileData?.bank_code
+                          === "0" ? "NA" : userprofileData?.bank_code
                         }
                       </span>
                     </>
@@ -222,7 +232,7 @@ const Userdetails = () => {
                     </button>
                   </div>
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                    <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                    <div className="col-12 ">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
                           First Name :
@@ -233,19 +243,20 @@ const Userdetails = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                      <div>
-                        <label className="text-muted fw-normal form-label me-2">
-                          Last Name :{" "}
-                        </label>
-                        <span className="text-capitalize">
-                          {" "}
-                          {userprofileData?.last_name == "0" ? "NA" : userprofileData?.last_name}
-                        </span>
+                    {authService.kycStatus() !== "verified" &&
+                      <div div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                        <div>
+                          <label className="text-muted fw-normal form-label me-2">
+                            Last Name :{" "}
+                          </label>
+                          <span className="text-capitalize">
+                            {" "}
+                            {userprofileData?.last_name == "0" ? "NA" : userprofileData?.last_name}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-
+                    }
                   </div>
 
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
@@ -309,7 +320,7 @@ const Userdetails = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
+                  {/* <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
                     <h6 className="mb-2 fs-17">Address Details</h6>
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                       <div>
@@ -328,9 +339,9 @@ const Userdetails = () => {
                       </div>
                     </div>
 
-                  </div>
+                  </div> */}
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-
+                    <h6 className="mb-2 fs-17">Address Details</h6>
                     <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
@@ -375,7 +386,7 @@ const Userdetails = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div >
       }
     </>
   );
