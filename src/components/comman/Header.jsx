@@ -372,7 +372,7 @@ const Header = () => {
                     <i className="ri-user-3-fill"></i>
                   )}
                   <i
-                    className="ri-edit-line edit-icon position-absolute top-0 end-0 m-1 small-rounded-icon"
+                    className="ri-edit-line edit-icon position-absolute top-0 end-0  small-rounded-icon"
                     onClick={handleProfilePhotoSelection}
                   ></i>
                 </span>

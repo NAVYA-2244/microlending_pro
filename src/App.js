@@ -44,6 +44,7 @@ import BankDetails from "./components/authentication/BankDetails";
 import WithdrawalPage from "./components/authentication/WithdrawalPage";
 import WithdrawOtp from "./components/authentication/WithdrawOtp";
 import AdminTransection from "./components/admin/AdminTransections";
+import EmiPayOtp from "./components/authentication/EmiPayOtp.JSX";
 
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
@@ -93,7 +94,7 @@ class App extends Component {
               <Route path="/banklist" element={<BankDetails />}></Route>
               <Route path="/withdrawal" element={<WithdrawalPage />}> </Route>
               <Route path="/withdrawOtp" element={<WithdrawOtp />} />
-
+              <Route path="/emipayotp" element={<EmiPayOtp />} />
               <Route path="/kycstatus" element={<Kyc_satus />}></Route>
 
             </Route>

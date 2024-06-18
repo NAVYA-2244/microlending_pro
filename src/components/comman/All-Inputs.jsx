@@ -226,6 +226,41 @@ export function Input_email({
 
 
 
+
+export function Select_input_details({ name, value, schema, SetForm, options }) {
+  const { errors, setErrors } = useMovieContext();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Validate against schema if schema is provided
+    if (schema) {
+      const validationResult = schema.validate({ [name]: value }, { abortEarly: false });
+
+      const errorMessage = validationResult.error ? validationResult.error.details[0].message : "";
+
+      // Update errors state
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: errorMessage,
+      }));
+    }
+  }
+
+  return (
+    <>
+      <select name={name} value={value} onChange={handleChange} className="form-control">
+        <option value="">--select--</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      {errors[name] && <p className="error mt-2">{errors[name]}</p>}
+    </>
+  );
+}
+
 export function Select_input({ name, value, schema, SetForm, options }) {
   // console.log(name, options)
   // console.log("value in select -->", value)

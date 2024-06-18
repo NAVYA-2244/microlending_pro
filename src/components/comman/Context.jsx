@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 const MovieContext = createContext();
@@ -41,6 +41,12 @@ export const MovieContextProvider = ({ children }) => {
   const [adminprofileData, setAdminprofileData] = useState(null)
   const [kycRoot, setKycRoot] = useState("");
   const [bkcall, setbkcall] = useState(false)
+  useEffect(() => {
+    return () => {
+      setErrors({});
+    };
+  }, []);
+
   return (
     <MovieContext.Provider
       value={{

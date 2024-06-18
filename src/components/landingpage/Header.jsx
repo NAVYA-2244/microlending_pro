@@ -59,7 +59,7 @@ const Header = () => {
             </div>
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <NavItem link="#Home" text="Home" isActive={true} />
+                <NavItem link="#home" text="Home" isActive={true} />
                 <NavItem link="#Solutions" text="Solutions" />
                 <NavItem link="#Resources" text="Resources" />
                 <NavItem link="#Clients" text="Clients" />

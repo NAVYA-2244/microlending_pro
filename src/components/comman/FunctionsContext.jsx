@@ -27,7 +27,11 @@ export const FunctionsContextProvider = ({ children }) => {
 
   const handleChange = (e, schema, newSetForm) => {
     const { name, value } = e.target;
+    console.log(schema)
+    // debugger
+    //  const schema = Joi.object(mainSchema);
     const errorMessage = schema?.validate(value)?.error?.message;
+    console.log(errorMessage, "mabakjsjk")
     setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     newSetForm((prevForm) => ({ ...prevForm, [name]: value }));
   };

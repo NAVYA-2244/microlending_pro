@@ -26,7 +26,7 @@ function EmiDetails() {
         try {
             setLoading(true)
             const response = await backEndCallObj("/emi/get_emi_details", { loan_id: formId });
-            // console.log(response, "emaisdata")
+            console.log(response, "emaisdata")
             setEmis(response);
             setLoading(false);
         } catch (ex) {
@@ -51,7 +51,7 @@ function EmiDetails() {
         // console.log(paymentid, "transaction id")
         try {
             const response = await backEndCallObj("/emi/emi_status", { payment_id: paymentid });
-            // console.log(response, "loan status"); // Log the response from the API
+            console.log(response, "loan status"); // Log the response from the API
 
             toast.success(response, "emi successfully");
             fetchEMIDetails();
@@ -184,6 +184,7 @@ function EmiDetails() {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Do you want to proceed with the EMI payment?</p>
+
                     <h5><span>₱ </span>{emis.emi_details.totalInstallmentAmount}</h5>
                 </Modal.Body>
                 <Modal.Footer>
