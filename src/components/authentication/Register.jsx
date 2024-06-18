@@ -52,7 +52,7 @@ const RegistrationForm = () => {
     }
 
     // Submit the form data
-    console.log("Form submitted:", formData);
+    // console.log("Form submitted:", formData);
   };
 
   const validate = () => {

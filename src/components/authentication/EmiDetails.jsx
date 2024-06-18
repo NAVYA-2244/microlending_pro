@@ -26,7 +26,7 @@ function EmiDetails() {
         try {
             setLoading(true)
             const response = await backEndCallObj("/emi/get_emi_details", { loan_id: formId });
-            console.log(response, "emaisdata")
+            // console.log(response, "emaisdata")
             setEmis(response);
             setLoading(false);
         } catch (ex) {
@@ -48,10 +48,10 @@ function EmiDetails() {
 
     const callLoanStatusAPI = async (paymentid) => {
         // setBtnDisabled(true)
-        console.log(paymentid, "transaction id")
+        // console.log(paymentid, "transaction id")
         try {
             const response = await backEndCallObj("/emi/emi_status", { payment_id: paymentid });
-            console.log(response, "loan status"); // Log the response from the API
+            // console.log(response, "loan status"); // Log the response from the API
 
             toast.success(response, "emi successfully");
             fetchEMIDetails();
@@ -63,9 +63,10 @@ function EmiDetails() {
             }
 
         }
-        // finally {
-        //     setBtnDisabled(false);
-        // }
+        finally {
+            // setBtnDisabled(false);
+            setLoading(false)
+        }
     };
 
     const handlePayEMI = async () => {
@@ -81,7 +82,7 @@ function EmiDetails() {
                 delayedAmount: emis?.emi_details.delayedAmount
             };
 
-            console.log(payload, "payload")
+            // console.log(payload, "payload")
             const response = await backEndCallObj("/emi/pay_emi", payload);
             setUserprofileData(null)
             setUserData(null)
@@ -91,16 +92,18 @@ function EmiDetails() {
             setTimeout(() => {
                 callLoanStatusAPI(response.payment_id);
             }, 6000);
-
+            // setLoading(false)
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
                 setBtnDisabled(false)
+                setLoading(false)
                 setShowModal(false);
             }
         }
         finally {
             // setBtnDisabled(false);
+            // setLoading(false)
         }
     };
 

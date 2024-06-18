@@ -23,10 +23,10 @@ function TransactionHistory() {
 
     const fetchTransactionHistory = async () => {
 
-        console.log(transactionHistory.length)
+        // console.log(transactionHistory.length)
         try {
 
-            console.log("yes")
+            // console.log("yes")
             setLoading(true);
             const response = await backEndCall('/users/transaction_history');
 
@@ -52,7 +52,7 @@ function TransactionHistory() {
 
 
 
-    console.log(transactionHistory)
+    // console.log(transactionHistory)
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };

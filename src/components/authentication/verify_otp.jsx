@@ -124,7 +124,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
 
 
 
-      toast.success("Otp Verified Successfully");
+      // toast.success("Otp Verified Successfully");
 
       navigate("/dashboard");
     } catch (ex) {
@@ -321,7 +321,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                       <button
                         type="submit"
                         className="btn btn-primary py-2 mb-3 mt-4"
-                        disabled={btnDisabled}
+                        disabled={btnDisabled} style={{ height: "38px", width: "100px" }}
                       >
                         {btnDisabled ? "Please Wait" : "Verify"}
 

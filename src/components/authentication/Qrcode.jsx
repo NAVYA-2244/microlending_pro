@@ -112,7 +112,7 @@ const QRCode = ({ qr, secret }) => {
       setCountdown(120);
       startCountdown()
       // toast.success(response.message, "Otp successfull",);
-      console.log(response, "resend");
+      // console.log(response, "resend");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error(ex.response?.data);

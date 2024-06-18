@@ -49,7 +49,7 @@ const Settings = () => {
         const response = await authService.tfa(phone_number);
         if (response) {
           setQrData(true);
-          console.log(response, "qrcod");
+          // console.log(response, "qrcod");
           setQr(response.QR);
 
         }

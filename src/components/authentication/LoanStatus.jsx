@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useMovieContext } from "../comman/Context";
 import moment, { months } from "moment";
 import { Modal, Button } from "react-bootstrap";
-
+import { saveAs } from 'file-saver';
 function LoanStatus() {
   const { loanList, setLoanList, userprofileData, setUserEligibility, usereligibility } = useMovieContext();
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -24,13 +24,13 @@ function LoanStatus() {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    console.log(userprofileData);
+    // console.log(userprofileData);
     setBtnDisabled(true);
     try {
       if (!loanList) {
         setLoading(true);
         const response = await backEndCall("/users/user_loan_details");
-        console.log(response, "loan details");
+        // console.log(response, "loan details");
         setLoanList(response);
         setLoading(false);
       } else {
@@ -63,7 +63,7 @@ function LoanStatus() {
     try {
       setLoading(true);
       const response = await backEndCall("/users/matching_eligibility");
-      console.log(response, "response")
+      // console.log(response, "response")
 
       setUserEligibility(response);
       setLoading(false);
@@ -80,9 +80,9 @@ function LoanStatus() {
   const findInterest = (months, loan_amount) => {
     // console.log(loan_amount, months);
     const filteredData = usereligibility?.tenure.filter(item => item.months === months);
-    console.log(filteredData[0]?.interest, "-------ooooo---------------->");
+    // console.log(filteredData[0]?.interest, "-------ooooo---------------->");
     const calculateEMI = (loan_amount * (filteredData[0]?.interest / 100 * months / 12) + loan_amount) / months
-    console.log(calculateEMI, "calculationemi");
+    // console.log(calculateEMI, "calculationemi");
     setEmi(calculateEMI.toFixed(2));
 
     setInterest(filteredData[0]?.interest)
@@ -102,7 +102,7 @@ function LoanStatus() {
       setLoading(true);
       const payload = { loan_id, loan_status };
       const response = await backEndCallObj("/user/cancel_loan", payload);
-      console.log(response);
+      // console.log(response);
       setLoanList((prevLoanList) => {
         const updatedLoanList = prevLoanList.map((loan) =>
           loan.loan_id === loan_id
@@ -143,7 +143,7 @@ function LoanStatus() {
       setLoading(true);
       const payload = { loan_id: cancelLoanId, loan_status: "Cancelled" };
       const response = await backEndCallObj("/user/cancel_loan", payload);
-      console.log(response);
+      // console.log(response);
       setLoanList((prevLoanList) => {
         const updatedLoanList = prevLoanList.map((loan) =>
           loan.loan_id === cancelLoanId
@@ -163,37 +163,32 @@ function LoanStatus() {
       setShowConfirmationModal(false); // Close the confirmation modal
     }
   };
-  // const calculateEMI = (loan_amount, interest, months) => {
 
-  // const calculateEMI = (loan_amount * (interest / 100 * months / 12) + loan_amount) / months
+  const generateDownloadableContent = () => {
+    const content = `
+        Customer Name: ${userprofileData?.full_name || "N/A"}
+        Loan Amount: ₱ ${selectedLoan?.loan_amount || "N/A"}
+        Applied Date: ${formattedDate(selectedLoan?.date_of_applycation) || "N/A"}
+        Months: ${selectedLoan?.months || "N/A"}
+        Loan Id: ${selectedLoan?.loan_id || "N/A"}
+        Interest: ${interest || "N/A"}%
+        Passport No: ${userprofileData?.passport_number || "N/A"}
+        EMI: ₱ ${emi || "N/A"}
+        Tin No: ${userprofileData?.tin_number || "N/A"}
+        Loan Type: ${selectedLoan?.loan_type || "N/A"}
+        Phone Number: ${userprofileData?.phone_number || "N/A"}
+        Loan Status: ${selectedLoan?.loan_status || "N/A"}
+       
+    `;
 
-  // return calculateEMI.toFixed(2);
-  // };
+    return new Blob([content], { type: "text/plain;charset=utf-8" });
+  };
 
-  // const getNextNearestEMIDate = () => {
-  //   let nearestDate = null;
-  //   loanList.forEach((loan) => {
-  //     const emiDetails = loan?.emi_detals;
-  //     if (!emiDetails || !emiDetails.nextEMIDate) return;
+  const handleDownload = () => {
+    const blob = generateDownloadableContent();
+    saveAs(blob, "loan_details.txt");
+  };
 
-  //     const nextEMIDateString = emiDetails.nextEMIDate;
-  //     const parsedDate = new Date(nextEMIDateString);
-
-  //     if (!nearestDate || parsedDate < nearestDate) {
-  //       nearestDate = parsedDate;
-  //     }
-  //   });
-
-  //   if (!nearestDate) return "";
-
-  //   // Format the nearest date as per your requirement
-  //   const formattedDate = moment(nearestDate).format("YYYY-MM-DD");
-
-  //   return formattedDate;
-  // };
-
-
-  console.log(usereligibility, "maching eligibily")
   return (
     <div className="user-details-container">
       <style>
@@ -216,7 +211,7 @@ function LoanStatus() {
                   <table className="table table-bordered table-centered text-center">
                     <thead>
                       <tr>
-                        <th scope="col">Customer</th>
+                        {/* <th scope="col">Customer</th> */}
                         <th scope="col">Applied Date</th>
                         <th scope="col">Passport NO</th>
                         <th scope="col">Tin No</th>
@@ -226,6 +221,7 @@ function LoanStatus() {
                         <th scope="col">Loan Status</th>
                         <th scope="col">Loan Details</th>
 
+
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -234,29 +230,22 @@ function LoanStatus() {
                         loanList.length > 0 &&
                         loanList.map((loan, index) => (
                           <tr key={index}>
-                            <td className="text-center">
-                              {/* <div className="d-flex text-center"> */}
-                              {/* <img
-                                  src={loan.photo}
-                                  alt="User"
-                                  className="object-fit-cover rounded-circle"
-                                  style={{ width: "45px", height: "45px" }}
-                                /> */}
+                            {/* <td className="text-center">
 
-                              {loan.photo.includes("image") ? (
+
+                              {loan.photo?.includes("image") ? (
                                 <img src={loan?.photo} className="document_image1 mt-1 rounded-2" />
                               ) : <embed src={loan?.photo} className="document_image1 mt-1 rounded-2" />
                               }
                               <h6>{loan?.name}</h6>
-                              {/* {console.log(loan.photo, "navaneetha")} */}
-                              {/* </div> */}
-                            </td>
+
+                            </td> */}
 
                             <td>{formattedDate(loan?.date_of_applycation)}</td>
 
-                            <td>{userprofileData?.passport_number}</td>
+                            <td>{userprofileData?.passport_number == null ? " N/A " : userprofileData?.passport_number}</td>
 
-                            <td>{userprofileData?.tin_number}</td>
+                            <td>{userprofileData?.tin_number == null ? " N/A " : userprofileData?.tin_number}</td>
 
                             <td className="text-primary">
                               ₱ {loan?.loan_amount}
@@ -368,12 +357,12 @@ function LoanStatus() {
           <Modal.Body>
             <div>
               <div className="d-flex justify-content-center mb-4">
-                <img
+                {/* <img
                   src={selectedLoan.photo}
                   alt="User"
                   className="object-fit-cover rounded-circle"
                   style={{ width: "45px", height: "45px" }}
-                />
+                /> */}
                 <h6>{selectedLoan?.name}</h6>
               </div>
             </div>
@@ -382,7 +371,7 @@ function LoanStatus() {
             <div className="row ">
               <div className="col-6">
                 <p>
-                  <strong>Customer Name:</strong> {userprofileData.first_name}{userprofileData.last_name}{" "}
+                  <strong>Customer Name:</strong> {userprofileData?.full_name}{" "}
                 </p>
               </div>
               <div className="col-6">
@@ -439,7 +428,7 @@ function LoanStatus() {
 
               <div className="col-6">
                 <p>
-                  <strong>Phone Number:</strong> {userprofileData.phone_number}
+                  <strong>Phone Number:</strong> {userprofileData?.phone_number}
                 </p>
               </div>
 
@@ -483,9 +472,13 @@ function LoanStatus() {
             </div>
           </Modal.Body>
           <Modal.Footer>
+            <Button variant="primary" onClick={handleDownload}>
+              Download
+            </Button>
             <Button variant="danger" onClick={handleCloseModal}>
               Close
             </Button>
+
           </Modal.Footer>
         </Modal>
       )}
@@ -501,9 +494,10 @@ function LoanStatus() {
             <Button variant="secondary" onClick={() => setShowConfirmationModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleCancelLoan}>
+            <Button variant="danger" onClick={handleCancelLoan} disabled={btnDisabled}>
               Confirm
             </Button>
+
           </Modal.Footer>
         </Modal>}
     </div>

@@ -33,11 +33,12 @@ function EmiHistory() {
     };
 
     const fetchEmiHistory = async () => {
-        console.log("hi")
+
         try {
             setLoading(true);
 
             const response = await backEndCall('/emi/emi_history');
+            // console.log(response)
             setLoading(false)
             setEmiHistory(response || []);
 
@@ -78,8 +79,9 @@ function EmiHistory() {
             };
 
             const response = await backEndCallObj("/emi/emi_filters", formDataToSend);
+            console.log(response, "emi details")
             setEmiHistory(response);
-            console.log(response, "filteremi")
+            // console.log(response, "filteremi")
             setFormData({
                 start_date: "",
                 end_date: "",
@@ -130,121 +132,136 @@ function EmiHistory() {
             <h5 className="mb-4">EMI History</h5>
             <div className='card transections-hisroty'>
                 <div className='card-body'>
-                    < div className='d-flex'>
-                        <div onClick={handleRefresh} disabled={isFetching}>
 
-                            {/* <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i> */}
-                            {isFetching ? (
-                                <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
+                    <form onSubmit={handleSubmit} className='flex-fill'>
+                        <div div className='d-flex ' >
 
-                                </div>
-                            ) : (
-                                <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
-                            )}
-                        </div>
-                        <form onSubmit={handleSubmit} className='flex-fill'>
-                            <div className="row mb-3 d-flex justify-content-end">
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12">
+                            <div onClick={handleRefresh} disabled={isFetching} calssName="mb-4 mb-sm-0">
+                                {isFetching ? (
+                                    <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
 
-                                    <label htmlFor="startDate" className="form-label">Start Date</label>
-                                    <Date_Input
-                                        type={"date"}
-                                        value={formData["start_date"]}
-                                        name={"start_date"}
-                                        SetForm={setFormData}
-                                        schema={schema["start_date"]}
-                                        max={moment().format("YYYY-MM-DD")}
-
-                                        required
-                                    />
-                                </div>
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12">
-
-                                    <label htmlFor="endtDate" className="form-label">End Date</label>
-                                    <Date_Input
-                                        type={"date"}
-                                        value={formData["end_date"]}
-                                        name={"end_date"}
-                                        SetForm={setFormData}
-                                        schema={schema["end_date"]}
-                                        max={moment().format("YYYY-MM-DD")}
-
-                                        required
-                                    />
-                                </div>
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12 mt-auto">
-                                    {/* <label htmlFor="serch" className="form-label">Serch<span className="text-danger">*</span></label> */}
-                                    <SearchInput
-
-                                        type="text"
-                                        name="id"
-                                        value={formData["id"]}
-                                        placeholder="Payment Id "
-                                        SetForm={setFormData}
-                                        schema={schema["id"]}
-
-                                    />
-                                </div>
-                                <div className='col-12 col-xl-2 col-md-2 col-sm-12 my-auto'>
-
-                                    {/* <button type="submit" className="btn btn-primary mt-2" disabled={filterDisabled}>
-                                        Search
-                                    </button> */}
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary mt-2"
-                                        disabled={filterDisabled || !(formData.start_date && formData.end_date || formData.id)}
-                                    >
-                                        Search
-                                    </button>
-                                </div>
+                                    </div>
+                                ) : (
+                                    <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                                )}
                             </div>
-                        </form>
-                    </div>
+
+                        </div >
+                        <div className="row mb-3 d-flex justify-content-end">
+                            <div className="col-6  col-xl-2 col-md-6 col-sm-6">
+
+                                <label htmlFor="startDate" className="form-label">Start Date</label>
+                                <Date_Input
+                                    type={"date"}
+                                    value={formData["start_date"]}
+                                    name={"start_date"}
+                                    SetForm={setFormData}
+                                    schema={schema["start_date"]}
+                                    max={moment().format("YYYY-MM-DD")}
+
+                                    required
+                                />
+                            </div>
+                            <div className="col-6  col-xl-2 col-md-6 col-sm-6">
+
+                                <label htmlFor="endtDate" className="form-label">End Date</label>
+                                <Date_Input
+                                    type={"date"}
+                                    value={formData["end_date"]}
+                                    name={"end_date"}
+                                    SetForm={setFormData}
+                                    schema={schema["end_date"]}
+                                    max={moment().format("YYYY-MM-DD")}
+
+                                    required
+                                />
+                            </div>
+
+                            <div className="col-6  col-xl-2 col-md-6 col-sm-6 mt-auto">
+
+                                <SearchInput
+
+                                    type="text"
+                                    name="id"
+                                    value={formData["id"]}
+                                    placeholder="Payment Id"
+                                    SetForm={setFormData}
+                                    schema={schema["id"]}
+
+                                />
+                            </div>
+                            <div className='col-6  col-xl-2 col-md-6 col-sm-6 my-xl-auto'>
+
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary mt-1 mt-xl-2"
+                                    disabled={filterDisabled || !(formData.start_date && formData.end_date || formData.id)}
+                                >
+                                    Search
+                                </button>
+
+                            </div>
+                        </div>
+                    </form >
                     <div className="table-responsive">
                         <table className="table border table-bordered table-centered text-center">
                             <thead>
                                 <tr className="table-head">
+                                    <th scope="col">Date</th>
                                     <th scope="col">Payment Id</th>
-                                    <th scope="col">Receiver Id</th>
-                                    <th scope="col">Sender Id</th>
+                                    {/* <th scope="col">Receiver Id</th>
+                                    <th scope="col">Sender Id</th> */}
+                                    <th scope="col">Loan Id</th>
+                                    <th scope="col">EMI Amount</th>
                                     <th scope="col">installment Number</th>
-                                    <th scope="col">Transaction Type</th>
+                                    <th scope="col">Type</th>
+
+
                                     <th scope="col">Emi Status</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Payment Date</th>
+
                                 </tr>
                             </thead>
                             <tbody className="table-body">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">
-                                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-                                                <span className="sr-only"></span>
-                                            </div>
-                                        </td>
-                                    </tr>
 
-                                ) : EmiHistory.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center justify-content-center">No transactions found.</td>
-                                    </tr>
-                                ) : (
-                                    EmiHistory.map(history => (
-                                        <tr key={history.payment_id}>
-                                            <td>{history.payment_id}</td>
-                                            <td>{history.receved_id}</td>
-                                            <td>{history.sender_id}</td>
-                                            <td>{history.instalmentNumber}</td>
-                                            <td>{capitalizeFirstLetter(history.transactionType)}</td>
-                                            <td>{capitalizeFirstLetter(history.emi_status)}</td>
-                                            <td>₱{history.paymentAmount}</td>
-                                            <td>{formattedDate(history.paymentDate)}</td>
+                                {
+                                    EmiHistory?.map(history => (
+                                        <tr key={history?.payment_id}>
+                                            <td>{formattedDate(history?.paymentDate)}</td>
+                                            <td>{history?.payment_id}</td>
+                                            {/* <td>{history.receved_id}</td>
+                                            <td>{history.sender_id}</td> */}
+                                            <td> {history?.loan_id}</td>
+                                            <td>₱{history?.paymentAmount}</td>
+                                            <td>{history?.instalmentNumber}</td>
+                                            <td>{capitalizeFirstLetter(history?.transactionType)}</td>
+
+
+                                            <td>{capitalizeFirstLetter(history?.emi_status)}</td>
+
                                         </tr>
                                     ))
-                                )}
+                                }
                             </tbody>
                         </table>
+                        {loading && (
+                            <div>
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        )}
+                        {EmiHistory?.length === 0 && (
+                            <div className="d-flex justify-content-center align-items-center" >
+                                <div className="text-center">
+                                    No transactions found.
+                                </div>
+                            </div>
+
+                        )}
                     </div>
                 </div>
             </div>

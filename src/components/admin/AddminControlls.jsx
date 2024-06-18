@@ -212,6 +212,7 @@ import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
 import { Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { useMovieContext } from '../comman/Context';
+import Kyc_url from './kyc_url';
 
 function AddminControlls() {
     const { adminControlsList, setAdminControlsList, selectedControls, setSelectedControls } = useMovieContext();
@@ -395,7 +396,8 @@ function AddminControlls() {
                                         <span className="sr-only"></span>
                                     </div>
                                 </div>
-                            )}                        <div className="card-footer d-flex justify-content-end">
+                            )}
+                            <div className="card-footer d-flex justify-content-end">
                                 <button
                                     className="btn btn-primary"
                                     onClick={handleSubmitButton}
@@ -405,7 +407,9 @@ function AddminControlls() {
                                 </button>
                             </div>
                         </div>
+                        <Kyc_url></Kyc_url>
                     </div>
+
                     {/* Modal for confirmation */}
 
                     {showModal && (

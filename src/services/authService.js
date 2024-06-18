@@ -160,7 +160,7 @@ export function kycStatus() {
       const decryptedToken = helpers.decryptobj(jwt);
       // console.log(jwtDecode(decryptedToken) ,"tokennnnnnnn")
       const jwtDeco=jwtDecode(decryptedToken).kyc_status;
-    console.log(jwtDecode(decryptedToken).kyc_status,"kysc status")
+    // console.log(jwtDecode(decryptedToken).kyc_status,"kysc status")
     // console.log(jwtDeco,"ejfksdhfkj")
       return jwtDeco
      

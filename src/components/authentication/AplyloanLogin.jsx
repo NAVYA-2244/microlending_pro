@@ -93,7 +93,7 @@ const AplyloanLogin = () => {
         63 + phone_number,
         // current_access_ip
       );
-      console.log("response -->", response);
+      // console.log("response -->", response);
       setOtp(true);
       setTfa_Status(response.TWO_FA_Status);
       toast.success("successfully done", response.message);

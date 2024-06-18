@@ -68,23 +68,23 @@ function VerifyLoan() {
 
     }, []);
 
-    const callLoanStatusAPI = async (transactionId) => {
-        // setBtnDisabled(true);
+    // const callLoanStatusAPI = async (transactionId) => {
+    //     // setBtnDisabled(true);
 
-        try {
-            const response = await backEndCallObj("/admin/loan_status", { transaction_id: transactionId });
-            toast.success(response, "Loan status updated");
-            fetchData();
-        } catch (ex) {
-            console.error("Error updating loan status:", ex);
-            if (ex.response && ex.response.status === 400) {
-                toast.error(ex.response.data);
-            }
-        } finally {
-            // setLoading(false);
-            // setBtnDisabled(false);
-        }
-    };
+    //     try {
+    //         const response = await backEndCallObj("/admin/loan_status", { transaction_id: transactionId });
+    //         toast.success(response, "Loan status updated");
+    //         fetchData();
+    //     } catch (ex) {
+    //         console.error("Error updating loan status:", ex);
+    //         if (ex.response && ex.response.status === 400) {
+    //             toast.error(ex.response.data);
+    //         }
+    //     } finally {
+    //         // setLoading(false);
+    //         // setBtnDisabled(false);
+    //     }
+    // };
 
     const handleRejectLoan = async (loan_id) => {
         setSelectedLoanId(loan_id);
@@ -108,13 +108,12 @@ function VerifyLoan() {
                 let response;
                 const loanStatus = actionType === "approve" ? "Approved" : "Rejected";
                 response = await backEndCallObj("/admin/loan_approvel", { loan_id: selectedLoanId, loan_status: loanStatus });
-                setTimeout(() => {
-                    callLoanStatusAPI(response.transaction_id);
-                }, 3000);
-            } else {
-                console.error("Error: selectedLoanId or actionType is not set.");
-                toast.error("Loan ID or action type is not set.");
-
+                console.log(response.message, "response loalist")
+                toast.success(response.message);
+                // setTimeout(() => {
+                //     callLoanStatusAPI(response.transaction_id);
+                // }, 3000);
+                fetchData();
             }
         } catch (ex) {
             console.error("Error confirming action:", ex);
@@ -123,8 +122,8 @@ function VerifyLoan() {
                 fetchData()
             }
         } finally {
-            // setLoading(false);
-            // setBtnDisabled(false);
+            setLoading(false);
+            setBtnDisabled(false);
         }
     };
 
@@ -333,7 +332,7 @@ function VerifyLoan() {
                                             {loan.user_id}
                                         </td>
 
-                                        <td>{loan.first_name} {loan.last_name}</td>
+                                        <td>{loan.full_name}</td>
                                         <td>{loan.gender}</td>
                                         <td>{loan.phone_number}</td>
                                         <td> ₱ {loan.loan_amount}</td>

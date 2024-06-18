@@ -752,8 +752,8 @@ ul {
 }
 
 .user-details img {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   object-fit: cover;
 }
 
@@ -884,6 +884,42 @@ ul {
   display: flex;
   padding-left: 50px !important;
 }
+
+.mobile-navigation ul li a {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-navigation ul li a span {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mobile-navigation ul li a svg,
+.mobile-navigation ul li a span {
+  color: rgb(var(--text-default-color));
+}
+
+.mobile-navigation ul li a.active svg {
+  fill: rgb(var(--primary-color))
+}
+
+.mobile-navigation ul li a.active span {
+  color: rgb(var(--primary-color));
+}
+
+@media (max-width: 991.9px) {
+  .main-panel .content-wrapper {
+    height: 77vh;
+    overflow: hidden auto;
+    padding-inline: 0.5rem;
+  }
+}
+
+
+
+
 
 /* .speedometer .pointer path {
   transform: rotate(37deg) !important;

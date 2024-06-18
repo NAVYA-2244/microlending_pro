@@ -207,6 +207,7 @@ import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import Joi from 'joi';
 import { backEndCallObj } from '../../services/mainServiceFile';
+import BankDetails from './BankDetails';
 
 const AddFundsModal = ({ show, onHide, actionType }) => {
     const [formData, setFormData] = useState({
@@ -294,69 +295,9 @@ const AddFundsModal = ({ show, onHide, actionType }) => {
             <div className="container py-3 px-4">
                 <div className="row">
                     <div className="col-xl-12">
-                        {actionType === 'add' ? (
-                            <form onSubmit={handleSubmit}>
-                                <div className='text-center'>
-                                    <h5 className="card-title mt-3">State Bank of India</h5>
-                                    <img src="./assets/images/SBI-Logo.png" alt="SBI Logo" className="sbi-logo" height="40%" width="40%" />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="accountNumber" className="form-label">Account Number</label>
-                                    <input
-                                        type="text"
-                                        name="accountNumber"
-                                        value={formData.accountNumber}
-                                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                                        className="form-control"
-                                    />
-                                    {errors.accountNumber && <div className="text-danger">{errors.accountNumber}</div>}
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="amount" className="form-label">Amount</label>
-                                    <input
-                                        type="number"
-                                        name="amount"
-                                        value={formData.amount}
-                                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                                        className="form-control"
-                                    />
-                                    {errors.amount && <div className="text-danger">{errors.amount}</div>}
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="paymentMethod" className="form-label">Payment Method</label>
-                                    <div className="mb-3">
-                                        <div className="form-check">
-                                            <input
-                                                type="radio"
-                                                id="instapay"
-                                                name="paymentMethod"
-                                                value="INSTAPAY"
-                                                checked={formData.paymentMethod === "INSTAPAY"}
-                                                onChange={(e) => handleChange("paymentMethod", e.target.value)}
-                                                className="form-check-input"
-                                            />
-                                            <label htmlFor="instapay" className="form-check-label">INSTAPAY</label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                type="radio"
-                                                id="pesonet"
-                                                name="paymentMethod"
-                                                value="PESONET"
-                                                checked={formData.paymentMethod === "PESONET"}
-                                                onChange={(e) => handleChange("paymentMethod", e.target.value)}
-                                                className="form-check-input"
-                                            />
-                                            <label htmlFor="pesonet" className="form-check-label">PESONET</label>
-                                        </div>
-                                        {errors.paymentMethod && <div className="text-danger">{errors.paymentMethod}</div>}
-                                    </div>
-                                </div>
-                                <button className='btn btn-primary' type="submit" disabled={loading}>
-                                    {loading ? 'Submitting...' : 'Submit'}
-                                </button>
-                            </form>
-                        ) : (
+                        {actionType === 'add' &&
+
+
                             <div className="container py-3">
                                 <div className="row">
                                     <div className='card text-center mb-1' style={{ maxWidth: '300px', margin: 'auto', padding: '10px', backgroundColor: "greenyellow" }}>
@@ -384,7 +325,72 @@ const AddFundsModal = ({ show, onHide, actionType }) => {
                                     </div>
                                 </div>
                             </div>
-                        )}
+
+
+                            // <form onSubmit={handleSubmit}>
+                            //     <div className='text-center'>
+                            //         <h5 className="card-title mt-3">State Bank of India</h5>
+                            //         <img src="./assets/images/SBI-Logo.png" alt="SBI Logo" className="sbi-logo" height="40%" width="40%" />
+                            //     </div>
+                            //     <div className="mb-3">
+                            //         <label htmlFor="accountNumber" className="form-label">Account Number</label>
+                            //         <input
+                            //             type="text"
+                            //             name="accountNumber"
+                            //             value={formData.accountNumber}
+                            //             onChange={(e) => handleChange(e.target.name, e.target.value)}
+                            //             className="form-control"
+                            //         />
+                            //         {errors.accountNumber && <div className="text-danger">{errors.accountNumber}</div>}
+                            //     </div>
+                            //     <div className="mb-3">
+                            //         <label htmlFor="amount" className="form-label">Amount</label>
+                            //         <input
+                            //             type="number"
+                            //             name="amount"
+                            //             value={formData.amount}
+                            //             onChange={(e) => handleChange(e.target.name, e.target.value)}
+                            //             className="form-control"
+                            //         />
+                            //         {errors.amount && <div className="text-danger">{errors.amount}</div>}
+                            //     </div>
+                            //     <div className="mb-3">
+                            //         <label htmlFor="paymentMethod" className="form-label">Payment Method</label>
+                            //         <div className="mb-3">
+                            //             <div className="form-check">
+                            //                 <input
+                            //                     type="radio"
+                            //                     id="instapay"
+                            //                     name="paymentMethod"
+                            //                     value="INSTAPAY"
+                            //                     checked={formData.paymentMethod === "INSTAPAY"}
+                            //                     onChange={(e) => handleChange("paymentMethod", e.target.value)}
+                            //                     className="form-check-input"
+                            //                 />
+                            //                 <label htmlFor="instapay" className="form-check-label">INSTAPAY</label>
+                            //             </div>
+                            //             <div className="form-check">
+                            //                 <input
+                            //                     type="radio"
+                            //                     id="pesonet"
+                            //                     name="paymentMethod"
+                            //                     value="PESONET"
+                            //                     checked={formData.paymentMethod === "PESONET"}
+                            //                     onChange={(e) => handleChange("paymentMethod", e.target.value)}
+                            //                     className="form-check-input"
+                            //                 />
+                            //                 <label htmlFor="pesonet" className="form-check-label">PESONET</label>
+                            //             </div>
+                            //             {errors.paymentMethod && <div className="text-danger">{errors.paymentMethod}</div>}
+                            //         </div>
+                            //     </div>
+                            //     <button className='btn btn-primary' type="submit" disabled={loading}>
+                            //         {loading ? 'Submitting...' : 'Submit'}
+                            //     </button>
+                            // </form>
+                            // <BankDetails></BankDetails>
+
+                        }
                     </div>
                 </div>
             </div>

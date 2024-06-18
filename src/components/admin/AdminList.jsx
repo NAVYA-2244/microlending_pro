@@ -29,6 +29,7 @@ function AdminList() {
         try {
             setLoading(true);
             const response = await backEndCallObj("/admin/admins_list");
+            console.log(response)
             setAddadminData(response);
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
@@ -86,7 +87,7 @@ function AdminList() {
         setEditingAdmin(admin);
         setShowEditAdminModal(true);
         setFormData({
-            first_name: admin.first_name,
+            full_name: admin.full_name,
             member_email: admin.member_email,
             admin_type: admin.admin_type,
             phone_number: admin.phone_number,
@@ -98,12 +99,12 @@ function AdminList() {
 
         setBtnDisabled(true)
         try {
-            const { user_id, first_name, member_email, phone_number, admin_type } = formData;
+            const { user_id, full_name, member_email, phone_number, admin_type } = formData;
 
             // Create the payload with the required fields
             const payload = {
                 user_id,
-                first_name,
+                full_name,
                 member_email,
                 phone_number,
                 admin_type
@@ -111,7 +112,7 @@ function AdminList() {
             const response = await backEndCallObj("/admin/create_admin",
                 payload
             );
-            console.log(response, "edite admin")
+            // console.log(response, "edite admin")
 
             setShowEditAdminModal(false);
             setAddadminData(response)
@@ -145,7 +146,7 @@ function AdminList() {
         try {
             const obj = { user_id: selectedUser.user_id, user_active: selectedUser.user_active === "Enable" ? "Disable" : "Enable" };
             const response = await backEndCallObj("/admin/user_disable", obj);
-            console.log(response);
+            // console.log(response);
 
             // Update user status locally
             const updatedUsersList = AddadminData.map(admin => {
@@ -168,7 +169,7 @@ function AdminList() {
         }
     };
 
-    console.log(authService.getCurrentUser().admin_type)
+    // console.log(authService.getCurrentUser().admin_type)
     if (authService.getCurrentUser().admin_type !== "1") {
         // console.log("yes")
         window.history.back()
@@ -205,7 +206,7 @@ function AdminList() {
                                     <tr key={admin.user_id}>
                                         <td>{formattedDate(admin.date_of_register)}</td>
                                         <td>{admin.user_id}</td>
-                                        <td>{admin.first_name}</td>
+                                        <td>{admin.full_name}</td>
                                         <td>{admin.phone_number}</td>
                                         <td>{admin.admin_type}</td>
                                         <td>
@@ -261,12 +262,12 @@ function AdminList() {
                         <Modal.Body>
                             <form>
                                 <div className="mb-3">
-                                    <label htmlFor="first_name" className="form-label">Name</label>
+                                    <label htmlFor="full_name" className="form-label">Name</label>
                                     <input
                                         type="text"
-                                        name="first_name"
-                                        value={formData.first_name}
-                                        onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                                        name="full_name"
+                                        value={formData.full_name}
+                                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                         placeholder="Enter name here"
                                         className="form-control"
                                     />

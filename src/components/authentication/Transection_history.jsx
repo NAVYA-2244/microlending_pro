@@ -1,32 +1,29 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from "react-hot-toast";
-import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
-import authService from '../../services/authService';
+import { backEndCallObj } from '../../services/mainServiceFile';
 import moment from 'moment';
 import Joi from 'joi';
 import { Date_Input, SearchInput } from '../comman/All-Inputs';
-import { Link } from 'react-router-dom';
-
 import { useMovieContext } from '../comman/Context';
 import { useFunctionContext } from '../comman/FunctionsContext';
-import { log } from 'numeric';
 
 function TransactionHistory() {
+    const { transactionHistory, setTransactionHistory, limit, setSkip, } = useMovieContext();
 
-    const { transactionHistory, setTransactionHistory, errors, setErrors, setErrorOccur } = useMovieContext();
+
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [filterDisabled, setFilterDisabled] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
+    const [loadMore, setLoadMore] = useState(false);
+    const [bkcoll, setbkcall] = useState(false)
+    const observer = useRef();
+    const { checkErrors } = useFunctionContext();
 
-
-    const { checkErrors } = useFunctionContext()
     const [formData, setFormData] = useState({
         start_date: "",
         end_date: "",
         id: ""
-
     });
 
     const schema = {
@@ -35,261 +32,235 @@ function TransactionHistory() {
         id: Joi.string().min(4).max(12).required().allow('').optional()
     };
 
-    const fetchTransactionHistory = async () => {
-
-        console.log(transactionHistory.length)
+    const fetchData = async () => {
+        setLoading(true);
         try {
-            // if (transactionHistory.length == 0) {
-            console.log("yes")
-            setLoading(true);
-            const response = await backEndCall('/users/transaction_history_all');
-            console.log(response)
-            // if (Array.isArray(response)) {
-            setLoading(false);
-            setTransactionHistory(response || []);
-            // }
-            // else {
-            //     setTransactionHistory([]);
-            // }
+            setbkcall(false)
+            const obj = { skip: transactionHistory.length, limit };
+            const response = await backEndCallObj('/users/transaction_history_all', obj);
+            console.log(response, "transections")
+            if (response?.length === 0) {
+                setLoadMore(true);
+                toast.info("No more users to fetch.");
+            } else {
+                setTransactionHistory(prevtransection => [...prevtransection, ...response]);
 
-        } catch (ex) {
-            if (ex.response && ex.response.status === 400) {
-                toast.error(ex.response.data);
             }
-            setError(ex.message);
+        } catch (ex) {
+            if (ex.response && ex.response?.status === 400) {
+                toast.error(ex.response?.data);
+            }
+        } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
         if (transactionHistory.length == 0) {
-            fetchTransactionHistory();
+            console.log("hello")
+            fetchData();
         }
     }, []);
 
-    const handleSubmit = async (e) => {
+    console.log(transactionHistory.length, "transection")
 
-        e.preventDefault();
-
-        //  const { error } = schema.validate(formData);
-        //     if (error) {
-        //         toast.error(error.details[0].message)
-        //         throw new Error(error.details[0].message);
-        //     }
-
-        if (moment(formData.end_date).isBefore(formData.start_date)) {
-            toast.error("End Date cannot be less than Start Date");
-            return;
-        }
+    // const handleRef = useCallback(
+    //     (node) => {
+    //         if (loadMore) return;
+    //         if (loading) return;
+    //         if (bkcoll) return
+    //         console.log("handle ref")
 
 
-        try {
-            setFilterDisabled(true)
-            setLoading(true);
-            // const { errors } = schema.validate(...formData);
-            // console.log(errors, "errors")
-            // if (errors) {
-            //     console.log(errors, "error")
-            //     toast.error(error.details[0].message)
-            //     throw new Error(error.details[0].message);
-            // }
-            await checkErrors(schema, formData);
+    //         if (observer.current) observer.current.disconnect();
 
-            console.log(formData)
-            const formDataToSend = {
-                ...formData,
-                id: formData.id.toUpperCase()
+    //         observer.current = new IntersectionObserver((entries) => {
+    //             if (entries[0].isIntersecting) {
+
+    //                 if (transactionHistory.length !== 0) {
+    //                     console.log("enter")
+    //                     fetchData()
+    //                 }
+    //             }
+    //         });
+
+    //         if (node) observer.current.observe(node);
+    //     },
+    // );
+    const handleRef = useCallback(
+        (node) => {
+            if (loadMore || loading || bkcoll) return; // Do not proceed if conditions are met
+
+            if (observer.current) observer.current.disconnect();
+
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    if (transactionHistory.length > 10) {
+                        console.log("Intersection observed, fetching more data...");
+                        fetchData();
+                    }
+                }
+            }, {
+                threshold: 1 // Ensure fetchData is called when last row completely visible
+            });
+
+            if (node) observer.current.observe(node);
+
+            return () => {
+                if (observer.current) observer.current.disconnect();
             };
-
-            const response = await backEndCallObj("/users/transaction_filtered", formDataToSend);
-            console.log(response, "responsedate")
-
-            setTransactionHistory(response || []);
-
-            // setTransactionHistory(response)
-            setFormData({
-                start_date: "",
-                end_date: "",
-                id: ""
-            })
-            setFilterDisabled(false)
-            setLoading(false);
-        } catch (ex) {
-            if (ex.response && ex.response.status === 400) {
-                setTransactionHistory([])
-
-                toast.error(ex.response.data);
-                setLoading(false);
-            }
-
-        }
-        finally {
-            setFilterDisabled(false)
-            setLoading(false);
-            setFormData({
-                start_date: "",
-                end_date: "",
-                id: ""
-            })
-        }
-
-    };
+        },
+        [loadMore, loading, bkcoll, transactionHistory.length] // Dependencies for useCallback
+    );
 
     const handleRefresh = async () => {
         if (isFetching) return;
-
         setIsFetching(true);
         try {
-            await fetchTransactionHistory();
+            await fetchData();
         } finally {
             setIsFetching(false);
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (moment(formData.end_date).isBefore(formData.start_date)) {
+            toast.error("End Date cannot be less than Start Date");
+            return;
+        }
+        try {
+            setFilterDisabled(true);
+            setLoading(true);
+            await checkErrors(schema, formData);
+            const formDataToSend = { ...formData, id: formData.id.toUpperCase() };
+            const response = await backEndCallObj("/users/transaction_filtered", formDataToSend);
+            setTransactionHistory(response || []);
+            setFormData({ start_date: "", end_date: "", id: "" });
 
-    console.log(transactionHistory)
-
-    const formattedDate = (date) => {
-        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                setTransactionHistory([]);
+                toast.error(ex.response.data);
+            }
+        } finally {
+            setFilterDisabled(false);
+            setLoading(false);
+        }
     };
-    function capitalizeFirstLetter(string) {
-        if (!string) return ""; // Handle cases where string is undefined or null
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+
+    const formattedDate = (date) => moment(date).format('YYYY-MM-DD HH:mm:ss');
+    const capitalizeFirstLetter = (string) => string ? string.charAt(0).toUpperCase() + string.slice(1) : "";
+    console.log("kkkkk")
     return (
         <>
             <h5 className="mb-4">Transaction History</h5>
             <div className='card'>
                 <div className="card-body">
-                    <div className='d-flex '>
-
-                        <div onClick={handleRefresh} disabled={isFetching}>
-                            {isFetching ? (
-                                <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}>
-
-                                </div>
-                            ) : (
-                                <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
-                            )}
-                        </div>
-
-                        <form onSubmit={handleSubmit} className='flex-fill'>
-                            <div className="row mb-3 d-flex justify-content-end">
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12">
-
-                                    <label htmlFor="startDate" className="form-label">Start Date</label>
-                                    <Date_Input
-                                        type={"date"}
-                                        value={formData["start_date"]}
-                                        name={"start_date"}
-                                        SetForm={setFormData}
-                                        schema={schema["start_date"]}
-                                        max={moment().format("YYYY-MM-DD")}
-
-                                        required
-                                    />
-                                </div>
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12">
-
-                                    <label htmlFor="endtDate" className="form-label">End Date</label>
-                                    <Date_Input
-                                        type={"date"}
-                                        value={formData["end_date"].toUpperCase()}
-                                        name={"end_date"}
-                                        SetForm={setFormData}
-                                        schema={schema["end_date"]}
-                                        max={moment().format("YYYY-MM-DD")}
-
-
-                                        required
-                                    />
-                                </div>
-                                <div className="col-12 col-xl-2 col-md-2 col-sm-12 mt-auto">
-                                    {/* <label htmlFor="serch" className="form-label">Serch<span className="text-danger">*</span></label> */}
-                                    <SearchInput
-
-                                        type="text"
-                                        name="id"
-                                        value={formData["id"]}
-                                        placeholder="Transaction id "
-                                        SetForm={setFormData}
-                                        schema={schema["id"]}
-
-                                    />
-                                </div>
-                                <div className='col-12 col-xl-2 col-md-2 col-sm-12 my-auto'>
-
-                                    {/* <button type="submit" className="btn btn-primary mt-2" disabled={filterDisabled}>
-                                        Search
-                                    </button> */}
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary mt-2"
-                                        disabled={filterDisabled || !(formData.start_date && formData.end_date || formData.id)}
-                                    >
-                                        Search
-                                    </button>
-
-                                </div>
+                    <form onSubmit={handleSubmit} className='flex-fill'>
+                        <div className='d-flex'>
+                            <div onClick={handleRefresh} disabled={isFetching} className="mb-4 mb-sm-0">
+                                {isFetching ? (
+                                    <div className="spinner-border text-primary" role="status" style={{ height: "20px", width: "20px" }}></div>
+                                ) : (
+                                    <i className="ri-loop-right-line text-primary fs-22 cursor-pointer me-2"></i>
+                                )}
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div className="row mb-3 d-flex justify-content-end">
+                            <div className="col-6 col-xl-2 col-md-6 col-sm-6">
+                                <label htmlFor="startDate" className="form-label">Start Date</label>
+                                <Date_Input
+                                    type="date"
+                                    value={formData["start_date"]}
+                                    name="start_date"
+                                    SetForm={setFormData}
+                                    schema={schema["start_date"]}
+                                    max={moment().format("YYYY-MM-DD")}
+                                    required
+                                />
+                            </div>
+                            <div className="col-6 col-xl-2 col-md-6 col-sm-6">
+                                <label htmlFor="endDate" className="form-label">End Date</label>
+                                <Date_Input
+                                    type="date"
+                                    value={formData["end_date"]}
+                                    name="end_date"
+                                    SetForm={setFormData}
+                                    schema={schema["end_date"]}
+                                    max={moment().format("YYYY-MM-DD")}
+                                    required
+                                />
+                            </div>
+                            <div className="col-6 col-xl-2 col-md-6 col-sm-6 mt-auto">
+                                <SearchInput
+                                    type="text"
+                                    name="id"
+                                    value={formData["id"]}
+                                    placeholder="Transaction id"
+                                    SetForm={setFormData}
+                                    schema={schema["id"]}
+                                />
+                            </div>
+                            <div className='col-6 col-xl-2 col-md-6 col-sm-6 my-xl-auto'>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary mt-1 mt-xl-2"
+                                    disabled={filterDisabled || !(formData.start_date && formData.end_date || formData.id)}
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div className="table-responsive">
-
-
-
                         <table className="table border table-bordered table-centered">
                             <thead>
                                 <tr className="table-head text-center">
+                                    <th scope="col">Date</th>
                                     <th scope="col">Transaction Id</th>
-                                    <th scope="col">Receiver Id</th>
-                                    <th scope="col">Sender Id</th>
-                                    <th scope="col">Transaction Type</th>
-                                    <th scope="col">Transaction Status</th>
+                                    <th scope="col">Loan Id</th>
                                     <th scope="col">Amount</th>
+                                    <th scope="col">Type</th>
                                     <th scope="col">Comment</th>
-                                    <th scope="col">Transaction Date</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="table-body text-center">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">
-                                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-                                                <span className="sr-only"></span>
-                                            </div>
-                                        </td>
+                                {transactionHistory && transactionHistory.length > 0 && transactionHistory.map(history => (
+                                    <tr key={history?.transaction_id} ref={handleRef}>
+                                        <td>{formattedDate(history?.transactionDate)}</td>
+                                        <td>{history?.transaction_id}</td>
+                                        <td>{history?.loan_id}</td>
+                                        <td>₱ {history?.amount}</td>
+                                        <td>{capitalizeFirstLetter(history?.transactionType)}</td>
+                                        <td>{history?.comment}</td>
+                                        <td>{capitalizeFirstLetter(history?.transaction_status)}</td>
                                     </tr>
-
-                                ) : transactionHistory?.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center justify-content-center">No transactions found.</td>
-                                    </tr>
-                                ) : (
-
-
-                                    transactionHistory && transactionHistory.length > 0 && transactionHistory.map(history => (
-                                        <tr key={history.transaction_id}>
-                                            <td>{history.transaction_id}</td>
-                                            <td>{history.receiver_id}</td>
-                                            <td>{history.sender_id}</td>
-                                            <td> {capitalizeFirstLetter(history.transactionType)}</td>
-                                            <td>{capitalizeFirstLetter(history.transaction_status)}</td>
-                                            <td> ₱ {history.amount}</td>
-                                            <td>{history.comment}</td>
-                                            <td>{formattedDate(history.transactionDate)}</td>
-                                        </tr>
-                                    ))
-                                )}
+                                ))}
                             </tbody>
-                        </table>
 
-                    </div >
-                </div >
+                        </table>
+                        {loading && (
+                            <div className="d-flex justify-content-center align-items-center">
+                                <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                    <span className="sr-only"></span>
+                                </div>
+                            </div>
+                        )}
+                        {transactionHistory?.length === 0 && (
+                            <div className="d-flex justify-content-center align-items-center">
+                                <div className="text-center">
+                                    No transactions found.
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </>
     );
 }
-
 
 export default TransactionHistory;

@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import moment from "moment";
 import { toast } from "react-hot-toast";
@@ -93,6 +91,16 @@ const UsersList = () => {
             if (node) observer.current.observe(node);
         },
     );
+    const handleRefresh = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
+        try {
+            await fetchData();
+        } finally {
+            setIsFetching(false);
+        }
+    };
 
 
     const userprofile = async (user_id) => {
@@ -190,16 +198,6 @@ const UsersList = () => {
             }
         }
     };
-    const handleRefresh = async () => {
-        if (isFetching) return;
-
-        setIsFetching(true);
-        try {
-            await fetchData();
-        } finally {
-            setIsFetching(false);
-        }
-    };
 
 
     const formattedDate = (date) => {
@@ -267,7 +265,7 @@ const UsersList = () => {
                                                 <td className="text-uppercase font-weight-bold underline-style text-primary cursor" onClick={() => userprofile(user.user_id)}>
                                                     {user.user_id}
                                                 </td>
-                                                <td>{user?.first_name && user.last_name == 0 ? "NA" : `${user?.first_name} ${user?.last_name}`}</td>
+                                                <td>{user?.full_name && user.last_name == 0 ? "NA" : `${user?.full_name}`}</td>
                                                 <td>{user?.phone_number}</td>
                                                 <td>{user?.credit_score}</td>
                                                 <td>{user?.user_active}</td>

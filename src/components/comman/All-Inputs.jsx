@@ -20,6 +20,7 @@ export function Input_Name({
   max,
   maxLength,
   autoFocus
+
 }) {
   const { errors } = useMovieContext();
   const { handleChange } = useFunctionContext();
@@ -195,8 +196,13 @@ export function Input_email({
   maxLength
 }) {
   const { errors, } = useMovieContext();
-  const { handleChange } = useFunctionContext();
-
+  const { handleChange } = useFunctionContext()
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    const isValid = /^[A-Za-z0-9@,.]*$/.test(value); // Regular expression to allow numbers, letters, spaces, @, and ,
+    if (!isValid) return; // If the input contains invalid characters, do not update the value
+    handleChange(e, schema, SetForm);
+  };
 
   return (
     <>
@@ -207,7 +213,8 @@ export function Input_email({
         name={name}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => handleChange(e, schema, SetForm)}
+        onChange={handleInputChange}
+        // onChange={(e) => handleChange(e, schema, SetForm)}
         autoFocus={autoFocus}
         minLength={minLength}
         maxLength={maxLength}
@@ -330,6 +337,50 @@ export function Number_Input({
   const handleNumberChange = (e) => {
     // Remove non-numeric characters from the input value
     const newValue = e.target.value.replace(/\D/g, "");
+
+    // Call the handleChange function with the sanitized value
+    handleChange({ target: { name, value: newValue } }, schema, SetForm);
+  };
+
+  return (
+    <>
+      <input
+        className="form-control input-shado "
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        maxLength={maxLength}
+        inputMode={inputMode}
+        onChange={handleNumberChange}
+        autoFocus={autoFocus}
+
+      />
+      <div>
+        <p className="error mt-2">{errors[name]}</p>
+      </div>
+    </>
+  );
+}
+export function Amount_Input({
+  type,
+  name,
+  value,
+  SetForm,
+  schema,
+  maxLength,
+  inputMode,
+  autoFocus,
+  placeholder,
+
+}) {
+  const { errors } = useMovieContext();
+  const { handleChange } = useFunctionContext();
+
+  const handleNumberChange = (e) => {
+    // Remove non-numeric characters from the input value
+    // const newValue = e.target.value.replace(/^[1-9.] );
+    const newValue = e.target.value.replace(/[^0-9.]/g, '');
 
     // Call the handleChange function with the sanitized value
     handleChange({ target: { name, value: newValue } }, schema, SetForm);

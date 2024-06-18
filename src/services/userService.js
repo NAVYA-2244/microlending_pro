@@ -15,7 +15,7 @@ import http from "./httpService";
 
 const apiEndpoint = "https://micro-lending.onrender.com/api/users/login";
 export function register(user) {
-    console.log(apiEndpoint, "hhhhhh");
+    // console.log(apiEndpoint, "hhhhhh");
     return http.post(apiEndpoint, {
         name: user.name,
         phone_number: user.phone_number,

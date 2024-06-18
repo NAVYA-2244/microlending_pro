@@ -11,7 +11,7 @@ import authService from '../../services/authService';
 function LoaneligibilityDetails() {
     const navigate = useNavigate();
     const { usereligibility, setUserEligibility, userprofileData } = useMovieContext();
-    console.log(userprofileData, "hello")
+    // console.log(userprofileData, "hello")
     const [loading, setLoading] = useState(false);
     const [openDetails, setOpenDetails] = useState(false);
 
@@ -25,7 +25,7 @@ function LoaneligibilityDetails() {
         try {
             setLoading(true);
             const response = await backEndCall("/users/matching_eligibility");
-            console.log(response, "response")
+            // console.log(response, "response")
             setUserEligibility(response);
             setLoading(false);
         } catch (ex) {
@@ -45,22 +45,28 @@ function LoaneligibilityDetails() {
         return calculateEMI.toFixed(2);
     };
     const handleApplyLoan = (minLoanAmount, maxLoanAmount, tenureItem) => {
+        // The code inside these curly braces does nothing, it's empty
+        {
+
+        };
 
 
-        if (userprofileData?.kyc_status !== "verified") {
+        if (userprofileData?.topwallet_user_id == "0") {
+            navigate("/updateprofile");
 
-            // navigate('/updateprofile');
-            navigate('/kyc');
-
-        } else if (userprofileData?.kyc_status === "verified") {
-            // navigate(`/applyloan?minAmount=${minLoanAmount}&maxAmount=${maxLoanAmount}`);
-            navigate('/applyloan', { state: { minAmount: usereligibility.minLoanAmount, maxAmount: usereligibility.maxLoanAmount } });
-
-
+        } else if (userprofileData?.topwallet_user_id !== "0" && userprofileData?.kyc_status !== "verified") {
+            navigate("/kyc");
         } else {
-            toast.error("KYC status is not available. Please try again later.");
+            navigate('/applyloan', {
+                state: {
+                    minAmount: usereligibility.minLoanAmount,
+                    maxAmount: usereligibility.maxLoanAmount
+                }
+            });
         }
+
     };
+
 
     const toggleDetails = () => {
         setOpenDetails((prevState) => !prevState);

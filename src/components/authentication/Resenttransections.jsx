@@ -14,7 +14,7 @@ function Resenttransections() {
         setLoading(true)
         try {
             const response = await backEndCall('/users/transaction_history');
-
+            console.log(response, "recent")
             if (Array.isArray(response)) {
                 setRecentTransactionHistory(response);
             } else {
@@ -57,53 +57,69 @@ function Resenttransections() {
                             <thead>
 
                                 <tr className="table-head">
+                                    <th scope="col"> Date</th>
                                     <th scope="col">Transaction Id</th>
-                                    <th scope="col">Receiver Id</th>
-                                    <th scope="col">Sender Id</th>
-                                    <th scope="col">Transaction Type</th>
-                                    <th scope="col">Transaction Status</th>
+                                    <th scope="col">Loan Id</th>
+                                    {/* <th scope="col">Receiver Id</th>
+                                    <th scope="col">Sender Id</th> */}
                                     <th scope="col">Amount</th>
+                                    <th scope="col">Type</th>
+
+
                                     {/* <th scope="col">Comment</th> */}
-                                    <th scope="col">Transaction Date</th>
+                                    <th scope="col">Status</th>
+
                                 </tr>
                             </thead>
                             <tbody className="table-body">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">
-                                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-                                                <span className="sr-only"></span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ) : RecenttransactionHistory.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">No transactions found.</td>
-                                    </tr>
-                                ) : (
+                                {
                                     RecenttransactionHistory.map(history => (
-                                        <tr key={history.transaction_id}>
+                                        <tr key={history?.transaction_id}>
+                                            <td>{formattedDate(history?.transactionDate)}</td>
                                             <td>{history.transaction_id}</td>
-                                            <td>{history.receiver_id}</td>
-                                            <td>{history.sender_id}</td>
-                                            <td>{capitalizeFirstLetter(history.transactionType)}</td>
-                                            <td>{capitalizeFirstLetter(history.transaction_status)}</td>
-                                            <td>₱ {history.amount}</td>
-                                            <td>{formattedDate(history.transactionDate)}</td>
+                                            <td>{history?.loan_id}</td>
+                                            {/* <td>{history.receiver_id}</td>
+                                            <td>{history.sender_id}</td> */}
+                                            <td>₱ {history?.amount}</td>
+                                            <td>{capitalizeFirstLetter(history?.transactionType)}</td>
+
+
+                                            <td>{capitalizeFirstLetter(history?.transaction_status)}</td>
 
                                         </tr>
 
                                     ))
 
 
-                                )
+
 
                                 }
 
 
                             </tbody>
 
-                        </table>{RecenttransactionHistory.length !== 0 &&
+                        </table>
+                        {loading && (
+                            <div>
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        )}
+                        {RecenttransactionHistory?.length === 0 && (
+                            <div className="d-flex justify-content-center align-items-center" >
+                                <div className="text-center">
+                                    No transactions found.
+                                </div>
+                            </div>
+
+                        )}
+
+
+                        {RecenttransactionHistory.length !== 0 &&
                             <div className='text-center '>
                                 <a href="/transection_history">show more....</a>
                             </div>

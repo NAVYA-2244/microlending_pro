@@ -56,7 +56,7 @@ function Tab1() {
 
 
 
-    console.log(transactionHistory)
+    // console.log(transactionHistory)
 
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');

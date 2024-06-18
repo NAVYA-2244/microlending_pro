@@ -26,7 +26,7 @@ const ApplyLoan = () => {
     const maxAmount = location.state.maxAmount;
 
     const [formData, setFormData] = useState({
-        photo: "",
+        income_proof: "",
 
         loan_type: "",
 
@@ -45,13 +45,13 @@ const ApplyLoan = () => {
         loan_type: Joi.string().valid('Business', 'Personal', 'Home').required().label("loan Type"),
         loan_amount: Joi.number().greater(-1).required().label("Loan Amount").min(1000).max(100000),
         months: Joi.number().min(3).max(12).required().label("Months"),
-        photo: Joi.string().required().label("photo"),
+        income_proof: Joi.string().required().label("income_proof"),
         pay_slip: Joi.string().required().label("Pay Slip"),
 
     }
 
     const handleChange = async (e) => {
-        console.log(e)
+        // console.log(e)
 
         const { name, value, type, files } = e.target;
         try {
@@ -158,7 +158,7 @@ const ApplyLoan = () => {
             });
 
             setLoanList(null)
-            console.log(response, "sformdata")
+            // console.log(response, "sformdata")
             toast.success(response)
             setUpdateddata(true);
 
@@ -166,7 +166,7 @@ const ApplyLoan = () => {
             setLoading(false);
             setErrorOccur(false);
             setFormData({
-                photo: "",
+                income_proof: "",
                 pay_slip: "",
                 loan_amount: "",
                 months: "",
@@ -194,13 +194,13 @@ const ApplyLoan = () => {
     };
     const today = new Date();
     const minDate = new Date(today.getFullYear() - 20, today.getMonth(), today.getDate());
-    console.log(errors)
+    // console.log(errors)
 
     const fetchUserData = async () => {
         try {
             if (userData <= 0 || !userData) {
                 const response = await backEndCall("/users/user_stats");
-                console.log(response, "userdeta")
+                // console.log(response, "userdeta")
 
                 setUserData(response);
 
@@ -226,9 +226,7 @@ const ApplyLoan = () => {
 
     return (
         <>
-            {/* {updateddata ? (
-                <LoanStatus />
-            ) : ( */}
+
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-10">
@@ -360,7 +358,7 @@ const ApplyLoan = () => {
                                                 <div className="position-relative">
 
                                                     <div>
-                                                        {formData.pay_slip.includes("image") ? (
+                                                        {formData?.pay_slip.includes("image") ? (
                                                             <img src={formData.pay_slip} className="document_image1 mt-1 rounded-2" />
 
                                                         ) : (
@@ -380,30 +378,30 @@ const ApplyLoan = () => {
                                         </div>
 
                                         <div className="col-md-6 mb-3 position-relative">
-                                            <label htmlFor="photo" className="form-label">Photo<span className="text-danger">*</span></label>
+                                            <label htmlFor="income_proof" className="form-label">Income proof<span className="text-danger">*</span></label>
                                             <input
                                                 type="file"
                                                 className="form-control"
-                                                id="photo"
-                                                name="photo"
+                                                id="income_proof"
+                                                name="income_proof"
                                                 accept="image/*,.pdf"
 
                                                 onChange={handleChange}
                                             />
-                                            <span className="delete_image" onClick={() => deleting("photo")} ><i className="ri-delete-bin-5-line"></i></span>
+                                            <span className="delete_image" onClick={() => deleting("income_proof")} ><i className="ri-delete-bin-5-line"></i></span>
                                             <div className="position-relative">
                                                 <div>
-                                                    {formData.photo.includes("image") ? (
-                                                        <img src={formData?.photo} className="document_image1 mt-1 rounded-2" />
-                                                    ) : formData.photo ? <embed src={formData.photo} className="document_image1 mt-1 rounded-2" /> : ""
+                                                    {formData.income_proof?.includes("image") ? (
+                                                        <img src={formData?.income_proof} className="document_image1 mt-1 rounded-2" />
+                                                    ) : formData.income_proof ? <embed src={formData.income_proof} className="document_image1 mt-1 rounded-2" /> : ""
                                                     }
                                                 </div>
-                                                {formData.photo && <a href={formData.photo} target="_blank" rel="noopener noreferrer">view photo</a>
+                                                {formData.income_proof && <a href={formData.income_proof} target="_blank" rel="noopener noreferrer">view income_proof</a>
 
                                                 }
                                             </div>
-                                            {errors.photo && (
-                                                <div className="error">{errors.photo}</div>
+                                            {errors.income_proof && (
+                                                <div className="error">{errors.income_proof}</div>
                                             )}
                                         </div>
                                     </div>

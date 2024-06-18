@@ -50,7 +50,7 @@ function Kyc_url() {
 
         try {
             const response = await backEndCallObj("/admin/admin_status", { return_url: url });
-            console.log('API Response:', response);
+            // console.log('API Response:', response);
             toast.success("URL submitted successfully!");
             setUrl("")
         } catch (ex) {
@@ -94,9 +94,11 @@ function Kyc_url() {
                                         <strong>NOTE:</strong> Please enter a valid URL starting with "http://" or "https://". The URL should be between 10 and 50 characters long.
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-primary" disabled={loading}>
-                                    Submit
-                                </button>
+                                <div className="card-footer d-flex justify-content-end">
+                                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                                        Submit
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>

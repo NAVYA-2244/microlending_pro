@@ -18,33 +18,33 @@ const Userdetails = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
+  // const fetchData = async () => {
 
-    try {
-      if (!userprofileData) {
+  //   try {
+  //     if (!userprofileData) {
 
-        setLoading(true);
-        const response = await backEndCallObj("/users/user_profile", {});
+  //       setLoading(true);
+  //       const response = await backEndCallObj("/users/user_profile", {});
 
-        setUserprofileData(response);
-        setLoading(false);
-      }
+  //       setUserprofileData(response);
+  //       setLoading(false);
+  //     }
 
-    } catch (ex) {
-      if (ex.response && ex.response.status === 400) {
+  //   } catch (ex) {
+  //     if (ex.response && ex.response.status === 400) {
 
-        toast.error(ex.response?.data);
-        setLoading(false)
-      }
-    }
-  };
+  //       toast.error(ex.response?.data);
+  //       setLoading(false)
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    // if (userprofileData <= 0) {
-    fetchData();
-    // }
-  }, []);
+  //   // if (userprofileData <= 0) {
+  //   fetchData();
+  //   // }
+  // }, []);
 
   if (loading) {
     return <div><div className="text-center mt-3">
@@ -90,7 +90,8 @@ const Userdetails = () => {
                     </div>
                     <h5 className="mb-0 ms-3 text-white text-capitalize">
 
-                      {userprofileData?.first_name == "0" ? "" : userprofileData?.first_name} {userprofileData?.last_name == "0" ? "" : authService.kycStatus() !== "verified" && userprofileData?.last_name}
+                      {userprofileData?.full_name == "0" ? "" : userprofileData?.full_name}
+                      {/* {userprofileData?.last_name == "0" ? "" : authService.kycStatus() !== "verified" && userprofileData?.last_name} */}
                     </h5>
                   </div>
                   <span className="badge bg-success fs-12 ms-auto">
@@ -100,13 +101,19 @@ const Userdetails = () => {
                 <div className="card-body">
 
                   <div className="my-3">
-                    Income Proof : {userprofileData?.income_proof && (
-                      <div className="mt-2">
-                        <a href={userprofileData?.income_proof} target="_blank" rel="noopener noreferrer">
-                          View Income Proof
-                        </a>
-                      </div>
-                    )}
+                    Income Proof :
+                    <span>
+                      {userprofileData?.income_proof && (
+                        <span className="mt-2">
+
+                          <a href={userprofileData?.income_proof} target="_blank" rel="noopener noreferrer">
+                            View Income Proof
+                          </a>
+                        </span>
+                      )}
+                    </span>
+
+
                   </div>
 
                   <div className="my-3">
@@ -115,7 +122,7 @@ const Userdetails = () => {
                       {userprofileData?.kyc_status === "0" ? "NA" : userprofileData?.kyc_status}
                     </span>
                   </div>
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <p className="f-12 mb-0">Phone</p>
                     <div>
                       <span className="text-muted">
@@ -125,11 +132,19 @@ const Userdetails = () => {
                         {userprofileData?.kyc_status === "0" ? "NA" : capitalizeFirstLetter(userprofileData?.kyc_status)}
                       </span>
                     </div>
+                  </div> */}
+                  <div className="mt-3">
+                    <>
+                      <label className="form-label me-1">PhoneNumber :</label>
+                      <span className="text-capitalize">
+                        {userprofileData?.phone_number === "0" ? "NA" : userprofileData?.phone_number}
+                      </span>
+                    </>
                   </div>
                   <div className="mt-3">
                     <>
                       <label className="form-label me-1">Amount :</label>
-                      <span className="text-primary">
+                      <span className="text-capitalize">
                         {userprofileData?.amount === "0" ? "NA" : userprofileData?.amount}
                       </span>
                     </>
@@ -149,7 +164,7 @@ const Userdetails = () => {
                     <>
                       <label className="form-label me-1">Bank Id
                         :</label>
-                      <span className="text-primary">
+                      <span className="text-capitalize">
                         {userprofileData?.bank_id
                           === "0" ? "NA" : userprofileData?.bank_id
                         }
@@ -160,7 +175,7 @@ const Userdetails = () => {
                     <>
                       <label className="form-label me-1">Bank Code
                         :</label>
-                      <span className="text-primary">
+                      <span className="text-capitalize">
                         {userprofileData?.bank_code
                           === "0" ? "NA" : userprofileData?.bank_code
                         }
@@ -235,28 +250,16 @@ const Userdetails = () => {
                     <div className="col-12 ">
                       <div>
                         <label className="text-muted fw-normal form-label me-2">
-                          First Name :
+
+                          Full Name
                         </label>
                         <span className="text-capitalize">
-                          {userprofileData?.first_name == "0" ? "NA" : userprofileData?.first_name}
+                          {userprofileData?.full_name == "0" ? "NA" : capitalizeFirstLetter(userprofileData?.full_name)}
 
                         </span>
                       </div>
                     </div>
-                    {authService.kycStatus() !== "verified" &&
-                      <div div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                        <div>
-                          <label className="text-muted fw-normal form-label me-2">
-                            Last Name :{" "}
-                          </label>
-                          <span className="text-capitalize">
-                            {" "}
-                            {userprofileData?.last_name == "0" ? "NA" : userprofileData?.last_name}
-                          </span>
-                        </div>
-                      </div>
 
-                    }
                   </div>
 
                   <div className="row border rounded-3 p-2 py-3 row-sm mb-3">

@@ -41,10 +41,16 @@ const Userdashbord = () => {
         navigate("/loaneligibilitydetails");
     };
     const KycUpdate = () => {
+        {
+            userprofileData?.topwallet_user_id !== "0" ?
+                (navigate("/kyc")) : navigate("/updateprofile")
 
-        navigate("/kyc");
+        };
+    }
+    const Bankdetails = () => {
+
+        navigate('/banklist')
     };
-
 
 
 
@@ -56,7 +62,7 @@ const Userdashbord = () => {
 
 
             const response = await backEndCall("/users/user_stats");
-            console.log(response)
+            console.log(response, "tustas")
             setUserData(response);
 
 
@@ -75,7 +81,7 @@ const Userdashbord = () => {
             if (!loanList) {
 
                 const response = await backEndCall("/users/user_loan_details");
-
+                // console.log(response, "loan")
                 setLoanList(response);
 
             }
@@ -116,7 +122,7 @@ const Userdashbord = () => {
 
 
     const handlerefresh = async () => {
-        console.log("reload");
+        // console.log("reload");
         if (isFetching) return; // Prevent multiple calls if already fetching
 
         setIsFetching(true); // Set fetching state to true
@@ -221,6 +227,8 @@ const Userdashbord = () => {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD');
     };
+
+
     return (
 
         <div>
@@ -244,9 +252,9 @@ const Userdashbord = () => {
                         </button>
 
                         {/* KYC Update Button */}
-                        {!authService.IsAdmin() && userprofileData?.kyc_status !== "verified" && (
+                        {userprofileData !== null && userprofileData?.kyc_status !== "verified" && (
                             <button className="btn btn-primary text-capitalize apply-loan-button" onClick={KycUpdate} style={{ height: "38px" }}>
-                                KYC Update
+                                KYC verify
                             </button>
                         )}
                     </div>
@@ -329,7 +337,7 @@ const Userdashbord = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                    {/* <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                                         <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                                             <div className="d-flex justify-content-between mt-2 align-items-center">
                                                 <p className="mb-0 fs-12">Next Emi</p>
@@ -337,24 +345,66 @@ const Userdashbord = () => {
                                                     <i className="ri-database-2-line p-2 rounded-circle bg-white-light fs-24"></i>
                                                 </span>
                                             </div>
-                                            <p className="mb-0 fw-semibold mt-3 fs-18">
 
-                                                <span>₱ </span>{userData?.totalInstallmentAmount || "0"}
+                                            {nearestLoans?.map(loan => (
+                                                <div key={loan.id} className="loan-details mt-3">
+                                                    <p className="mb-0 fw-semibold fs-18">
+                                                        <span>₱ {loan?.emi_details?.totalInstallmentAmount || "0"}</span>
+                                                    </p>
+                                                    <p className="text-muted mb-0 mt-2 fw-normal fs-14">
+                                                        {loan.emi_details.nextEMIDate !== "0" && (
+                                                            <>
+                                                                <span> {loan?.emi_details?.nextEMIDate === "0" ? " " : "Date :"}</span>
+                                                                <span className="text-white fw-semibold"> {loan?.emi_details?.nextEMIDate === "0" ? " " : formattedDate(loan?.emi_details?.nextEMIDate)}</span>
 
-                                            </p>
-                                            <p className="text-muted mb-0 mt-3 fw-normal fs-14">
+                                                            </>
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            ))}
+
+                                        </div>
+                                    </div> */}
+                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">Next Emi Amount</p>
+                                                <span className="dashboard-icons">
+                                                    <i className="ri-database-2-line p-2 rounded-circle bg-white-light fs-24"></i>
+                                                </span>
+                                            </div>
 
 
-                                                {nearestLoans?.map(loan => (
-                                                    <span>
-                                                        {loan.emi_details.nextEMIDate === "0" ? " " : "Date"}
-                                                        <span className="text-white fw-semibold"> : {loan.emi_details.nextEMIDate === "0" ? " " : formattedDate(loan.emi_details.nextEMIDate)}</span>
-                                                    </span>
-                                                ))}
-
-                                            </p>
+                                            <div className="loan-details mt-3">
+                                                <p className="mb-0 fw-semibold fs-18">
+                                                    <span>₱ {userData?.totalInstallmentAmount || "0"}</span>
+                                                </p>
+                                                {nearestLoans && nearestLoans.length > 0 ? (
+                                                    nearestLoans.map(loan => (
+                                                        <p key={loan.id} className="text-muted mb-0 mt-2 fw-normal fs-14">
+                                                            {loan.emi_details.nextEMIDate !== "0" && (
+                                                                <>
+                                                                    <span>Date :</span>
+                                                                    <span className="text-white fw-semibold"> {formattedDate(loan?.emi_details?.nextEMIDate)}</span>
+                                                                </>
+                                                            )}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <div className="loan-details mt-3">
+                                                        {/* <p className="mb-0 fw-semibold fs-18">
+                                                            <span>₱ 0</span>
+                                                        </p> */}
+                                                        <p className="text-muted mb-0 mt-2 fw-normal fs-14">
+                                                            <span>Date :</span>
+                                                            <span className="text-white fw-semibold"> N/A</span>
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             {/* {loading ? (
@@ -378,27 +428,36 @@ const Userdashbord = () => {
                                         </Link>
                                     </div>
                                     <div className="card-body">
+
                                         <h4 className="fw-semibold mb-4">
-                                            <span>₱ </span>{userprofileData?.amount}
+                                            <span>₱ </span>{userprofileData == null ? "0.00" : userprofileData?.amount}
                                         </h4>
-                                        {/* <div className="availabel-balance">
-                        <span className="fs-12">Available Balance</span>
-                        <p className="mb-0 fw-semibold mt-2 fs-16">
-                          <span>₱ </span> {userprofileData?.amount}
-                        </p>
-                      </div> */}
-                                        <div className="d-grid mt-4 mb-3"
-                                        //  d-flex  justify-content-center"
-                                        >
-                                            <button type="button" className="btn btn-primary me-3 mb-3" onClick={() => handleAddFundsClick('add')}>
-                                                Add Funds
-                                            </button>
-
-
-                                            <button type="button" className="btn btn-primary me-3 mb-2" onClick={() => handleAddFundsClick('withdraw')}>
-                                                Withdraw Funds
-                                            </button>
-                                        </div>
+                                        {userprofileData == null ? (
+                                            <div className="text-center mt-3">
+                                                <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                                    <span className="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {userprofileData?.kyc_status === "verified" ? (
+                                                    <div className="d-grid mt-4 mb-3">
+                                                        <button type="button" className="btn btn-primary me-3 mb-3" onClick={() => handleAddFundsClick('add')}>
+                                                            Add Funds
+                                                        </button>
+                                                        <button type="button" className="btn btn-primary me-3 mb-2" onClick={() => Bankdetails()}>
+                                                            Withdraw Funds
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="d-grid mt-4 mb-3">
+                                                        <button type="button" className="btn btn-primary me-3 mb-3" onClick={() => KycUpdate()}>
+                                                            KYC Verify
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
                                         {showAddFundsModal &&
                                             <AddFundsModal
 
@@ -411,38 +470,7 @@ const Userdashbord = () => {
 
                                                 setErrorOccur={setErrorOccur}
                                             />}
-                                        {/* <AddFundsModal
-                        show={showModal}
-                        onHide={() => setShowModal(false)}
-                        actionType={actionType}
-                        errorsdata={errorsData}
-                        setErrorOccur={setErrorOccur} // Pass setErrorOccur here
-                      /> */}
-                                    </div>
-                                </div>
-                                <div className="card">
-                                    <div className="card-header pb-0 border-bottom-0 justify-content-between">
-                                        <p className=" fs-13 mb-0">
-                                            Extended Internal Rate of Return{" "}
-                                            <i className="ri-information-fill fs-13 text-muted"></i>
-                                        </p>
-                                        <Link to="/">
-                                            <i className="ri-loop-right-line text-primary fs-16"></i>
-                                        </Link>
-                                    </div>
-                                    <div className="card-body">
-                                        <span className="text-muted fs-11 fw-medium">
-                                            As on Feb 2024 - 10:00AM
-                                        </span>
-                                        <h2 className="mb-0 fw-semibold mt-3">&#8377; 0</h2>
-                                        <div className="d-flex justify-content-between mb-4">
-                                            <Link to="/" className="text-primary fs-11 mt-auto">
-                                                <i className="ri-mail-send-line"></i> Requet XIRR Report
-                                            </Link>
-                                            <div className="dashboard-icons">
-                                                <i className="ri-line-chart-line p-3 rounded-circle bg-primary-light fs-22"></i>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
 
@@ -452,9 +480,7 @@ const Userdashbord = () => {
                                 <div className="card">
                                     <div className="card-header border-bottom-0 justify-content-between">
                                         <div className="card-title">Months</div>
-                                        {/* <Link to="/" className="text-primary">
-                        <i className="ri-arrow-right-s-line fs-22"></i>
-                      </Link> */}
+
                                     </div>
                                     <div className="card-body">
 
@@ -580,12 +606,12 @@ const Userdashbord = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    userprofileData?.kyc_status === "pending" ? (
+                                    userprofileData?.topwallet_user_id == "0" ? (
                                         <div className="text-center ">
                                             <h6>Profile Not Updated Please Update</h6>
                                             <button
                                                 className="btn btn-primary text-capitalize apply-loan-buttton"
-                                                onClick={() => navigate('/kyc')}
+                                                onClick={() => navigate('/updateprofile')}
                                                 style={{ height: "38px" }}>
                                                 Profile Update
                                             </button>
@@ -661,6 +687,7 @@ const Userdashbord = () => {
                                                 {userData?.phone_number}
                                                 <i className="ri-twitter-fill text-primary"></i>
                                             </Link>
+                                            <span>      9988645332</span>
                                         </div>
                                     </div>
                                 </div>

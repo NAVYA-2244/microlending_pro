@@ -1,41 +1,36 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
-import { backEndCall } from "../../services/mainServiceFile";
+import { backEndCall, backEndCallFile, backEndCall_forFile } from "../../services/mainServiceFile";
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 import Recenttransections from "../authentication/Resenttransections";
 import { useMovieContext } from "../comman/Context";
-import { useFunctionContext } from "../comman/FunctionsContext";
-import ApplyLoan from "../authentication/ApplyLoan";
-import CreditScorePieChart from '../comman/CreditScorePieChart';
 
-// import numeral from "numeral";
-import Updateprofile from './../authentication/Updateprofile';
-import TabComponent from "../authentication/forgot_password";
-import AddFundsModal from "../authentication/AddFundsModal";
 
+import axios from "axios";
+
+import { helpers } from 'crypto-js';
+// axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
 
 const Admindashbord = () => {
     const { loanList, setLoanList, userData, setUserData, adminData, setAdminData, userprofileData, setUserprofileData, } = useMovieContext();
     // console.log(loanList?.[0].emi_detals?.nextEMIDate, "emi date");
 
-    console.log(loanList, "loanes");
+    // console.log(loanList, "loanes");
+
+    const [downloadExcelDis, setDownloadExcelDis] = useState(false);
+    // const apiUrl = process.env.REACT_APP_API_URL;
+    const [selectedTab, setSelectedTab] = useState(false);
 
 
-
-    const { errorOccur, setErrorOccur } = useMovieContext();
-    const [copySuccess, setCopySuccess] = useState(false);
-
-    const [bkcall, setbkcall] = useState(false)
     const { usereligibility, setUserEligibility, } = useMovieContext()
     const [loading, setLoading] = useState(false)
     const [isFetching, setIsFetching] = useState(false);
-    const [showAddFundsModal, setShowAddFundsModal] = useState(false);
-    const [showAddAdminModal, setShowAddAdminModal] = useState(false);
-    const [actionType, setActionType] = useState('');
-
+    const [bkcall, setbkcall] = useState(false);
+    const [downloads, setDownloads] = useState("");
+    const [btndisabled, setBtnDisabled] = useState(false)
     const navigate = useNavigate();
 
 
@@ -45,13 +40,13 @@ const Admindashbord = () => {
 
 
     const fetchAdminData = async () => {
-        console.log("entered into admindata", adminData)
+        // console.log("entered into admindata", adminData)
 
         try {
 
             // if (adminData <= 0 || !adminData) {
             const response = await backEndCall("/admin/admin_stats");
-            console.log(response, "admindata")
+            // console.log(response, "admindata")
             setAdminData(response);
 
             // }
@@ -68,13 +63,13 @@ const Admindashbord = () => {
 
 
     const fetchloanData = async () => {
-        console.log(userprofileData);
+        // console.log(userprofileData);
 
         try {
             if (!loanList) {
 
                 const response = await backEndCall("/users/user_loan_details");
-                console.log(response, "loan details");
+                // console.log(response, "loan details");
                 setLoanList(response);
 
             }
@@ -101,21 +96,14 @@ const Admindashbord = () => {
             fetchloanData();
         }
     }, []);
-
-
-
-
-
     useEffect(() => {
         if (!authService.getCurrentUser()) {
             Navigate("/landing");
         }
     });
 
-
-
     const handlerefresh = async () => {
-        console.log("reload");
+        // console.log("reload");
         if (isFetching) return; // Prevent multiple calls if already fetching
 
         setIsFetching(true); // Set fetching state to true
@@ -186,12 +174,66 @@ const Admindashbord = () => {
         navigate("/verifyloan")
     }
 
+    // const downloadExcel = () => {
+    //     setDownloadExcelDis(true);
 
+    //     axios.post(`${apiUrl}/admin/loans_data_excel_download`, {
+    //         responseType: 'blob',
+    //     })
+    //         .then((response) => {
+    //             const url = window.URL.createObjectURL(new Blob([response.data]));
+    //             const a = document.createElement('a');
+    //             a.href = url;
+    //             a.download = 'data.xlsx';
+    //             document.body.appendChild(a);
+    //             a.click();
+    //             document.body.removeChild(a);
+    //             window.URL.revokeObjectURL(url);
+    //             setDownloadExcelDis(false);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error downloading file:', error);
+    //             setDownloadExcelDis(false);
+    //             // Optionally, handle error feedback to the user (e.g., display error message)
+    //         });
+    // };
 
+    const downladExale = async () => {
+        console.log("enter")
+        try {
+            setbkcall(true);
+            console.log("enter");
+
+            const response = await backEndCall("/admin/loans_data_excel_download",
+                { /* request body */ },
+                {
+                    responseType: "blob",
+                    headers: {
+                        "Content - Type": "application / json",
+                        "Access - Control - Expose - Headers": "Content - Disposition"
+                    }
+                }
+            );
+            setbkcall(false);
+            // Create a Blob object from the response data
+            const blob = new Blob([response.data], { type: "application/ vnd.openxmlformats - officedocument.spreadsheetml.sheet" });
+            // Create a download link for the Blob
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "loans.xlsx"); // Ensure the file name matches the one set in Content-Disposition
+            document.body.appendChild(link);
+            link.click();
+            console.log("final");
+        } catch (error) {
+            console.error("Error downloading file:", error);
+            // Handle error if necessary
+        }
+    };
     return (
         <>
 
-            {/* <TabComponent></TabComponent> */}
+
             <div className="d-sm-flex d-block align-items-center justify-content-between mb-4">
                 <div>
                     <h4 className="mb-2 mb-sm-0">Dashboard  </h4>
@@ -200,32 +242,18 @@ const Admindashbord = () => {
 
 
 
-                <div style={{
-                    display: "flex",
-                    gap: "10px"
-                }}
 
+
+
+                <button
+                    className="btn btn-primary text-capitalize"
+                    onClick={downladExale}
+                    disabled={downloadExcelDis}
                 >
+                    {downloadExcelDis ? 'Downloading...' : 'Download'}
+                </button>
 
-
-                    {authService.IsAdmin() && (
-                        <button
-                            className="btn btn-primary text-capitalize"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            data-bs-custom-className="custom-tooltip"
-                            data-bs-title="This top tooltip is themed via CSS variables."
-                        >
-                            <i className="ri-building-2-fill fs-20 align-middle"></i> Browse
-                            Investments
-                        </button>)}
-                </div>
             </div >
-
-
-
-
-
             {
                 authService.IsAdmin() && (<><div className="row">
                     <div className="col-xl-8">

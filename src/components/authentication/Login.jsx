@@ -200,8 +200,8 @@ const LoginForm = () => {
                         </div>
 
                         <button
-                          className="btn btn-primary py-2 mb-4  mt-4"
-                          disabled={btnDisabled}
+                          className="btn btn-primary btn-lg   py-2 mb-4  mt-4"
+                          disabled={btnDisabled} style={{ height: "38px" }}
                         >
                           Login
                         </button>

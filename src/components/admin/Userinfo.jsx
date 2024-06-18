@@ -68,7 +68,7 @@ const Userinfo = () => {
             const user_id = location.state.user_id;
 
             const response = await backEndCallObj("/admin/users_profile", { user_id });
-            console.log(response, "gffg")
+            // console.log(response, "gffg")
             setAdminprofileData(response);
             setLoading(false);
 
@@ -98,7 +98,7 @@ const Userinfo = () => {
             setIsFetching(true);
             const user_id = location.state.user_id;
             const response = await backEndCallObj('/admin/emi_history', { user_id });
-            console.log(response, "EMI history data");
+            // console.log(response, "EMI history data");
             setEmiHistory(Array.isArray(response) ? response : []); // Set EMI history
         } catch (ex) {
             toast.error("An error occurred while fetching EMI history.");
@@ -116,7 +116,7 @@ const Userinfo = () => {
             setIsFetching(true); // Set isFetching to true when a backend call starts
             const user_id = location.state.user_id;
             const response = await backEndCallObj("/admin/user_loan_details", { user_id });
-            console.log(response, "loan details data");
+            // console.log(response, "loan details data");
             setLoanList(response); // Set loan details
         } catch (ex) {
             toast.error("An error occurred while fetching loan details.");
@@ -136,7 +136,7 @@ const Userinfo = () => {
 
             const user_id = location.state.user_id;
             const response = await backEndCallObj('/admin/transaction_history', { user_id });
-            console.log(response, "transaction history data");
+            // console.log(response, "transaction history data");
             setTransactionHistory(response || []); // Set transaction history
         } catch (ex) {
             toast.error("An error occurred while fetching transaction history.");
@@ -446,17 +446,40 @@ const Userinfo = () => {
                 </div>
 
             </div>
-            <div>
+            {/* <div>
                 <div className="tabs d-flex">
                     <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)} ><button className="btn btn-primary me-3 mb-2" disabled={btndisabled}>Transaction history</button></div>
                     <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)} ><button className="btn btn-primary me-2 mb-3" disabled={btndisabled} >EMI History</button></div>
                     <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}><button className="btn btn-primary me-2 mb-3" disabled={btndisabled}>Loan Details</button></div>
+                </div> */}
+            <div className="container">
+                <div className="row mb-3">
+
+
+                    <div className="col-12 col-md-6 d-block d-sm-flex justify-content-md-start  gap-md-2 mt-2 mt-md-0
+">
+                        <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)}>
+                            <button class="btn btn-primary w-100 mb-2 mb-md-0" disabled={btndisabled}>Transaction History</button>
+                        </div>
+                        <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)}>
+                            <button class="btn btn-primary w-100 mb-2 mb-md-0" disabled={btndisabled}>EMI History</button>
+                        </div>
+                        <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}>
+                            <button class="btn btn-primary w-100" disabled={btndisabled}>Loan Details</button>
+                        </div>
+                    </div>
+                    <div className="col-12 col-md-6 col-lg-6">
+                        {/* <h4 className="mb-2 mb-sm-0">Dashboard</h4> */}
+                    </div>
                 </div>
-                <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
+            </div>
 
 
-                    <TabPanel>
-                        {/* <div className="table-responsive">
+            <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
+
+
+                <TabPanel>
+                    {/* <div className="table-responsive">
                             {tabclicked && <table className="table border table-bordered table-centered">
                                 <thead>
                                     <tr className="table-head">
@@ -496,10 +519,10 @@ const Userinfo = () => {
                                 }
                             </table>}
                         </div> */}
-                        <Tab1></Tab1>
-                    </TabPanel>
-                    <TabPanel>
-                        {/* <div className="table-responsive">
+                    <Tab1></Tab1>
+                </TabPanel>
+                <TabPanel>
+                    {/* <div className="table-responsive">
                             <table className="table border table-bordered table-centered text-center">
                                 <thead>
                                     <tr className="table-head">
@@ -539,11 +562,11 @@ const Userinfo = () => {
                             </table>
 
                         </div> */}
-                        <Tab2></Tab2>
-                    </TabPanel>
-                    <TabPanel>
+                    <Tab2></Tab2>
+                </TabPanel>
+                <TabPanel>
 
-                        {/* 
+                    {/* 
                         <diV className="table-responsive">
                             <table className="table border table-bordered table-centered text-center">
                                 <thead>
@@ -632,7 +655,7 @@ const Userinfo = () => {
                                     ))}
                                 </tbody>
                             </table> */}
-                        {/* {showModal &&
+                    {/* {showModal &&
                                 <Modal show={showModal} onHide={handleCloseModal}>
                                     <Modal.Header closeButton>
                                         <Modal.Title> Add Penalty </Modal.Title>
@@ -680,12 +703,12 @@ const Userinfo = () => {
                                 </tr>)
                             }
                         </diV> */}
-                        <Tab3></Tab3>
-                    </TabPanel>
-                </Tabs>
+                    <Tab3></Tab3>
+                </TabPanel>
+            </Tabs>
 
-            </div>
-        </div >
+        </div>
+        // </div >
     );
 };
 
