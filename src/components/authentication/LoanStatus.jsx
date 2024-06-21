@@ -30,7 +30,7 @@ function LoanStatus() {
       if (!loanList) {
         setLoading(true);
         const response = await backEndCall("/users/user_loan_details");
-        // console.log(response, "loan details");
+        console.log(response, "loan details");
         setLoanList(response);
         setLoading(false);
       } else {
@@ -178,6 +178,7 @@ function LoanStatus() {
         Loan Type: ${selectedLoan?.loan_type || "N/A"}
         Phone Number: ${userprofileData?.phone_number || "N/A"}
         Loan Status: ${selectedLoan?.loan_status || "N/A"}
+        
        
     `;
 
@@ -299,7 +300,7 @@ function LoanStatus() {
                                 <button
                                   className="btn btn-primary"
                                   onClick={() =>
-                                    navigate("/emaidetails", {
+                                    navigate("/emidetails", {
                                       state: { formId: loan.loan_id },
                                     })
                                   }
@@ -307,10 +308,11 @@ function LoanStatus() {
                                   Go to Emi Details
                                 </button>
                               )}
-                              {(loan?.loan_status === "Cancelled" || loan?.loan_status === "Rejected") && (
+                              {(loan?.loan_status === "Cancelled" || loan?.loan_status === "Rejected" || loan?.loan_status === "completed") && (
                                 "Your loan application has been " + loan.loan_status.toUpperCase()
                                 // + ". Please contact support for further assistance."
                               )}
+
                             </td>
 
                           </tr>
@@ -457,10 +459,10 @@ function LoanStatus() {
               </div>
               <div className="my-3">
                 Income Proof:{" "}
-                {userprofileData?.income_proof && (
+                {selectedLoan?.income_proof && (
                   <div className="mt-2">
                     <a
-                      href={userprofileData?.income_proof}
+                      href={selectedLoan?.income_proof}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

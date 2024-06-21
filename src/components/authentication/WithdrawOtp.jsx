@@ -46,7 +46,10 @@ function WithdrawOtp() {
             console.log(otpResponse, "otp");
 
             // Wait for 2 seconds before checking transaction status
-
+            setFormData({
+                otp: "",
+                transaction_id: "",
+            })
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data, "error");
@@ -57,10 +60,7 @@ function WithdrawOtp() {
             }
         }
         finally {
-            setFormData({
-                otp: "",
-                transaction_id: "",
-            })
+
         }
     };
 

@@ -44,7 +44,7 @@ import BankDetails from "./components/authentication/BankDetails";
 import WithdrawalPage from "./components/authentication/WithdrawalPage";
 import WithdrawOtp from "./components/authentication/WithdrawOtp";
 import AdminTransection from "./components/admin/AdminTransections";
-import EmiPayOtp from "./components/authentication/EmiPayOtp.JSX";
+import EmiPayOtp from "./components/authentication/EmiPayOtp";
 
 const protect = (component) => <ProtectedRoute>{component}</ProtectedRoute>;
 class App extends Component {
@@ -55,47 +55,69 @@ class App extends Component {
           <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
           <Routes>
             <Route path="/" element={protect(<AppLayout />)}>
+
               <Route index element={<Dashboard />} />
+
               <Route path="/dashboard" exact element={<Dashboard />}></Route>
-              <Route path="/Userdashbord" element={<Userdashbord />}></Route>
-              <Route path="/Admindashbord" element={<Admindashbord></Admindashbord>}></Route>
               <Route path="/settings" element={<Settings />}></Route>
+              <Route path="/emihistory" element={<EmiHistory />}></Route>
+              <Route path="/transection_history" element={<Transection_history />}></Route>
+              <Route path="/recenttransactionHistory" element={<Recenttransections></Recenttransections>}></Route>
+
+
+
+              <Route path="/Userdashbord" element={<Userdashbord />}></Route>
               <Route path="/updateprofile" element={<Updateprofile />}></Route>
               <Route path="/userdetails" element={<Userdetails />}></Route>
-              <Route path="/userlist" element={<UsersList />}></Route>
-
-              <Route path="/adminlist" element={<AdminList />}></Route>
-              <Route path="/admincontrols" element={<AddminControlls />}></Route>
-              <Route path="/loaneligibility" element={<Loaneligibility />}></Route>
               <Route path="/loaneligibilitydetails" element={<LoaneligibilityDetails />}></Route>
-              <Route path="/applyloan" element={<ApplyLoan />}></Route>
 
-              <Route path="/aplyloanLogin" element={<AplyloanLogin />}></Route>
-              <Route path="/transection_history" element={<Transection_history />}></Route>
-              <Route path="/emihistory" element={<EmiHistory />}></Route>
-              <Route path="/admintrasections" element={<AdminTransection></AdminTransection>}></Route>
-              <Route path="/recenttransactionHistory" element={<Recenttransections></Recenttransections>}></Route>
               <Route path="/loanstatus" element={<LoanStatus />}></Route>
 
               <Route path="/userprofile" element={<Userdetails />}></Route>
 
-              <Route path="/userinfo" element={<Userinfo />}></Route>
 
-              <Route path="/verifyloan" element={<VerifyLoan />}></Route>
-              <Route path="/emaidetails" element={<EmiDetails />}></Route>
-              <Route path="/Loanedetails" element={<LoanDetails></LoanDetails>}></Route>
-              <Route path="/tab1" element={<Tab1></Tab1>}></Route>
 
-              <Route path="/tab2" element={<Tab2></Tab2>}></Route>
-              <Route path="/tab3" element={<Tab3></Tab3>}></Route>
+
               <Route path="/kyc" element={<KycRoot></KycRoot>}></Route>
-              <Route path="/Kyc_url" element={<Kyc_url />}></Route>
+              <Route path="/applyloan" element={<ApplyLoan />}></Route>
+
+              <Route path="/emidetails" element={<EmiDetails />}></Route>
+
+
+
 
               <Route path="/banklist" element={<BankDetails />}></Route>
               <Route path="/withdrawal" element={<WithdrawalPage />}> </Route>
               <Route path="/withdrawOtp" element={<WithdrawOtp />} />
               <Route path="/emipayotp" element={<EmiPayOtp />} />
               <Route path="/kycstatus" element={<Kyc_satus />}></Route>
+
+
+
+              <Route path="/Admindashbord" element={<Admindashbord></Admindashbord>}></Route>
+
+              <Route path="/Kyc_url" element={<Kyc_url />}></Route>
+              <Route path="/userlist" element={<UsersList />}></Route>
+
+              <Route path="/adminlist" element={<AdminList />}></Route>
+              <Route path="/admincontrols" element={<AddminControlls />}></Route>
+              <Route path="/loaneligibility" element={<Loaneligibility />}></Route>
+
+
+
+
+
+
+              <Route path="/userinfo" element={<Userinfo />}></Route>
+
+              <Route path="/verifyloan" element={<VerifyLoan />}></Route>
+
+              <Route path="/tab1" element={<Tab1></Tab1>}></Route>
+
+              <Route path="/tab2" element={<Tab2></Tab2>}></Route>
+              <Route path="/tab3" element={<Tab3></Tab3>}></Route>
+
+
 
             </Route>
 

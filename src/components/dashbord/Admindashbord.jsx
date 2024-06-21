@@ -45,8 +45,8 @@ const Admindashbord = () => {
         try {
 
             // if (adminData <= 0 || !adminData) {
-            const response = await backEndCall("/admin/admin_stats");
-            // console.log(response, "admindata")
+            const response = await backEndCall("/admin/admin_mis_stats");
+            console.log(response, "adminstats")
             setAdminData(response);
 
             // }
@@ -279,25 +279,8 @@ const Admindashbord = () => {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <div className="row">
-                                    {/* <div className="col-xl-3 col-12 col-sm-12 col-lg-3 col-md-3">
-                    <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <p className="mb-0 fs-12">
-                          Total Users
-                        </p>
-                        <span className="dashboard-icons">
-                          <i className="ri-luggage-deposit-line p-2 rounded-circle bg-white-light fs-24"></i>
-                        </span>
-                      </div>
-                      <p className="mb-0 fw-semibold mt-3 fs-18">
-                        <span> </span>{adminData?.users_count || "0.00"}
-                      </p>
+                                <div className="row mb-4">
 
-
-                    </div>
-
-                  </div> */}
                                     <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                                         <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                                             <div className="d-flex justify-content-between mt-2 align-items-center">
@@ -308,7 +291,7 @@ const Admindashbord = () => {
                                             </div>
 
                                             <p className="mb-0 fw-semibold mt-3 fs-18">
-                                                <span onClick={navigateuser} className="cursor-pointer"> {adminData?.users_count || "0"}</span>
+                                                <span onClick={navigateuser} className="cursor-pointer"> {adminData?.totalUsers || "0"}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -321,7 +304,7 @@ const Admindashbord = () => {
                                                 </span>
                                             </div>
                                             <p className="mb-0 fw-semibold mt-3 fs-18">
-                                                <span onClick={navigateloans} className="cursor-pointer">  {adminData?.countProcessingLoans || "0"}</span>
+                                                <span onClick={navigateloans} className="cursor-pointer">  {adminData?.loanApplications?.pending || "0"}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -334,7 +317,7 @@ const Admindashbord = () => {
                                                 </span>
                                             </div>
                                             <p className="mb-0 fw-semibold mt-3 fs-18">
-                                                <span onClick={navigateloans} className="cursor-pointer">{adminData?.countRejectedLoans || "0"}</span>
+                                                <span onClick={navigateloans} className="cursor-pointer">{adminData?.loanApplications?.rejected || "0"}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -348,7 +331,65 @@ const Admindashbord = () => {
                                                 </span>
                                             </div>
                                             <p className="mb-0 fw-semibold mt-3 fs-18">
-                                                <span onClick={navigateloans} className="cursor-pointer"> {adminData?.countApprovedLoans || "0"} </span>
+                                                <span onClick={navigateloans} className="cursor-pointer"> {adminData?.loanApplications?.approved || "0"} </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+
+                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">Total Loans</p>
+                                                <span className="dashboard-icons">
+                                                    <i className="ri-luggage-deposit-line p-2 rounded-circle bg-white-light fs-24"></i>
+                                                </span>
+                                            </div>
+
+                                            <p className="mb-0 fw-semibold mt-3 fs-18">
+                                                <span onClick={navigateuser} className="cursor-pointer"> {adminData?.loanApplications?.total || "0"}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">Completed Loans</p>
+                                                <span className="dashboard-icons">
+                                                    <i className="ri-wallet-3-line p-2 rounded-circle bg-white-light fs-24"></i>
+                                                </span>
+                                            </div>
+                                            <p className="mb-0 fw-semibold mt-3 fs-18">
+                                                <span onClick={navigateloans} className="cursor-pointer">  {adminData?.loanApplications?.completed || "0"}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">   Reduced Loan Amount
+                                                </p>
+                                                <span className="dashboard-icons">
+                                                    <i className="ri-database-2-line p-2 rounded-circle bg-white-light fs-24"></i>
+                                                </span>
+                                            </div>
+                                            <p className="mb-0 fw-semibold mt-3 fs-18">
+                                                <span onClick={navigateloans} className="cursor-pointer">{adminData?.loansAmount?.lose || "0"}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">Loan Amount Profit                                               </p>
+                                                <span className="dashboard-icons">
+                                                    <i className="ri-database-2-line p-2 rounded-circle bg-white-light fs-24"></i>
+                                                </span>
+                                            </div>
+                                            <p className="mb-0 fw-semibold mt-3 fs-18">
+                                                <span onClick={navigateloans} className="cursor-pointer"> {adminData?.loansAmount?.profit || "0"} </span>
                                             </p>
                                         </div>
                                     </div>
@@ -577,7 +618,7 @@ const Admindashbord = () => {
                                 <div className="fs-15">
                                     <i className="ri-discount-percent-fill"></i> Introducing{" "}
                                     <Link to="/" className="text-warning fw-bold">
-                                        Per Annum
+                                        <span>Loan Amount with Interest</span> and <span>Loan Amount without Interest</span>
                                     </Link>{" "}
                                     by Micro Lending
                                 </div>
@@ -586,32 +627,54 @@ const Admindashbord = () => {
                                 </Link>
                             </div>
                             <div className="card-body">
-                                <span className="mb-0">
-                                    Micro lending newly launched flagship investment platform. Now
-                                    with instant, no questions asked withdrawal options!
-                                </span>
                                 <div className="row mt-3">
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Paid Amount With Interest</p>
                                             <span className="fs-11 fw-500">
-                                                <i className="ri-check-double-line text-success"></i> Earn
-                                                upto 23% p.a.
+                                                <i className="ri-check-double-line text-success"></i>{adminData?.loansAmount?.paidAmountWithInterest || "0"}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Paid Amount Without Interest</p>
                                             <span className="fs-11 fw-500">
-                                                <i className="ri-check-double-line text-success"></i> No
-                                                investment fee
+                                                <i className="ri-check-double-line text-success"></i> {adminData?.loansAmount?.paidAmountWithoutInterest || "0"}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Pending Amount With Interest</p>
                                             <span className="fs-11 fw-500">
-                                                <i className="ri-check-double-line text-success"></i> Earn
-                                                daily interest
+                                                <i className="ri-check-double-line text-success"></i> {adminData?.loansAmount?.pendingAmountWithInterest || "0"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row mt-3">
+                                    <div className="col-4">
+                                        <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Pending Amount Without Interest</p>
+                                            <span className="fs-11 fw-500">
+                                                <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.pendingAmountWithoutInterest || "0"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="col-4">
+                                        <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Total Amount With Interest</p>
+                                            <span className="fs-11 fw-500">
+                                                <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.totalAmountWithInterest || "0"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="col-4">
+                                        <div className="p-2 bg-white-light">
+                                            <p className="mb-0 fs-12">Total Amount Without Interest</p>
+                                            <span className="fs-11 fw-500">
+                                                <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.totalAmountWithoutInterest || "0"}
                                             </span>
                                         </div>
                                     </div>

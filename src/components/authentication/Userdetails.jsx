@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { backEndCallObj } from "../../services/mainServiceFile";
 import { useMovieContext } from "../comman/Context";
@@ -9,11 +9,59 @@ import ApplyLoan from './ApplyLoan';
 import Updateprofile from "./Updateprofile";
 import authService from "../../services/authService";
 import toast from "react-hot-toast";
-
+import Joi from 'joi';
+import { useFunctionContext } from "../comman/FunctionsContext";
 const Userdetails = () => {
   const navigate = useNavigate();
   const { userprofileData, setUserprofileData } = useMovieContext();
+  const fileInputRef = useRef(null);
+  const { checkErrors } = useFunctionContext();
+  const [formData, setFormData] = useState({
+    photo: "",
+  });
+  const schema = {
+    photo: Joi.any().required().label("Photo"),
+  };
+  const handleProfilePhotoSelection = () => {
+    fileInputRef.current.click(); // Trigger file input click
+  };
 
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result;
+        console.log("Base64:", base64String);
+        setFormData({ ...formData, photo: base64String }); // Update formData with base64 photo
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.photo) {
+      handleSubmit();
+    }
+  }, [formData.photo]);
+
+  const handleSubmit = async () => {
+    try {
+      console.log(formData, "photo");
+      await checkErrors(schema, formData);
+      console.log(formData, "jdjdphoto");
+      const response = await backEndCallObj("/users/files_upload", formData);
+
+      setFormData({ photo: "" });
+
+      // Update user's profile data with the new photo
+      setUserprofileData({ ...userprofileData, photo: formData.photo });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        toast.error(ex.response?.data);
+      }
+    }
+  };
   // const [userData, setUserData] = useState("0");
 
   const [loading, setLoading] = useState(false);
@@ -53,7 +101,13 @@ const Userdetails = () => {
       </div>
     </div></div>;
   }
+  const KycUpdate = () => {
+    {
+      userprofileData?.topwallet_user_id !== "0" ?
+        (navigate("/kyc")) : navigate("/updateprofile")
 
+    };
+  }
 
   // if (userprofileData?.kyc_status == "pending") {
   //   console.log(userprofileData?.kyc_status)
@@ -75,7 +129,18 @@ const Userdetails = () => {
               <div className="card overflow-hidden">
                 <div className="px-3 profile_page d-flex align-items-center">
                   <div className="d-flex align-items-center">
-                    <div className="position-relative">
+                    <form style={{ display: "none" }}>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="form-control"
+                        id="photo"
+                        name="photo"
+                        accept="image/*"
+                        onChange={handleFileInputChange}
+                      />
+                    </form>
+                    <div className="position-relative d-inline-block">
                       {userprofileData?.photo && <img
                         src={userprofileData?.photo}
 
@@ -84,23 +149,28 @@ const Userdetails = () => {
                         height={60}
                         className="rounded-circle object-fit-cover"
                       />}
-                      {/* <span class="position-absolute bg-success border border-light rounded-circle user_active"> */}
-                      {/* <span class="visually-hidden">New alerts</span> */}
-                      {/* </span> */}
+
+                      <i
+                        className="ri-edit-line edit-icon position-absolute small-rounded-icon "
+                        style={{ bottom: '0', right: '0', overflow: 'hidden' }}
+                        onClick={handleProfilePhotoSelection}
+                      ></i>
                     </div>
+
                     <h5 className="mb-0 ms-3 text-white text-capitalize">
 
                       {userprofileData?.full_name == "0" ? "" : userprofileData?.full_name}
                       {/* {userprofileData?.last_name == "0" ? "" : authService.kycStatus() !== "verified" && userprofileData?.last_name} */}
                     </h5>
                   </div>
+
                   <span className="badge bg-success fs-12 ms-auto">
                     {userprofileData?.user_status == "0" ? "NA" : userprofileData?.user_status}
                   </span>
                 </div>
                 <div className="card-body">
 
-                  <div className="my-3">
+                  {/* <div className="my-3">
                     Income Proof :
                     <span>
                       {userprofileData?.income_proof && (
@@ -111,28 +181,37 @@ const Userdetails = () => {
                           </a>
                         </span>
                       )}
-                    </span>
+                    </span> */}
 
 
-                  </div>
+                  {/* </div> */}
 
-                  <div className="my-3">
+                  {/* <div className="my-3">
                     KYC Status :{" "}
-                    <span className="fa-12 text-warning">
+                    <span className="fa-12 text-success bold">
                       {userprofileData?.kyc_status === "0" ? "NA" : userprofileData?.kyc_status}
                     </span>
-                  </div>
-                  {/* <div className="mt-4">
-                    <p className="f-12 mb-0">Phone</p>
-                    <div>
-                      <span className="text-muted">
-                        {userprofileData?.phone_number === "0" ? "NA" : userprofileData?.phone_number}
-                      </span>
-                      <span className="text-success float-end">
-                        {userprofileData?.kyc_status === "0" ? "NA" : capitalizeFirstLetter(userprofileData?.kyc_status)}
-                      </span>
-                    </div>
                   </div> */}
+                  <div className="my-3">
+                    KYC Status:{" "}
+                    <span
+                      className={`fs-18 bold ${userprofileData?.kyc_status === "verified"
+                        ? "text-success"
+                        : userprofileData?.kyc_status === "pending"
+                          ? "text-danger"
+                          : "text-muted"
+                        }`}
+                    >
+                      {userprofileData?.kyc_status === "0"
+                        ? "NA"
+                        : userprofileData?.kyc_status === "verified"
+                          ? "Verified"
+                          : userprofileData?.kyc_status === "pending"
+                            ? "Pending"
+                            : userprofileData?.kyc_status}
+                    </span>
+                  </div>
+
                   <div className="mt-3">
                     <>
                       <label className="form-label me-1">PhoneNumber :</label>
@@ -239,6 +318,11 @@ const Userdetails = () => {
                     >
                       <i class="ri-edit-line"></i> Update Profile
                     </button> */}
+                    {userprofileData !== null && userprofileData?.kyc_status !== "verified" && (
+                      <button className="btn btn-primary text-capitalize apply-loan-button" onClick={KycUpdate} style={{ height: "38px" }}>
+                        KYC verify
+                      </button>
+                    )}
                     <button
                       className="btn btn-primary"
                       onClick={() => navigate("/loaneligibilitydetails")}

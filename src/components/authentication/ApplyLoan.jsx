@@ -49,20 +49,22 @@ const ApplyLoan = () => {
         pay_slip: Joi.string().required().label("Pay Slip"),
 
     }
-
     const handleChange = async (e) => {
-        // console.log(e)
-
-        const { name, value, type, files } = e.target;
+        const { name, type, files } = e.target;
         try {
             if (type === "file") {
                 const file = e.target.files[0];
                 if (file) {
-
+                    if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+                        toast.error("File size exceeds 2MB");
+                        deleting(name);
+                        fileInputRef.current.value = "";
+                        return;
+                    }
 
                     setErrors(prevErrors => ({
                         ...prevErrors,
-                        [name]: " "
+                        [name]: ""
                     }));
 
                     if (file.type.slice(-3) === 'pdf') {
@@ -87,23 +89,74 @@ const ApplyLoan = () => {
                         );
                     }
                 } else {
-
                     deleting(name);
-
                     fileInputRef.current.value = "";
                 }
             } else {
-
                 setFormData((prevFormData) => ({
                     ...prevFormData,
-                    [name]: value
+                    [name]: e.target.value
                 }));
             }
         } catch (error) {
-
             console.error("Error:", error);
         }
     };
+
+    // const handleChange = async (e) => {
+    //     // console.log(e)
+
+    //     const { name, value, type, files } = e.target;
+    //     try {
+    //         if (type === "file") {
+    //             const file = e.target.files[0];
+    //             if (file) {
+
+
+    //                 setErrors(prevErrors => ({
+    //                     ...prevErrors,
+    //                     [name]: " "
+    //                 }));
+
+    //                 if (file.type.slice(-3) === 'pdf') {
+    //                     const pdfs = { ...formData };
+    //                     const res = URL.createObjectURL(file);
+    //                     pdfs[name] = res;
+    //                     setFormData(pdfs);
+    //                 } else {
+    //                     Compress.imageFileResizer(
+    //                         file,
+    //                         480,
+    //                         480,
+    //                         'JPEG',
+    //                         40,
+    //                         0,
+    //                         (uri) => {
+    //                             const images = { ...formData };
+    //                             images[name] = uri;
+    //                             setFormData(images);
+    //                         },
+    //                         'base64'
+    //                     );
+    //                 }
+    //             } else {
+
+    //                 deleting(name);
+
+    //                 fileInputRef.current.value = "";
+    //             }
+    //         } else {
+
+    //             setFormData((prevFormData) => ({
+    //                 ...prevFormData,
+    //                 [name]: value
+    //             }));
+    //         }
+    //     } catch (error) {
+
+    //         console.error("Error:", error);
+    //     }
+    // };
     const deleting = (property) => {
         setFormData((prevForm) => {
             const updatedForm = { ...prevForm };
@@ -222,18 +275,23 @@ const ApplyLoan = () => {
 
     }, []);
 
+    // useEffect(() => {
+    //     if (authService.kycStatus() !== "verified") {
+    //         navigate("/Kyc");
+    //     }
+    // }, [navigate]);
 
 
     return (
         <>
 
-            <div className="container">
+            {/* <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-10">
                         <div className="card shadow-sm">
                             <div className="card-body ">
                                 <form onSubmit={handleSubmit}>
-                                    {/* KYC Details */}
+                                   
                                     <h5 className="mb-4 fw-bold">Apply Loan</h5>
                                     <hr />
                                     <div className="d-flex gap-5">
@@ -306,12 +364,9 @@ const ApplyLoan = () => {
 
 
                                             />
-                                            {/* {errors.(
-                                                    <div className="error"></div>
-                                                )} */}
-
+                                         
                                             <div style={{ color: "#ff5722" }}>
-                                                <span>*</span> <strong>Note :</strong> <p>Min Lon Amount ₱ {minAmount}<br />
+                                                <strong>Note :</strong> <p>Min Lon Amount ₱ {minAmount}<br />
                                                     Max Loan Amount ₱ {maxAmount}</p>
 
 
@@ -323,7 +378,7 @@ const ApplyLoan = () => {
 
 
 
-                                    {/* Upload Documents */}
+                                  
                                     <h5 className="mb-4">Upload documents <span className="text-danger">*</span></h5>
                                     <div className="row mb-4">
 
@@ -347,14 +402,7 @@ const ApplyLoan = () => {
 
                                             <div className="position-relative">
 
-                                                {/* {formData.pay_slip.includes("image") ? (
-                                                        <img src={formData?.pay_slip} className="document_image mt-1 rounded-2" />
-                                                    ) : (
-                                                        formData.pay_slip == null ? "" : <embed src={formData.pay_slip} className="document_image1 mt-1 rounded-2" />
-
-
-                                                    )} */}
-
+                                               
                                                 <div className="position-relative">
 
                                                     <div>
@@ -404,8 +452,14 @@ const ApplyLoan = () => {
                                                 <div className="error">{errors.income_proof}</div>
                                             )}
                                         </div>
+
+                                        <div style={{ color: "#ff5722" }}>
+                                            <p><strong>Note :</strong> Maximum File Upload Size 2MB Only</p>
+
+
+                                        </div>
                                     </div>
-                                    {/* Submit Button */}
+                                  
                                     <button type="submit" className="btn btn-primary" disabled={btnDisabled}>{btnDisabled ? "Applying..." : "Loan Apply"}</button>
 
                                 </form>
@@ -414,8 +468,139 @@ const ApplyLoan = () => {
                         </div>
                     </div >
                 </div >
-            </div >
-            {/* )} */}
+            </div > */}
+            <div className="container mt-5">
+                <div className="row justify-content-center">
+                    <div className="col-lg-10">
+                        <div className="card shadow-sm">
+                            <div className="card-body">
+                                <form onSubmit={handleSubmit}>
+                                    <h5 className="mb-4 fw-bold">Apply Loan</h5>
+                                    <hr />
+                                    <div className="d-flex gap-5 mb-4">
+                                        <div className="btn-primary p-3">
+                                            <div className="d-flex justify-content-between mt-2 align-items-center">
+                                                <p className="mb-0 fs-12">User Limit:</p>
+                                            </div>
+                                            <p className="mb-0 fw-semibold mt-3 fs-18">
+                                                <span>{userData?.userLimit ? userData?.userLimit : "0"}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label htmlFor="loan_type" className="form-label">Loan Type <span className="text-danger">*</span></label>
+                                            <Select_input
+                                                name="loan_type"
+                                                SetForm={setFormData}
+                                                schema={schema["loan_type"]}
+                                                options={[
+                                                    { value: "Business", label: "Business" },
+                                                    { value: "Personal", label: "Personal" },
+                                                    { value: "Home", label: "Home" },
+                                                ]}
+                                                autoFocus={true}
+                                            />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label htmlFor="months" className="form-label">Months <span className="text-danger">*</span></label>
+                                            <Select_input
+                                                name="months"
+                                                SetForm={setFormData}
+                                                schema={schema["months"]}
+                                                options={[
+                                                    { value: "3", label: "3" },
+                                                    { value: "6", label: "6" },
+                                                    { value: "9", label: "9" },
+                                                    { value: "12", label: "12" }
+                                                ]}
+                                            />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label htmlFor="loan_amount" className="form-label">Loan Amount <span className="text-danger">*</span></label>
+                                            <Number_Input
+                                                type={"loan_amount"}
+                                                value={formData["loan_amount"]}
+                                                name={"loan_amount"}
+                                                placeholder={"₱ 10000"}
+                                                SetForm={setFormData}
+                                                schema={schema["loan_amount"]}
+                                                inputMode={"numeric"}
+                                                maxLength={10}
+                                            />
+                                            <div className="mt-2" style={{ color: "#ff5722" }}>
+                                                <strong>Note:</strong>
+                                                <p>Min Loan Amount ₱ {minAmount}<br />
+                                                    Max Loan Amount ₱ {maxAmount}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h5 className="mb-4">Upload Documents <span className="text-danger">*</span></h5>
+                                    <div className="row mb-4">
+                                        <div className="col-md-6 mb-3 position-relative">
+                                            <label htmlFor="pay_slip" className="form-label">Pay Slip <span className="text-danger">*</span></label>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                id="pay_slip"
+                                                name="pay_slip"
+                                                ref={fileInputRef}
+                                                accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.doc,.docx,.pdf"
+                                                onChange={handleChange}
+                                            />
+                                            {errors.pay_slip && (
+                                                <div className="error">{errors.pay_slip}</div>
+                                            )}
+                                            <span className="delete_image" onClick={() => deleting("pay_slip")}><i className="ri-delete-bin-5-line"></i></span>
+                                            <div className="position-relative">
+                                                {formData?.pay_slip.includes("image") ? (
+                                                    <img src={formData.pay_slip} className="document_image1 mt-1 rounded-2" alt="Pay Slip" />
+                                                ) : formData.pay_slip ? (
+                                                    <embed src={formData.pay_slip} className="document_image1 mt-1 rounded-2" />
+                                                ) : ""}
+                                                {formData.pay_slip && <a href={formData.pay_slip} target="_blank" rel="noopener noreferrer">View Pay Slip</a>}
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6 mb-3 position-relative">
+                                            <label htmlFor="income_proof" className="form-label">Income Proof <span className="text-danger">*</span></label>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                id="income_proof"
+                                                name="income_proof"
+                                                accept="image/*,.pdf"
+                                                onChange={handleChange}
+                                            />
+                                            <span className="delete_image" onClick={() => deleting("income_proof")}><i className="ri-delete-bin-5-line"></i></span>
+                                            <div className="position-relative">
+                                                {formData.income_proof?.includes("image") ? (
+                                                    <img src={formData?.income_proof} className="document_image1 mt-1 rounded-2" alt="Income Proof" />
+                                                ) : formData.income_proof ? (
+                                                    <embed src={formData.income_proof} className="document_image1 mt-1 rounded-2" />
+                                                ) : ""}
+                                                {formData.income_proof && <a href={formData.income_proof} target="_blank" rel="noopener noreferrer">View Income Proof</a>}
+                                            </div>
+                                            {errors.income_proof && (
+                                                <div className="error">{errors.income_proof}</div>
+                                            )}
+                                        </div>
+
+                                        <div style={{ color: "#ff5722" }}>
+                                            <p><strong>Note:</strong> Maximum File Upload Size 2MB Only</p>
+                                        </div>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary" disabled={btnDisabled}>
+                                        {btnDisabled ? "Applying..." : "Apply for Loan"}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

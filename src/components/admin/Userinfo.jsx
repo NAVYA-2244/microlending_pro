@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { backEndCallObj } from "../../services/mainServiceFile";
 import { useMovieContext } from "../comman/Context";
@@ -16,13 +16,18 @@ import Joi from 'joi'
 import Tab1 from "./Tab1";
 import Tab2 from "./Tab2";
 import Tab3 from "./Tab3";
+import { log } from "joi-browser";
 
 
 const Userinfo = () => {
 
 
-    const { adminprofileData, setAdminprofileData, setTransactionHistory, transactionHistory, errorOccur, EmiHistory, checkErrors, setErrorOccur, setEmiHistory, setError, loanList, setLoanList } = useMovieContext();
+    const { adminprofileData, setAdminprofileData, transactionHistoryuser, setTransactionHistoryuser, errorOccur, EmiHistory, checkErrors, setErrorOccur, setEmiHistory, setError, loanList, setLoanList, limit, } = useMovieContext();
     const location = useLocation(); // Use the useLocation hook to access location state
+
+    const [loadMore, setLoadMore] = useState(false);
+    const [bkcoll, setbkcall] = useState(false)
+    const observer = useRef();
 
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
@@ -68,7 +73,7 @@ const Userinfo = () => {
             const user_id = location.state.user_id;
 
             const response = await backEndCallObj("/admin/users_profile", { user_id });
-            // console.log(response, "gffg")
+            console.log(response, "gffg")
             setAdminprofileData(response);
             setLoading(false);
 
@@ -130,21 +135,37 @@ const Userinfo = () => {
         setActiveTab(index);
         setTabClicked(true);
         try {
-            if (isFetching) return; // If a call is already in progress, return early
+            if (isFetching) return;
             setBtnDisabled(true);
-            setIsFetching(true); // Set isFetching to true when a backend call starts
-
+            setIsFetching(true);
+            setbkcall(false)
             const user_id = location.state.user_id;
-            const response = await backEndCallObj('/admin/transaction_history', { user_id });
-            // console.log(response, "transaction history data");
-            setTransactionHistory(response || []); // Set transaction history
+            const obj = { skip: transactionHistoryuser.length, limit, user_id };
+            const response = await backEndCallObj('/admin/user_transaction_history', obj);
+            console.log(response, "transections user")
+            if (response?.length === 0) {
+                setLoadMore(true);
+                toast.info("No more users to fetch.");
+            } else {
+
+                setTransactionHistoryuser(prevtransectionuser => [...prevtransectionuser, ...response], "helloooo");
+
+            }
+
         } catch (ex) {
-            toast.error("An error occurred while fetching transaction history.");
+
+            if (ex.response && ex.response?.status === 400) {
+                toast.error(ex.response?.data);
+            }
+
         } finally {
             setBtnDisabled(false); // Enable buttons after fetching data
             setIsFetching(false)
         }
     };
+
+
+
     const handleTabClick = (index) => {
         setActiveTab(index);
     };
@@ -159,7 +180,7 @@ const Userinfo = () => {
         setIsZoomed(!isZoomed);
     };
 
-    // const isEMIDatePast = (nextEMIDate) => {
+
     //     const today = new Date();
 
 
@@ -207,6 +228,10 @@ const Userinfo = () => {
     //         setBtnDisabled(false);
     //     }
     // };
+    function capitalizeFirstLetter(string) {
+        if (!string) return "";
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     return (
         <div className="user-details-container ">
@@ -228,113 +253,116 @@ const Userinfo = () => {
 
                                 </div>
                                 <h5 className="mb-0 ms-3 text-white text-capitalize">
-                                    {adminprofileData?.first_name === 0 ? "" : adminprofileData?.first_name} {adminprofileData?.last_name === 0 ? "" : adminprofileData?.last_name}
+
+                                    {adminprofileData?.full_name == "0" ? "" : adminprofileData?.full_name}
                                 </h5>
                             </div>
+
                             <span className="badge bg-success fs-12 ms-auto">
-                                {adminprofileData?.user_status == null ? "NA" : adminprofileData?.user_status}
+                                {adminprofileData?.user_status == "0" ? "NA" : adminprofileData?.user_status}
                             </span>
                         </div>
                         <div className="card-body">
 
+
                             <div className="my-3">
-                                KYC Status :{" "}
-                                <span className="fa-12 text-warning">
-                                    {adminprofileData?.kyc_status === null ? "NA" : adminprofileData?.kyc_status}
+                                KYC Status:{" "}
+                                <span
+                                    className={`fs-18 bold ${adminprofileData?.kyc_status === "verified"
+                                        ? "text-success"
+                                        : adminprofileData?.kyc_status === "pending"
+                                            ? "text-danger"
+                                            : "text-muted"
+                                        }`}
+                                >
+                                    {adminprofileData?.kyc_status === "0"
+                                        ? "NA"
+                                        : adminprofileData?.kyc_status === "verified"
+                                            ? "Verified"
+                                            : adminprofileData?.kyc_status === "pending"
+                                                ? "Pending"
+                                                : adminprofileData?.kyc_status}
                                 </span>
                             </div>
-                            <div className="mt-4">
-                                <p className="f-12 mb-0">Phone</p>
-                                <div className="d-flex">
-                                    <span className="text-muted">
-                                        {adminprofileData?.phone_number === null ? "NA" : adminprofileData?.phone_number}
-                                    </span>
 
-                                </div>
+                            <div className="mt-3">
+                                <>
+                                    <label className="form-label me-1">PhoneNumber :</label>
+                                    <span className="text-capitalize">
+                                        {adminprofileData?.phone_number === "0" ? "NA" : adminprofileData?.phone_number}
+                                    </span>
+                                </>
                             </div>
                             <div className="mt-3">
                                 <>
                                     <label className="form-label me-1">Amount :</label>
-                                    <span className="text-primary">
-                                        {adminprofileData?.amount === null ? "NA" : adminprofileData?.amount}
+                                    <span className="text-capitalize">
+                                        {adminprofileData?.amount === "0" ? "NA" : adminprofileData?.amount}
+                                    </span>
+                                </>
+                            </div>
+
+                            <div className="mt-3">
+                                <>
+                                    <label className="form-label me-1">Bank Id
+                                        :</label>
+                                    <span className="text-capitalize">
+                                        {adminprofileData?.bank_id
+                                            === "0" ? "NA" : adminprofileData?.bank_id
+                                        }
                                     </span>
                                 </>
                             </div>
                             <div className="mt-3">
                                 <>
-                                    <label className="form-label me-1">Credit Score :</label>
+                                    <label className="form-label me-1">Bank Code
+                                        :</label>
+                                    <span className="text-capitalize">
+                                        {adminprofileData?.bank_code
+                                            === "0" ? "NA" : adminprofileData?.bank_code
+                                        }
+                                    </span>
+                                </>
+                            </div>
+                            <div className="mt-3">
+                                <>
+                                    <label className="form-label me-1">Email Id
+                                        :</label>
                                     <span className="text-primary">
-                                        {adminprofileData?.credit_score === null ? "NA" : adminprofileData?.credit_score}
+                                        {adminprofileData?.member_email
+                                            === "0" ? "NA" : adminprofileData?.member_email
+                                        }
                                     </span>
                                 </>
                             </div>
                         </div>
                     </div>
-                    <div className="card">
-                        <h6 className="fs-18">Documents</h6>
-                        <div className="card-body">
-
-                            <div style={{ overflow: "hidden" }}>
-                                <span>
-                                    <img
-                                        src={adminprofileData?.income_proof || "NA"}
-                                        alt="Income Proof"
-                                        className={`me-3 ${isZoomed ? "zoomed" : ""}`}
-                                        style={{
-                                            height: isZoomed ? "100%" : "20%",
-                                            width: isZoomed ? "100%" : "40%",
-                                            cursor: "pointer"
-                                        }}
-                                        onClick={toggleZoom}
-                                    />
-                                    <img
-                                        src={adminprofileData?.photo || "NA"}
-                                        alt="Photo"
-                                        className={`me-3 ${isZoomed ? "zoomed" : ""}`}
-                                        style={{
-                                            height: isZoomed ? "100%" : "20%",
-                                            width: isZoomed ? "100%" : "40%",
-                                            cursor: "pointer"
-                                        }}
-                                        onClick={toggleZoom}
-                                    />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-
                 <div className="col-xl-8">
                     <div className="card">
                         <div className="card-body">
                             <div className="d-sm-flex justify-content-between align-items-center mb-3">
                                 <h6 className="fs-18">Personal Information</h6>
 
+
                             </div>
                             <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                                <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                                <div className="col-12 ">
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
-                                            First Name :
+
+                                            Full Name
                                         </label>
                                         <span className="text-capitalize">
-                                            {adminprofileData?.first_name == 0 ? "NA" : adminprofileData?.first_name}
+                                            {adminprofileData?.full_name == "0" ? "NA" : capitalizeFirstLetter(adminprofileData?.full_name)}
 
                                         </span>
                                     </div>
                                 </div>
 
-                                <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                                    <div>
-                                        <label className="text-muted fw-normal form-label me-2">
-                                            Last Name :{" "}
-                                        </label>
-                                        <span className="text-capitalize">
-                                            {" "}
-                                            {adminprofileData?.last_name == 0 ? "NA" : adminprofileData?.last_name}
-                                        </span>
-                                    </div>
-                                </div>
+                            </div>
+
+                            <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
                                 <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
@@ -342,7 +370,7 @@ const Userinfo = () => {
                                         </label>
                                         <span className="text-capitalize">
                                             {" "}
-                                            {adminprofileData?.dob == 0 ? "NA" : adminprofileData?.dob}
+                                            {adminprofileData?.dob == "0" ? "NA" : adminprofileData?.dob}
                                         </span>
                                     </div>
                                 </div>
@@ -357,16 +385,17 @@ const Userinfo = () => {
                                         </span>
                                     </div>
                                 </div>
-
                             </div>
+
+
                             <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                                <h6 className="mb-2 fs-17">Documents Details</h6>
+
                                 <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
                                             Tin Number :
                                         </label>
-                                        <span>{adminprofileData?.tin_number == 0 ? "NA" : adminprofileData?.tin_number}</span>
+                                        <span>{adminprofileData?.tin_number == "0" ? "NA" : adminprofileData?.tin_number}</span>
                                     </div>
                                 </div>
                                 <div className="col-12 col-xl-5 col-lg-6 col-md-6 col-sm-6">
@@ -374,61 +403,49 @@ const Userinfo = () => {
                                         <label className="text-muted fw-normal form-label me-2">
                                             Passport Number :
                                         </label>
-                                        <span>{adminprofileData?.passport_number == 0 ? "NA" : adminprofileData?.passport_number}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                                {/* <h6 className="mb-2 fs-17">Loan Types</h6> */}
-                                {/* <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                  <p>
-                    <strong>Purpose of loan:</strong> {userData.purpose_of_loan}
-                  </p>
-                </div> */}
-                                <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                                    <div>
-                                        <label className="text-muted fw-normal form-label me-2">
-                                            Employement :
-                                        </label>
-                                        <span> {adminprofileData?.employment == null ? "NA" : adminprofileData?.employment}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
-                                <h6 className="mb-2 fs-17">Adrress Details</h6>
-                                <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                    <div>
-                                        <label className="text-muted fw-normal form-label me-2">
-                                            Permanent Address :
-                                        </label>
-                                        <span>{adminprofileData?.residence?.permanentAddress == 0 ? "NA" : adminprofileData?.residence?.permanentAddress}</span>
-                                    </div>
-                                </div>
-                                <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                    <div>
-                                        <label className="text-muted fw-normal form-label me-2">
-                                            Current Address :
-                                        </label>
-                                        <span>{adminprofileData?.residence?.currentAddress == 0 ? "NA" : adminprofileData?.residence?.currentAddress}</span>
+                                        <span>{adminprofileData?.passport_number == "0" ? "NA" : adminprofileData?.passport_number}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
 
+                                <div className="col-12 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                                    <div>
+                                        <label className="text-muted fw-normal form-label me-2">
+                                            Employement :
+                                        </label>
+                                        <span> {adminprofileData?.employment == null ? "NA" : adminprofileData.employment}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="row border rounded-3 p-2 py-3 row-sm mb-3">
+                                <h6 className="mb-2 fs-17">Address Details</h6>
                                 <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
-                                            State :
+                                            Province :
                                         </label>
-                                        <span>{adminprofileData?.residence?.state == 0 ? "NA" : adminprofileData?.residence?.state}</span>
+                                        <span>{adminprofileData?.residence?.province == 0 ? "NA" : capitalizeFirstLetter(adminprofileData?.residence?.province)}</span>
                                     </div>
+
+                                    <div>
+                                        <label className="text-muted fw-normal form-label me-2">
+                                            Barangay :
+                                        </label>
+                                        <span>{adminprofileData?.residence?.barangay == 0 ? "NA" : capitalizeFirstLetter(adminprofileData?.residence?.barangay)}</span>
+                                    </div>
+
                                 </div>
+
+
+
                                 <div className="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
                                             City :
                                         </label>
-                                        <span>{adminprofileData?.residence?.city == 0 ? "NA" : adminprofileData?.residence?.city}</span>
+                                        <span>{adminprofileData?.residence?.city == 0 ? "NA" : capitalizeFirstLetter(adminprofileData?.residence?.city)}</span>
                                     </div>
                                     <div>
                                         <label className="text-muted fw-normal form-label me-2">
@@ -436,279 +453,66 @@ const Userinfo = () => {
                                         </label>
                                         <span>{adminprofileData?.residence?.pin_code == 0 ? "NA" : adminprofileData?.residence?.pin_code}</span>
                                     </div>
+                                    <div>
+                                        <label className="text-muted fw-normal form-label me-2">
+                                            House No :
+                                        </label>
+                                        <span>{adminprofileData?.houseno == 0 ? "NA" : adminprofileData?.houseno}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
-            </div>
-            {/* <div>
-                <div className="tabs d-flex">
-                    <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)} ><button className="btn btn-primary me-3 mb-2" disabled={btndisabled}>Transaction history</button></div>
-                    <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)} ><button className="btn btn-primary me-2 mb-3" disabled={btndisabled} >EMI History</button></div>
-                    <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}><button className="btn btn-primary me-2 mb-3" disabled={btndisabled}>Loan Details</button></div>
-                </div> */}
-            <div className="container">
-                <div className="row mb-3">
 
 
-                    <div className="col-12 col-md-6 d-block d-sm-flex justify-content-md-start  gap-md-2 mt-2 mt-md-0
+                <div className="container">
+                    <div className="row mb-3">
+
+
+                        <div className="col-12 col-md-6 d-block d-sm-flex justify-content-md-start  gap-md-2 mt-2 mt-md-0
 ">
-                        <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)}>
-                            <button class="btn btn-primary w-100 mb-2 mb-md-0" disabled={btndisabled}>Transaction History</button>
+                            <div className={activeTab === 0 ? "tab active" : "tab"} onClick={() => handleTabTransection(0)}>
+                                <button class="btn btn-primary w-100 mb-2 mb-4" disabled={btndisabled}>Transaction History</button>
+                            </div>
+                            <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)}>
+                                <button class="btn btn-primary w-100 mb-2 mb-4" disabled={btndisabled}>EMI History</button>
+                            </div>
+                            <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}>
+                                <button class="btn btn-primary w-100 mb-4" disabled={btndisabled}>Loan Details</button>
+                            </div>
                         </div>
-                        <div className={activeTab === 1 ? "tab active" : "tab"} onClick={() => handleTabEMI(1)}>
-                            <button class="btn btn-primary w-100 mb-2 mb-md-0" disabled={btndisabled}>EMI History</button>
+                        <div className="col-12 col-md-6 col-lg-6">
+
                         </div>
-                        <div className={activeTab === 2 ? "tab active" : "tab"} onClick={() => handleTabLOAN(2)}>
-                            <button class="btn btn-primary w-100" disabled={btndisabled}>Loan Details</button>
-                        </div>
-                    </div>
-                    <div className="col-12 col-md-6 col-lg-6">
-                        {/* <h4 className="mb-2 mb-sm-0">Dashboard</h4> */}
                     </div>
                 </div>
+
+
+                <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
+
+
+                    <TabPanel>
+
+                        <Tab1 transactionHistory={transactionHistoryuser}
+                            handleTabTransection={handleTabTransection}
+                            loading={loading}></Tab1>
+                    </TabPanel>
+                    <TabPanel>
+
+                        <Tab2></Tab2>
+                    </TabPanel>
+                    <TabPanel>
+
+
+
+                        <Tab3></Tab3>
+                    </TabPanel>
+                </Tabs>
+
             </div>
-
-
-            <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
-
-
-                <TabPanel>
-                    {/* <div className="table-responsive">
-                            {tabclicked && <table className="table border table-bordered table-centered">
-                                <thead>
-                                    <tr className="table-head">
-                                        <th scope="col">Transaction Id</th>
-                                        <th scope="col">Receiver Id</th>
-                                        <th scope="col">Sender Id</th>
-                                        <th scope="col">Transaction Type</th>
-                                        <th scope="col">Transaction Status</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Comment</th>
-                                        <th scope="col">Transaction Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-body text-center">
-
-
-
-                                    {transactionHistory?.map(history => (
-                                        <tr key={history.transaction_id}>
-                                            <td>{history.transaction_id}</td>
-                                            <td>{history.receiver_id}</td>
-                                            <td>{history.sender_id}</td>
-                                            <td>{history.transactionType}</td>
-                                            <td>{history.transaction_status}</td>
-                                            <td>{history.amount}</td>
-                                            <td>{history.comment}</td>
-                                            <td>{formattedDate(history.transactionDate)}</td>
-                                        </tr>
-                                    ))
-                                    }
-                                </tbody>
-                                {
-                                    transactionHistory?.length === 0 && (
-                                        <tr>
-                                            <td colSpan="7" className="text-center">No transactions found.</td>
-                                        </tr>)
-                                }
-                            </table>}
-                        </div> */}
-                    <Tab1></Tab1>
-                </TabPanel>
-                <TabPanel>
-                    {/* <div className="table-responsive">
-                            <table className="table border table-bordered table-centered text-center">
-                                <thead>
-                                    <tr className="table-head">
-                                        <th scope="col">Payment Id</th>
-                                        <th scope="col">Receiver Id</th>
-                                        <th scope="col">Sender Id</th>
-                                        <th scope="col">Instalment Number</th>
-                                        <th scope="col">Transaction Type</th>
-                                        <th scope="col">Emi Status</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Payment Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-body">
-
-                                    {
-                                        EmiHistory.map(history => (
-                                            <tr key={history.emi_id}>
-                                                <td>{history.payment_id}</td>
-                                                <td>{history.receved_id}</td>
-                                                <td>{history.sender_id}</td>
-                                                <td>{history.instalmentNumber}</td>
-                                                <td>{history.transactionType}</td>
-                                                <td>{history.emi_status}</td>
-                                                <td>{history.paymentAmount}</td>
-                                                <td>{formattedDate(history.paymentDate)}</td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-
-                                {EmiHistory?.length === 0 && (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">No transactions found.</td>
-                                    </tr>)
-                                }
-                            </table>
-
-                        </div> */}
-                    <Tab2></Tab2>
-                </TabPanel>
-                <TabPanel>
-
-                    {/* 
-                        <diV className="table-responsive">
-                            <table className="table border table-bordered table-centered text-center">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Documents</th>
-                                        <th scope="col">Date </th>
-                                        <th scope="col"> Next EMI Date </th>
-                                        <th scope="col">user id</th>
-                                        <th scope="col">lone id</th>
-                                        <th scope="col">loan amount</th>
-                                        <th scope="col">Months</th>
-                                        <th scope="col">loan type</th>
-
-                                        <th scope="col">loan status</th>
-                                      
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    {loanList?.map((loan) => (
-                                        <tr key={loan?.user_id}>
-                                            <td>
-                                                <div className="d-flex">
-                                                    <img
-                                                        src={loan.photo}
-                                                        alt="User"
-                                                        className="object-fit-cover rounded-circle"
-                                                        style={{
-                                                            width: "45px",
-                                                            height: "45px",
-                                                        }}
-                                                    />
-                                                    <img
-                                                        src={loan?.pay_slip}
-                                                        alt="User"
-                                                        className="object-fit-cover rounded-circle"
-                                                        style={{
-                                                            width: "45px",
-                                                            height: "45px",
-                                                        }}
-                                                    />
-                                                  
-                                                </div>
-                                            </td>
-                                            <td>{formattedDate(loan?.date_of_applycation)}</td>
-                                            <td>{formattedDate(loan?.emi_detals.nextEMIDate)}</td>
-
-
-                                            <td className="text-primary">
-                                                {loan.user_id}
-                                            </td>
-                                            <td>{loan?.form_id}</td>
-                                            <td>{loan?.loan_amount}</td>
-                                            <td>{loan?.months}</td>
-                                            <td>{loan?.loan_type}</td>
-                                            <td>
-                                                <div
-                                                    className={`loan_status ${loan.loan_status === "completed"
-                                                        ? "bg-success  fw-bold"
-                                                        : loan?.loan_status === "Processing"
-                                                            ? "bg-warning fw-bold"
-                                                            : loan?.loan_status === "Rejected"
-                                                                ? "bg-danger fw-bold"
-                                                                : loan?.loan_status === "Approved"
-                                                                    ? "bg-info fw-bold"
-                                                                    : "bg-dark fw-bold"
-                                                        }`}
-                                                >
-                                                    {loan?.loan_status}
-
-                                                </div>{" "}
-
-                                                {isEMIDatePast(loan?.emi_detals.nextEMIDate) && (
-                                                    <button className="btn btn-primary" onClick={() => handleShowModal(loan.form_id)}>
-                                                        Add PenaltyModal
-                                                    </button>
-
-
-                                                )}
-                                            </td>
-
-
-
-
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table> */}
-                    {/* {showModal &&
-                                <Modal show={showModal} onHide={handleCloseModal}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title> Add Penalty </Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        <form onSubmit={(e) => handleSubmit(e)} className="addAdmin_form">
-                                            <div className="mb-3">
-                                                <label htmlFor="delayedAmount" className="form-label">Delayed Amount</label>
-                                                <Number_Input
-                                                    type="text"
-
-                                                    placeholder="Enter delayed amount here"
-
-
-                                                    value={formData["delayedAmount"]}
-                                                    name="delayedAmount"
-
-                                                    SetForm={setFormData}
-                                                    schema={schema["delayedAmount"]}
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label htmlFor="note" className="form-label">Note</label>
-                                                <Input_text
-                                                    type="text"
-                                                    placeholder="Enter note here"
-                                                    name="note"
-                                                    value={formData["note"]}
-                                                    SetForm={setFormData}
-                                                    schema={schema["note"]}
-                                                />
-                                            </div>
-                                            <Button variant="primary" type="submit">Submit</Button>
-                                            <Button variant="secondary" onClick={handleCloseModal}>
-                                                Close
-                                            </Button>
-                                        </form>
-
-                                    </Modal.Body>
-
-                                </Modal>}
-                            {loanList === 0 && (
-                                <tr>
-                                    <td colSpan="7" className="text-center">No transactions found.</td>
-                                </tr>)
-                            }
-                        </diV> */}
-                    <Tab3></Tab3>
-                </TabPanel>
-            </Tabs>
-
-        </div>
-        // </div >
+        </div >
     );
 };
 

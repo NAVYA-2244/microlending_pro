@@ -7,6 +7,7 @@ import Joi from 'joi';
 import { Date_Input, SearchInput } from '../comman/All-Inputs';
 import { useMovieContext } from '../comman/Context';
 import { useFunctionContext } from '../comman/FunctionsContext';
+import authService from '../../services/authService';
 
 function TransactionHistory() {
     const { transactionHistory, setTransactionHistory, limit, setSkip, } = useMovieContext();
@@ -34,11 +35,34 @@ function TransactionHistory() {
 
     const fetchData = async () => {
         setLoading(true);
+
         try {
             setbkcall(false)
             const obj = { skip: transactionHistory.length, limit };
             const response = await backEndCallObj('/users/transaction_history_all', obj);
-            console.log(response, "transections")
+            console.log(response, "transections user")
+            if (response?.length === 0) {
+                setLoadMore(true);
+                toast.info("No more users to fetch.");
+            } else {
+                setTransactionHistory(prevtransection => [...prevtransection, ...response]);
+
+            }
+        } catch (ex) {
+            if (ex.response && ex.response?.status === 400) {
+                toast.error(ex.response?.data);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+    const fetchDataadmin = async () => {
+        setLoading(true);
+        try {
+            setbkcall(false)
+            const obj = { skip: transactionHistory.length, limit };
+            const response = await backEndCallObj('/admin/transaction_history_all', obj);
+            console.log(response, "transections admin")
             if (response?.length === 0) {
                 setLoadMore(true);
                 toast.info("No more users to fetch.");
@@ -58,13 +82,16 @@ function TransactionHistory() {
     useEffect(() => {
         if (transactionHistory.length == 0) {
             console.log("hello")
-            fetchData();
+            {
+                authService.IsAdmin() ? fetchDataadmin() :
+                    fetchData();
+            }
         }
     }, []);
 
     console.log(transactionHistory.length, "transection")
 
-    // const handleRef = useCallback(
+
     //     (node) => {
     //         if (loadMore) return;
     //         if (loading) return;
@@ -95,9 +122,16 @@ function TransactionHistory() {
 
             observer.current = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
-                    if (transactionHistory.length > 10) {
+
+                    if (transactionHistory.length >= 10) {
                         console.log("Intersection observed, fetching more data...");
-                        fetchData();
+
+                        {
+                            authService.IsAdmin() ? fetchDataadmin() :
+                                fetchData();
+                        }
+
+
                     }
                 }
             }, {
@@ -117,7 +151,15 @@ function TransactionHistory() {
         if (isFetching) return;
         setIsFetching(true);
         try {
-            await fetchData();
+
+            {
+                authService.IsAdmin() ? await fetchDataadmin() :
+                    await fetchData();
+            }
+
+
+
+
         } finally {
             setIsFetching(false);
         }

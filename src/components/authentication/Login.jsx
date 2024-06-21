@@ -41,6 +41,10 @@ const LoginForm = () => {
       .max(10)
       .regex(/[63-9]\d{9}$/)
       .label("phone number")
+      // .messages({
+      //   "any.required": "Mobile number is required",
+      //   "string.pattern.base": "Mobile number must start with 63 and the next digit must be 7, 8, or 9, and it should not contain special characters",
+      // })
       .options({
         language: {
           string: {

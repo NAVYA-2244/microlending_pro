@@ -8,14 +8,14 @@ import { FunctionsContextProvider } from "./components/comman/FunctionsContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
-    <>
-    <MovieContextProvider> 
-      <FunctionsContextProvider> 
-          <App />
-          </FunctionsContextProvider>
+  <>
+    <MovieContextProvider>
+      <FunctionsContextProvider>
+        <App />
+      </FunctionsContextProvider>
     </MovieContextProvider>
 
-      </>
+  </>
   // </React.StrictMode>
 );
 

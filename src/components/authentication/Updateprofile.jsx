@@ -272,9 +272,10 @@ const Updateprofile = () => {
 
 
   const handleSubmit = async (e) => {
-    debugger
+
     e.preventDefault();
     setBtnDisabled(true);
+
     try {
       const formDataWithoutPhoto = {
         ...formData,
@@ -289,7 +290,7 @@ const Updateprofile = () => {
 
       await checkErrors(schema, formDataWithoutPhoto);
 
-
+      setLoading(true)
       console.log("entet");
 
 
@@ -464,7 +465,15 @@ const Updateprofile = () => {
   useEffect(() => {
     region();
   }, []);
-
+  if (loading) {
+    return (
+      <div className="text-center mt-3">
+        <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+          <span className="sr-only"></span>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="container">

@@ -6,15 +6,37 @@ import { useMovieContext } from '../comman/Context';
 import TransactionHistory from './Transection_history';
 import { Navigate } from 'react-router-dom';
 import moment from 'moment';
+import authService from '../../services/authService';
 
 function Resenttransections() {
     const { RecenttransactionHistory, setRecentTransactionHistory, error, setError } = useMovieContext();
     const [loading, setLoading] = useState(false)
+
     const fetchTransactionHistory = async () => {
         setLoading(true)
         try {
             const response = await backEndCall('/users/transaction_history');
-            console.log(response, "recent")
+            console.log(response, "recent user")
+            if (Array.isArray(response)) {
+                setRecentTransactionHistory(response);
+            } else {
+                setRecentTransactionHistory([]);
+            }
+            setLoading(false);
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+            setError(ex.message);
+            setLoading(false);
+        }
+    };
+
+    const fetchTransactionHistoryAdmin = async () => {
+        setLoading(true)
+        try {
+            const response = await backEndCall('/admin/transaction_history');
+            console.log(response, "recent admin")
             if (Array.isArray(response)) {
                 setRecentTransactionHistory(response);
             } else {
@@ -31,7 +53,10 @@ function Resenttransections() {
     };
     useEffect(() => {
         if (RecenttransactionHistory.length == 0) {
-            fetchTransactionHistory();
+            {
+                authService.IsAdmin() ? fetchTransactionHistoryAdmin() :
+                    fetchTransactionHistory();
+            }
         }
     }, [setRecentTransactionHistory, setLoading, setError]);
 

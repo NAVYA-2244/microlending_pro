@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import Countdown from "react-countdown-clock";
 const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(120);
+  const [countdown, setCountdown] = useState(160);
   const [data, setData] = useState({ otp: "", twofacode: "" });
   const [errors, setErrors] = useState({});
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -149,7 +149,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
 
       toast.success("Otp successfull", response.message);
 
-      setCountdown(120)
+      setCountdown(160)
       startCountdown();
       setData((prevData) => ({
         ...prevData,
@@ -166,7 +166,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
   };
 
   const startCountdown = () => {
-    setCountdown(120)
+    setCountdown(160)
     timer = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown === 0) {
@@ -298,7 +298,7 @@ const OTPForm = ({ phone_number, Tfa_Status, otpkey }) => {
                           <div className="fs-14">
                             <div className="d-flex align-items-center">
                               <span className="flex-shrink-0">OTP Expires in</span>
-                              <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 120)}deg, #d0d0d2 0deg)` }}>
+                              <div className="circular-progress mx-2 flex-shrink-0" style={{ background: `conic-gradient(rgb(75, 73, 172) ${(countdown) * (360 / 160)}deg, #d0d0d2 0deg)` }}>
                                 <div className="inner-circle"></div>
                                 <p className="percentage mb-0 fw-semibold">{countdown}</p>
                               </div>

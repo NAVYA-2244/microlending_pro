@@ -27,17 +27,17 @@ export const FunctionsContextProvider = ({ children }) => {
 
   const handleChange = (e, schema, newSetForm) => {
     const { name, value } = e.target;
-    console.log(schema)
+    // console.log(schema)
     // debugger
     //  const schema = Joi.object(mainSchema);
     const errorMessage = schema?.validate(value)?.error?.message;
-    console.log(errorMessage, "mabakjsjk")
+    // console.log(errorMessage, "mabakjsjk")
     setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     newSetForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
 
   const checkErrors = async (mainSchema, formData) => {
-    console.log(mainSchema, formData, "0poiuytrtyui")
+    // console.log(mainSchema, formData, "0poiuytrtyui")
     const schema = Joi.object(mainSchema);
     const { error } = schema.validate(formData, { abortEarly: false });
 

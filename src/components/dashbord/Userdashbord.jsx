@@ -155,7 +155,7 @@ const Userdashbord = () => {
         try {
             setLoading(true)
             const response = await backEndCall("/users/matching_eligibility");
-
+            console.log(response, "maching eligibility")
             setUserEligibility(response);
             setLoading(false)
         }
@@ -337,34 +337,7 @@ const Userdashbord = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    {/* <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
-                                        <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
-                                            <div className="d-flex justify-content-between mt-2 align-items-center">
-                                                <p className="mb-0 fs-12">Next Emi</p>
-                                                <span className="dashboard-icons">
-                                                    <i className="ri-database-2-line p-2 rounded-circle bg-white-light fs-24"></i>
-                                                </span>
-                                            </div>
 
-                                            {nearestLoans?.map(loan => (
-                                                <div key={loan.id} className="loan-details mt-3">
-                                                    <p className="mb-0 fw-semibold fs-18">
-                                                        <span>₱ {loan?.emi_details?.totalInstallmentAmount || "0"}</span>
-                                                    </p>
-                                                    <p className="text-muted mb-0 mt-2 fw-normal fs-14">
-                                                        {loan.emi_details.nextEMIDate !== "0" && (
-                                                            <>
-                                                                <span> {loan?.emi_details?.nextEMIDate === "0" ? " " : "Date :"}</span>
-                                                                <span className="text-white fw-semibold"> {loan?.emi_details?.nextEMIDate === "0" ? " " : formattedDate(loan?.emi_details?.nextEMIDate)}</span>
-
-                                                            </>
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            ))}
-
-                                        </div>
-                                    </div> */}
                                     <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                                         <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                                             <div className="d-flex justify-content-between mt-2 align-items-center">
@@ -390,22 +363,15 @@ const Userdashbord = () => {
                                                             )}
                                                         </p>
                                                     ))
-                                                ) : (
-                                                    <div className="loan-details mt-3">
-                                                        {/* <p className="mb-0 fw-semibold fs-18">
-                                                            <span>₱ 0</span>
-                                                        </p> */}
-                                                        <p className="text-muted mb-0 mt-2 fw-normal fs-14">
-                                                            <span>Date :</span>
-                                                            <span className="text-white fw-semibold"> N/A</span>
-                                                        </p>
-                                                    </div>
+                                                ) : (""
+
                                                 )}
                                             </div>
                                         </div>
                                     </div>
 
                                 </div>
+
                             </div>
                             {/* {loading ? (
                   <div className="text-center mt-3">
@@ -483,7 +449,7 @@ const Userdashbord = () => {
 
                                     </div>
                                     <div className="card-body">
-
+                                        {/* 
 
                                         {usereligibility?.tenure ? (
                                             <ul className="list-group list-unstled">
@@ -502,7 +468,7 @@ const Userdashbord = () => {
                                                                         data-bs-toggle="dropdown"
                                                                         aria-expanded="false"
                                                                     >
-                                                                        {/* <i className="ri-more-2-line"></i> */}
+
                                                                     </span>
                                                                     <ul className="dropdown-menu">
                                                                         <li>
@@ -542,7 +508,174 @@ const Userdashbord = () => {
 
                                                 <span className="visually-hidden">Loading...</span>
                                             </div>
-                                        </div>)}
+                                        </div>)} */}
+                                        {/* {usereligibility?.length > 0 ? (
+                                            usereligibility.map((eligibilityItem, index) => (
+                                                <ul key={index} className="list-group list-unstyled">
+                                                    {eligibilityItem.tenure && eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
+                                                        <li key={tenureIndex} className="list-group-item mb-2 p-0">
+                                                            <div className="p-3 card-item border rounded-2">
+                                                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                                                    <div className="fs-16">
+                                                                        <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
+                                                                        <span>{tenureItem?.months} months</span>
+                                                                    </div>
+                                                                    <div className="dropdown">
+                                                                        <span
+                                                                            data-bs-auto-close="outside"
+                                                                            role="button"
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-expanded="false"
+                                                                        >
+                                                                          
+                                                                        </span>
+                                                                        <ul className="dropdown-menu">
+                                                                            <li>
+                                                                                <a className="dropdown-item" href="#">Edit</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a className="dropdown-item" href="#">View all</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a className="dropdown-item" href="#">Cancel</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="d-flex justify-content-between align-items-center">
+                                                                    <div className="fs-14">
+                                                                        <i className="ri-bar-chart-2-line text-success"></i>{" "}
+                                                                        <span>{tenureItem?.interest}%</span>
+                                                                    </div>
+                                                                    <div className="fs-14">
+                                                                        <i className="ri-calendar-check-line text-info"></i>{" "}
+                                                                        <span>{tenureItem?.months} months</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )) */}
+                                        {usereligibility?.length > 0 && (
+                                            <>
+                                                {usereligibility?.slice(0, 1).map((eligibilityItem, index) => (
+                                                    <ul key={index} className="list-group list-unstyled">
+                                                        {eligibilityItem.tenure && eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
+                                                            <li key={tenureIndex} className="list-group-item mb-2 p-0">
+                                                                <div className="p-3 card-item border rounded-2">
+                                                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                                                        <div className="fs-16">
+                                                                            <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
+                                                                            <span>{tenureItem?.months} months</span>
+                                                                        </div>
+                                                                        <div className="dropdown">
+                                                                            <span
+                                                                                data-bs-auto-close="outside"
+                                                                                role="button"
+                                                                                data-bs-toggle="dropdown"
+                                                                                aria-expanded="false"
+                                                                            >
+
+                                                                            </span>
+                                                                            <ul className="dropdown-menu">
+                                                                                <li>
+                                                                                    <a className="dropdown-item" href="#">Edit</a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a className="dropdown-item" href="#">View all</a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a className="dropdown-item" href="#">Cancel</a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-between align-items-center">
+                                                                        <div className="fs-14">
+                                                                            <i className="ri-bar-chart-2-line text-success"></i>{" "}
+                                                                            <span>{tenureItem?.interest}%</span>
+                                                                        </div>
+                                                                        <div className="fs-14">
+                                                                            <i className="ri-calendar-check-line text-info"></i>{" "}
+                                                                            <span>{tenureItem?.months} months</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ))}
+                                            </>)}
+                                        {usereligibility?.length > 1 && (
+                                            <div className="accordion" id="eligibilityAccordion">
+                                                {usereligibility.slice(1).map((eligibilityItem, index) => (
+                                                    <div key={index} className="accordion-item">
+                                                        <h2 className="accordion-header" id={`heading${index}`}>
+                                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="false" aria-controls={`collapse${index}`}>
+                                                                Eligibility Item {index + 2}
+                                                            </button>
+                                                        </h2>
+                                                        <div id={`collapse${index}`} className="accordion-collapse collapse" aria-labelledby={`heading${index}`} data-bs-parent="#eligibilityAccordion">
+                                                            <div className="accordion-body">
+                                                                <ul className="list-group list-unstyled">
+                                                                    {eligibilityItem.tenure && eligibilityItem.tenure.map((tenureItem, tenureIndex) => (
+                                                                        <li key={tenureIndex} className="list-group-item mb-2 p-0">
+                                                                            <div className="p-3 card-item border rounded-2">
+                                                                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                                                                    <div className="fs-16">
+                                                                                        <i className="ri-shield-check-line p-2 bg-success rounded-circle me-2"></i>
+                                                                                        <span>{tenureItem?.months} months</span>
+                                                                                    </div>
+                                                                                    <div className="dropdown">
+                                                                                        <span
+                                                                                            data-bs-auto-close="outside"
+                                                                                            role="button"
+                                                                                            data-bs-toggle="dropdown"
+                                                                                            aria-expanded="false"
+                                                                                        >
+                                                                                            {/* Dropdown toggle content */}
+                                                                                        </span>
+                                                                                        <ul className="dropdown-menu">
+                                                                                            <li>
+                                                                                                <a className="dropdown-item" href="#">Edit</a>
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                <a className="dropdown-item" href="#">View all</a>
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                <a className="dropdown-item" href="#">Cancel</a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="d-flex justify-content-between align-items-center">
+                                                                                    <div className="fs-14">
+                                                                                        <i className="ri-bar-chart-2-line text-success"></i>{" "}
+                                                                                        <span>{tenureItem?.interest}%</span>
+                                                                                    </div>
+                                                                                    <div className="fs-14">
+                                                                                        <i className="ri-calendar-check-line text-info"></i>{" "}
+                                                                                        <span>{tenureItem?.months} months</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>)}
+                                        {/* ) : (
+                                        <div className="text-center">
+                                            <div className="spinner-border spinner-border-sm" style={{ color: "blue" }} role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                        )} */}
+
                                     </div>
                                 </div>
 

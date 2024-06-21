@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from "react-hot-toast";
 import { backEndCallObj } from '../../services/mainServiceFile';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { Modal } from 'react-bootstrap';
 import { useMovieContext } from '../comman/Context';
@@ -14,10 +14,13 @@ function EmiDetails() {
     const [btnDisabled, setBtnDisabled] = useState(false);
     const location = useLocation();
     const formId = location.state.formId;
-
+    console.log(formId, "what ")
+    const navigate = useNavigate()
     useEffect(() => {
 
+
         fetchEMIDetails();
+
     }, [formId]);
 
 
@@ -46,29 +49,6 @@ function EmiDetails() {
         setShowModal(false);
     };
 
-    const callLoanStatusAPI = async (paymentid) => {
-        // setBtnDisabled(true)
-        // console.log(paymentid, "transaction id")
-        try {
-            const response = await backEndCallObj("/emi/emi_status", { payment_id: paymentid });
-            console.log(response, "loan status"); // Log the response from the API
-
-            toast.success(response, "emi successfully");
-            fetchEMIDetails();
-            setBtnDisabled(false);
-        } catch (ex) {
-            if (ex.response && ex.response.status === 400) {
-                toast.error(ex.response.data);
-                setBtnDisabled(false)
-            }
-
-        }
-        finally {
-            // setBtnDisabled(false);
-            setLoading(false)
-        }
-    };
-
     const handlePayEMI = async () => {
         setBtnDisabled(true)
         try {
@@ -76,23 +56,26 @@ function EmiDetails() {
             const payload = {
 
                 loan_id: emis?.loan_id,
-                paymentAmount: emis?.emi_details.totalInstallmentAmount,
-                instalmentNumber: emis?.emi_details.installmentNumber,
+                paymentAmount: emis?.emi_details?.totalInstallmentAmount,
+                // instalmentNumber: emis?.emi_details?.installmentNumber,
 
-                delayedAmount: emis?.emi_details.delayedAmount
+                // delayedAmount: emis?.emi_details.delayedAmount
             };
 
             // console.log(payload, "payload")
             const response = await backEndCallObj("/emi/pay_emi", payload);
-            setUserprofileData(null)
-            setUserData(null)
-            toast.success(response.message, "EMI payment successful!");
+            console.log(response, "response")
+            const transaction_id = response.Transaction_id;
+
+            console.log(transaction_id, "transection id")
+            navigate('/emipayotp', { state: { transaction_id, loan_id: emis?.loan_id, instalmentNumber: emis?.emi_details?.installmentNumber } });
+            // setUserprofileData(null);
+            // setUserprofileData(null)
+            // setUserData(null)
+            // toast.success(response.message, "EMI payment successful!");
 
             setShowModal(false);
-            setTimeout(() => {
-                callLoanStatusAPI(response.payment_id);
-            }, 6000);
-            // setLoading(false)
+
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data);
@@ -102,16 +85,17 @@ function EmiDetails() {
             }
         }
         finally {
-            // setBtnDisabled(false);
-            // setLoading(false)
-        }
-    };
+            setBtnDisabled(false)
+            setLoading(false)
+            setShowModal(false);
+        };
 
 
-    const formatDateTime = (date) => {
-        if (!date) return "";
-        return moment(date).format("DD-MMM-YYYY hh:mm A");
-    };
+        const formatDateTime = (date) => {
+            if (!date) return "";
+            return moment(date).format("DD-MMM-YYYY hh:mm A");
+        };
+    }
     return (
 
         <div className="user-details-container">
@@ -185,7 +169,7 @@ function EmiDetails() {
                 <Modal.Body>
                     <p>Do you want to proceed with the EMI payment?</p>
 
-                    <h5><span>₱ </span>{emis.emi_details.totalInstallmentAmount}</h5>
+                    <h5><span>₱ </span>{emis?.emi_details?.totalInstallmentAmount}</h5>
                 </Modal.Body>
                 <Modal.Footer>
                     <button className='btn btn-secondary' onClick={handleClose} disabled={btnDisabled}>Cancel</button>

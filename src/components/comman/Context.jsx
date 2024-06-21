@@ -16,7 +16,7 @@ export const MovieContextProvider = ({ children }) => {
   const [usersList, setUsersList] = useState([]);
 
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(2);
   const [textDisplay, setTextDisplay] = useState(false);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [EmiHistory, setEmiHistory] = useState([]);
@@ -29,6 +29,7 @@ export const MovieContextProvider = ({ children }) => {
   const [verifyloan, setVerifyloan] = useState(
     []
   );
+  const [bankDetails, setBankDetails] = useState({});
   const [eligibility, setEligibility] = useState([]);
   const [usereligibility, setUserEligibility] = useState(null)
   const [loanList, setLoanList] = useState(null);
@@ -37,7 +38,7 @@ export const MovieContextProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const [userprofileData, setUserprofileData] = useState(null)
-
+  const [transactionHistoryuser, setTransactionHistoryuser] = useState([])
   const [adminprofileData, setAdminprofileData] = useState(null)
   const [kycRoot, setKycRoot] = useState("");
   const [bkcall, setbkcall] = useState(false)
@@ -84,7 +85,9 @@ export const MovieContextProvider = ({ children }) => {
         EmiHistory, setEmiHistory,
         adminprofileData, setAdminprofileData,
         kycRoot, setKycRoot,
-        bkcall, setbkcall
+        bkcall, setbkcall,
+        bankDetails, setBankDetails,
+        transactionHistoryuser, setTransactionHistoryuser,
       }}
     >
       {children}
