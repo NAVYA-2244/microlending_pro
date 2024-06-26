@@ -17,12 +17,27 @@ import Tab1 from "./Tab1";
 import Tab2 from "./Tab2";
 import Tab3 from "./Tab3";
 import { log } from "joi-browser";
+import TransactionHistory from './../authentication/Transection_history';
 
 
 const Userinfo = () => {
 
 
-    const { adminprofileData, setAdminprofileData, transactionHistoryuser, setTransactionHistoryuser, errorOccur, EmiHistory, checkErrors, setErrorOccur, setEmiHistory, setError, loanList, setLoanList, limit, } = useMovieContext();
+    const {
+        adminprofileData,
+        setAdminprofileData,
+        transactionHistoryuser,
+        setTransactionHistoryuser,
+        errorOccur,
+        EmiHistoryuser,
+        setEmiHistoryuser,
+        setErrorOccur,
+        setError,
+        LoanListuser,
+        setLoanListuser,
+        limit,
+    } = useMovieContext();
+
     const location = useLocation(); // Use the useLocation hook to access location state
 
     const [loadMore, setLoadMore] = useState(false);
@@ -87,88 +102,102 @@ const Userinfo = () => {
         fetchData();
     }, []);
 
-    if (loading) {
-        return <div><div className="text-center mt-3">
-            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+    const handleTabTransection = useCallback(async () => {
+        if (loading) return;
 
-            </div>
-        </div></div>
-    }
-
-    const handleTabEMI = async (index) => {
-        setActiveTab(index);
+        setLoading(true);
         try {
-            if (isFetching) return;
-            setBtnDisabled(true); // Disable buttons while fetching data
-            setIsFetching(true);
-            const user_id = location.state.user_id;
-            const response = await backEndCallObj('/admin/emi_history', { user_id });
-            // console.log(response, "EMI history data");
-            setEmiHistory(Array.isArray(response) ? response : []); // Set EMI history
-        } catch (ex) {
-            toast.error("An error occurred while fetching EMI history.");
-        } finally {
-            setIsFetching(false); // Reset isFetching when the call is completed
-            setBtnDisabled(false);
-        }
-    };
-
-    const handleTabLOAN = async (index) => {
-        setActiveTab(index);
-        try {
-            if (isFetching) return; // If a call is already in progress, return early
-            setBtnDisabled(true);
-            setIsFetching(true); // Set isFetching to true when a backend call starts
-            const user_id = location.state.user_id;
-            const response = await backEndCallObj("/admin/user_loan_details", { user_id });
-            // console.log(response, "loan details data");
-            setLoanList(response); // Set loan details
-        } catch (ex) {
-            toast.error("An error occurred while fetching loan details.");
-        } finally {
-            setBtnDisabled(false); // Enable buttons after fetching data
-            setIsFetching(false)
-        }
-    };
-
-    const handleTabTransection = async (index) => {
-        setActiveTab(index);
-        setTabClicked(true);
-        try {
-            if (isFetching) return;
-            setBtnDisabled(true);
-            setIsFetching(true);
-            setbkcall(false)
             const user_id = location.state.user_id;
             const obj = { skip: transactionHistoryuser.length, limit, user_id };
             const response = await backEndCallObj('/admin/user_transaction_history', obj);
-            console.log(response, "transections user")
             if (response?.length === 0) {
-                setLoadMore(true);
-                toast.info("No more users to fetch.");
+                setLoadMore(false);
+                toast.info("No more transactions to fetch.");
             } else {
-
-                setTransactionHistoryuser(prevtransectionuser => [...prevtransectionuser, ...response], "helloooo");
-
+                setTransactionHistoryuser(prev => [...prev, ...response]);
+                setLoadMore(true);
             }
-
         } catch (ex) {
-
-            if (ex.response && ex.response?.status === 400) {
-                toast.error(ex.response?.data);
+            console.error("Error fetching transaction history:", ex);
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
             }
-
         } finally {
-            setBtnDisabled(false); // Enable buttons after fetching data
-            setIsFetching(false)
+            setLoading(false);
         }
-    };
+    }, [transactionHistoryuser.length, loading]);
+
+    const handleTabEMI = useCallback(async () => {
+        if (loading) return;
+
+        setLoading(true);
+        try {
+            const user_id = location.state.user_id;
+            const obj = { skip: EmiHistoryuser.length, limit, user_id };
+            const response = await backEndCallObj('/admin/emi_history', obj);
+            if (response?.length === 0) {
+                setLoadMore(false);
+                toast.info("No more EMI to fetch.");
+            } else {
+                setEmiHistoryuser(prev => [...prev, ...response]);
+                setLoadMore(true);
+            }
+        } catch (ex) {
+            console.error("Error fetching EMI history:", ex);
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [EmiHistoryuser.length, loading]);
+
+    const handleTabLOAN = useCallback(async () => {
+        setLoading(true);
+        try {
+            const user_id = location.state.user_id;
+            const obj = { skip: LoanListuser.length, limit, user_id };
+            const response = await backEndCallObj("/admin/individual_user_loan_details", obj);
+            console.log(response, "loanshello")
+            if (response?.length === 0) {
+                setLoadMore(false);
+                toast.info("No more EMI to fetch.");
+            } else {
+                setLoanListuser(prev => [...prev, ...response]);
+                setLoadMore(true);
+            }
+        } catch (ex) {
+            console.error("Error fetching EMI history:", ex);
+            if (ex.response && ex.response.status === 400) {
+                toast.error(ex.response.data);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [LoanListuser.length, loading]);
 
 
 
-    const handleTabClick = (index) => {
-        setActiveTab(index);
-    };
+    const handleTabClick = useCallback(
+        (index) => {
+            setActiveTab(index);
+            switch (index) {
+                case 0:
+                    handleTabTransection();
+                    break;
+                case 1:
+                    handleTabEMI();
+                    break;
+                case 2:
+                    handleTabLOAN();
+                    break;
+                default:
+                    break;
+            }
+        },
+        [handleTabTransection, handleTabEMI, handleTabLOAN]
+    );
+
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
@@ -181,10 +210,10 @@ const Userinfo = () => {
     };
 
 
-    //     const today = new Date();
 
 
-    //     const nextDate = new Date(nextEMIDate);
+
+
     //     return today > nextDate;
     // };
 
@@ -468,7 +497,7 @@ const Userinfo = () => {
 
 
                 <div className="container">
-                    <div className="row mb-3">
+                    {/* <div className="row mb-3">
 
 
                         <div className="col-12 col-md-6 d-block d-sm-flex justify-content-md-start  gap-md-2 mt-2 mt-md-0
@@ -486,30 +515,66 @@ const Userinfo = () => {
                         <div className="col-12 col-md-6 col-lg-6">
 
                         </div>
+                    </div> */}
+                    {/* {loading && (
+                        <div className="text-center mt-3">
+                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                <span className="sr-only"></span>
+                            </div>
+                        </div>
+                    )} */}
+                    <div className="row mb-3">
+                        <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
+
+                            <TabList>
+                                <div className="col-12 col-md-6 d-block d-sm-flex justify-content-md-start  gap-md-2 mt-2 mt-md-0
+">
+                                    <Tab>
+
+                                        <button className="btn btn-primary w-100 mb-2 mb-4" disabled={loading}>
+                                            Transaction History
+                                        </button>
+
+                                    </Tab>
+                                    <Tab>
+                                        <button className="btn btn-primary w-100 mb-2 mb-4" disabled={loading}>
+                                            EMI History
+                                        </button>
+                                    </Tab>
+                                    <Tab>
+                                        <button className="btn btn-primary w-100 mb-4" disabled={loading}>
+                                            Loan Details
+                                        </button>
+                                    </Tab>
+                                </div>
+                            </TabList>
+
+                            <TabPanel>
+                                <Tab1
+                                    transactionHistoryuser={transactionHistoryuser}
+                                    handleTabTransection={handleTabTransection}
+                                    loading={loading}
+                                    loadMore={loadMore}
+                                />
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab2
+                                    EmiHistoryuser={EmiHistoryuser}
+                                    handleTabEMI={handleTabEMI}
+                                    loading={loading}
+                                    loadMore={loadMore}
+                                />
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab3 LoanListuser={LoanListuser}
+                                    handleTabLOAN={handleTabLOAN}
+                                    loading={loading}
+                                    loadMore={loadMore} />
+                            </TabPanel>
+                        </Tabs>
                     </div>
+
                 </div>
-
-
-                <Tabs selectedIndex={activeTab} onSelect={handleTabClick}>
-
-
-                    <TabPanel>
-
-                        <Tab1 transactionHistory={transactionHistoryuser}
-                            handleTabTransection={handleTabTransection}
-                            loading={loading}></Tab1>
-                    </TabPanel>
-                    <TabPanel>
-
-                        <Tab2></Tab2>
-                    </TabPanel>
-                    <TabPanel>
-
-
-
-                        <Tab3></Tab3>
-                    </TabPanel>
-                </Tabs>
 
             </div>
         </div >

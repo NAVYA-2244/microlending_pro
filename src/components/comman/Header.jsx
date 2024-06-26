@@ -175,11 +175,13 @@ const Header = () => {
                     <i className="ri-settings-3-fill fs-15 me-1"></i> Settings
                   </Link>
                 </li>
-                <li>
-                  <Link className="dropdown-item" to="/userdetails">
-                    <i className="ri-user-fill fs-15 me-1"></i> Profile
-                  </Link>
-                </li>
+                {!authService.IsAdmin() &&
+                  <li>
+                    <Link className="dropdown-item" to="/userdetails">
+                      <i className="ri-user-fill fs-15 me-1"></i> Profile
+                    </Link>
+                  </li>
+                }
                 <li onClick={handleLogout}>
                   <Link className="dropdown-item" to="">
                     <i className="ri-logout-circle-r-fill fs-15 me-1"></i> Sign out
@@ -210,8 +212,8 @@ const Header = () => {
             </li>
           </ul>
         </div>
-      </nav>
-    </div>
+      </nav >
+    </div >
   );
 };
 

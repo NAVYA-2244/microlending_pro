@@ -365,7 +365,7 @@ const Admindashbord = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
+                                    {/* <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                                         <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
                                             <div className="d-flex justify-content-between mt-2 align-items-center">
                                                 <p className="mb-0 fs-12">   Reduced Loan Amount
@@ -378,7 +378,7 @@ const Admindashbord = () => {
                                                 <span onClick={navigateloans} className="cursor-pointer">{adminData?.loansAmount?.lose || "0"}</span>
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     <div className="col-xl-3 col-sm-12 col-lg-3 col-md-3 d-flex">
                                         <div className="bg-primary text-white mb-3 mb-md-0 p-3 rounded-2 flex-fill">
@@ -618,7 +618,7 @@ const Admindashbord = () => {
                                 <div className="fs-15">
                                     <i className="ri-discount-percent-fill"></i> Introducing{" "}
                                     <Link to="/" className="text-warning fw-bold">
-                                        <span>Loan Amount with Interest</span> and <span>Loan Amount without Interest</span>
+                                        <span>Loan Amount  Including Interest</span> and <span>Loan Amount  Excluding Interest</span>
                                     </Link>{" "}
                                     by Micro Lending
                                 </div>
@@ -630,7 +630,8 @@ const Admindashbord = () => {
                                 <div className="row mt-3">
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Paid Amount With Interest</p>
+                                            {/* <p className="mb-0 fs-12">Paid Amount With Interest</p> */}
+                                            <p className="mb-0 fs-12">Total Amount Paid, Including Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i>{adminData?.loansAmount?.paidAmountWithInterest || "0"}
                                             </span>
@@ -638,7 +639,9 @@ const Admindashbord = () => {
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Paid Amount Without Interest</p>
+                                            {/* <p className="mb-0 fs-12">Paid Amount Without Interest</p> */}
+                                            <p className="mb-0 fs-12">Total Amount Paid, Excluding Interest</p>
+
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i> {adminData?.loansAmount?.paidAmountWithoutInterest || "0"}
                                             </span>
@@ -646,7 +649,7 @@ const Admindashbord = () => {
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Pending Amount With Interest</p>
+                                            <p className="mb-0 fs-12">Pending Amount  Including Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i> {adminData?.loansAmount?.pendingAmountWithInterest || "0"}
                                             </span>
@@ -656,7 +659,7 @@ const Admindashbord = () => {
                                 <div className="row mt-3">
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Pending Amount Without Interest</p>
+                                            <p className="mb-0 fs-12">Pending Amount  Excluding Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.pendingAmountWithoutInterest || "0"}
                                             </span>
@@ -664,7 +667,7 @@ const Admindashbord = () => {
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Total Amount With Interest</p>
+                                            <p className="mb-0 fs-12">Total Amount  Including Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.totalAmountWithInterest || "0"}
                                             </span>
@@ -672,7 +675,7 @@ const Admindashbord = () => {
                                     </div>
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
-                                            <p className="mb-0 fs-12">Total Amount Without Interest</p>
+                                            <p className="mb-0 fs-12">Total Amount  Excluding Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i>  {adminData?.loansAmount?.totalAmountWithoutInterest || "0"}
                                             </span>

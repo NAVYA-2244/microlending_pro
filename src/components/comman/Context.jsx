@@ -16,7 +16,7 @@ export const MovieContextProvider = ({ children }) => {
   const [usersList, setUsersList] = useState([]);
 
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(10);
   const [textDisplay, setTextDisplay] = useState(false);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [EmiHistory, setEmiHistory] = useState([]);
@@ -39,6 +39,8 @@ export const MovieContextProvider = ({ children }) => {
 
   const [userprofileData, setUserprofileData] = useState(null)
   const [transactionHistoryuser, setTransactionHistoryuser] = useState([])
+  const [EmiHistoryuser, setEmiHistoryuser] = useState([])
+  const [LoanListuser, setLoanListuser] = useState([])
   const [adminprofileData, setAdminprofileData] = useState(null)
   const [kycRoot, setKycRoot] = useState("");
   const [bkcall, setbkcall] = useState(false)
@@ -88,6 +90,9 @@ export const MovieContextProvider = ({ children }) => {
         bkcall, setbkcall,
         bankDetails, setBankDetails,
         transactionHistoryuser, setTransactionHistoryuser,
+        EmiHistoryuser, setEmiHistoryuser,
+        LoanListuser,
+        setLoanListuser,
       }}
     >
       {children}

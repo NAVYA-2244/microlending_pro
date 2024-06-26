@@ -73,16 +73,14 @@ function LoanStatus() {
       }
     }
   };
-  // const filteredData = usereligibility?.tenure.filter(item => item.months === 3);
-  // console.log(filteredData);
-  // console.log(filteredData?.interest, "filteredData--------------->");
 
   const findInterest = (months, loan_amount) => {
-    // console.log(loan_amount, months);
-    const filteredData = usereligibility?.tenure.filter(item => item.months === months);
-    // console.log(filteredData[0]?.interest, "-------ooooo---------------->");
+    console.log(months, loan_amount, "intrest")
+
+    const filteredData = usereligibility[0]?.tenure.filter(item => item.months === months);
+    console.log(filteredData, "filterdata")
     const calculateEMI = (loan_amount * (filteredData[0]?.interest / 100 * months / 12) + loan_amount) / months
-    // console.log(calculateEMI, "calculationemi");
+
     setEmi(calculateEMI.toFixed(2));
 
     setInterest(filteredData[0]?.interest)
@@ -277,7 +275,7 @@ function LoanStatus() {
 
                             <td>
                               <div
-                                // onClick={() => { handleShowModal(loan); handleCalculate(loan.months); }}
+
                                 onClick={() => { handleShowModal(loan); findInterest(loan.months, loan.loan_amount); }}
 
                                 style={{ cursor: "pointer", color: "blue" }}

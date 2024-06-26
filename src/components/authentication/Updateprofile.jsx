@@ -219,7 +219,8 @@ const Updateprofile = () => {
         then: Joi.required(),
         otherwise: Joi.optional(),
       })
-
+      .max(25)
+      .min(3)
       .messages({
         "string.base": "User Politician Details must be a string.",
         "string.min":
@@ -250,6 +251,8 @@ const Updateprofile = () => {
         then: Joi.required(),
         otherwise: Joi.optional(),
       })
+      .max(25)
+      .min(3)
       .label('user familymember politician details')
       .messages({
         "string.base": "user familymember politician details must be a string.",
@@ -800,8 +803,7 @@ const Updateprofile = () => {
                           SetForm={setFormData}
                           // schema={schema["user_politician_details"]}
                           schema={(schema.user_politician.user_politician_details)}
-                          maxLength={50}
-                        />
+                          maxLength={25} />
                       </div>
 
                     )}
@@ -818,7 +820,7 @@ const Updateprofile = () => {
                           SetForm={setFormData}
                           // schema={schema["user_familymember_politician_details"]}
                           schema={(schema.user_familymember_politician.user_familymember_politician_details)}
-                          maxLength={50}
+                          maxLength={25}
                         />
                       </div>
                     )}

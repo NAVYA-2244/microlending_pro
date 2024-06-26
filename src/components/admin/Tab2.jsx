@@ -1,60 +1,36 @@
-
-import React, { useEffect, useState } from 'react';
-import { toast } from "react-hot-toast";
-import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
-import { useMovieContext } from '../comman/Context';
+import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
-// import Joi from 'joi-browser';
-import Joi from 'joi';
 
-import { Date_Input, SearchInput } from '../comman/All-Inputs';
-import { Link } from 'react-router-dom';
-import { useFunctionContext } from '../comman/FunctionsContext';
+function Tab2({ EmiHistoryuser, setEmiHistoryuser, handleTabEMI, loading, loadMore }) {
+    const observer = useRef();
 
-function Tab2() {
-    const { EmiHistory, setEmiHistory, } = useMovieContext();
-    const { checkErrors } = useFunctionContext()
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null)
-    const [filterDisabled, setFilterDisabled] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
+    const handleRef = useCallback(node => {
+        if (loading || !loadMore) return;
 
+        if (observer.current) observer.current.disconnect();
 
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                handleTabEMI();
+            }
+        });
 
+        if (node) observer.current.observe(node);
 
-
-
-    // const fetchEmiHistory = async () => {
-    //     console.log("hi")
-    //     try {
-    //         setLoading(true);
-
-    //         const response = await backEndCall('/admin/emi_history');
-    //         setLoading(false)
-    //         setEmiHistory(response || []);
-
-
-    //     } catch (ex) {
-    //         if (ex.response && ex.response.status === 400) {
-    //             toast.error(ex.response.data);
-    //         }
-    //     }
-    //     finally {
-    //         setLoading(false)
-    //     }
-    // };
-
-
-    // useEffect(() => {
-    //     if (EmiHistory.length <= 0) {
-    //         fetchEmiHistory();
-    //     }
-    // }, []);
-
+        return () => {
+            if (observer.current) observer.current.disconnect();
+        };
+    }, [loading, loadMore, handleTabEMI]);
 
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
+
+    const capitalizeFirstLetter = (string) => {
+        if (!string) return "";
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
     return (
         <div className="user-details-container">
             <h5 className="mb-4">EMI History</h5>
@@ -65,49 +41,55 @@ function Tab2() {
 
                     </div>
                     <div className="table-responsive">
-                        <table className="table border table-bordered table-centered text-center">
+                        <table className="table border table-bordered table-centered">
                             <thead>
-                                <tr className="table-head">
+                                <tr className="table-head text-center">
+
+
+                                    <th scope="col">Date</th>
                                     <th scope="col">Payment Id</th>
-                                    <th scope="col">Receiver Id</th>
-                                    <th scope="col">Sender Id</th>
+
+                                    <th scope="col">Loan Id</th>
+                                    <th scope="col">EMI Amount</th>
                                     <th scope="col">installment Number</th>
-                                    <th scope="col">Transaction Type</th>
-                                    <th scope="col">Emi Status</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Payment Date</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">comment</th>
+                                    <th scope="col"> Status</th>
+
                                 </tr>
                             </thead>
-                            <tbody className="table-body">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">
-                                            <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
-                                                <span className="sr-only"></span>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                ) : EmiHistory.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center justify-content-center">No transactions found.</td>
-                                    </tr>
-                                ) : (
-                                    EmiHistory.map(history => (
-                                        <tr key={history.payment_id}>
-                                            <td>{history.payment_id}</td>
-                                            <td>{history.receved_id}</td>
-                                            <td>{history.sender_id}</td>
-                                            <td>{history.instalmentNumber}</td>
-                                            <td>{history.transactionType}</td>
-                                            <td>{history.emi_status}</td>
-                                            <td>{history.paymentAmount}</td>
-                                            <td>{formattedDate(history.paymentDate)}</td>
+                            <tbody className="table-body text-center">
+                                {EmiHistoryuser && EmiHistoryuser.length > 0 && (
+                                    EmiHistoryuser.map((history, index) => (
+                                        <tr key={history?.payment_id} ref={index === EmiHistoryuser.length - 1 ? handleRef : null}>
+                                            <td>{formattedDate(history?.paymentDate)}</td>
+                                            <td>{history?.payment_id}</td>
+                                            <td>{history?.loan_id}</td>
+                                            <td>₱ {history?.paymentAmount}</td>
+                                            <td>{history?.instalmentNumber}</td>
+                                            <td>{history?.transactionType}</td>
+                                            <td>{history?.comment}</td>
+                                            <td>{history?.emi_status}</td>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
+
                         </table>
+                        {loading && (
+                            <div className="d-flex justify-content-center align-items-center">
+                                <div className="spinner-border spiner-border-sm" style={{ color: "blue" }} role="status">
+                                    <span className="sr-only"></span>
+                                </div>
+                            </div>
+                        )}
+                        {EmiHistoryuser?.length === 0 && (
+                            <div className="d-flex justify-content-center align-items-center">
+                                <div className="text-center">
+                                    No transactions found.
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
