@@ -631,7 +631,7 @@ const Admindashbord = () => {
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
                                             {/* <p className="mb-0 fs-12">Paid Amount With Interest</p> */}
-                                            <p className="mb-0 fs-12">Total Amount Paid, Including Interest</p>
+                                            <p className="mb-0 fs-12">Total received Amount, Including Interest</p>
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i>{adminData?.loansAmount?.paidAmountWithInterest || "0"}
                                             </span>
@@ -640,7 +640,7 @@ const Admindashbord = () => {
                                     <div className="col-4">
                                         <div className="p-2 bg-white-light">
                                             {/* <p className="mb-0 fs-12">Paid Amount Without Interest</p> */}
-                                            <p className="mb-0 fs-12">Total Amount Paid, Excluding Interest</p>
+                                            <p className="mb-0 fs-12">Total received  Amount, Excluding Interest</p>
 
                                             <span className="fs-11 fw-500">
                                                 <i className="ri-check-double-line text-success"></i> {adminData?.loansAmount?.paidAmountWithoutInterest || "0"}

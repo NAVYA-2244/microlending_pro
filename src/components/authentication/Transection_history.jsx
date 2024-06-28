@@ -291,7 +291,7 @@ function TransactionHistory() {
                                 </div>
                             </div>
                         )}
-                        {transactionHistory?.length === 0 && (
+                        {transactionHistory?.length === 0 && !loading && (
                             <div className="d-flex justify-content-center align-items-center">
                                 <div className="text-center">
                                     No transactions found.

@@ -134,7 +134,7 @@ function Resenttransections() {
                             </div>
 
                         )}
-                        {RecenttransactionHistory?.length === 0 && (
+                        {RecenttransactionHistory?.length === 0 && !loading && (
                             <div className="d-flex justify-content-center align-items-center" >
                                 <div className="text-center">
                                     No transactions found.

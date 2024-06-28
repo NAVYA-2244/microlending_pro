@@ -134,7 +134,7 @@ const Userinfo = () => {
         try {
             const user_id = location.state.user_id;
             const obj = { skip: EmiHistoryuser.length, limit, user_id };
-            const response = await backEndCallObj('/admin/emi_history', obj);
+            const response = await backEndCallObj('/admin/user_emi_history', obj);
             if (response?.length === 0) {
                 setLoadMore(false);
                 toast.info("No more EMI to fetch.");

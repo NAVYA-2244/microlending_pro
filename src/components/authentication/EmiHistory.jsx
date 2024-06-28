@@ -84,12 +84,12 @@ function EmiHistory() {
         }
     };
     useEffect(() => {
-        // if (EmiHistory?.length == 0) {
-        {
-            authService.IsAdmin() ? fetchEmiHistoryadmin() :
-                fetchEmiHistory();
+        if (EmiHistory?.length == 0) {
+            {
+                authService.IsAdmin() ? fetchEmiHistoryadmin() :
+                    fetchEmiHistory();
+            }
         }
-        // }
     }, []);
 
 
@@ -172,7 +172,7 @@ function EmiHistory() {
                 if (observer.current) observer.current.disconnect();
             };
         },
-        [] // Dependencies for useCallback
+        [loadMore, loading, bkcoll, EmiHistory.length] // Dependencies for useCallback
     );
 
     const handleRefresh = async () => {
@@ -319,7 +319,7 @@ function EmiHistory() {
                                 </div>
                             </div>
                         )}
-                        {EmiHistory?.length === 0 && (
+                        {EmiHistory?.length === 0 && !loading && (
                             <div className="d-flex justify-content-center align-items-center">
                                 <div className="text-center">
                                     No transactions found.

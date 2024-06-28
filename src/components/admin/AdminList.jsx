@@ -252,7 +252,7 @@ function AdminList() {
                             </div>
                         </div>
                     )}
-                    {AddadminData.length == 0 && <p className="text-center">there is no data found</p>}
+                    {AddadminData.length == 0 && !loading && (<p className="text-center">there is no data found</p>)}
                 </div>
                 {showEditAdminModal &&
                     <Modal show={showEditAdminModal} onHide={() => setShowEditAdminModal(false)}>
@@ -388,7 +388,7 @@ function AdminList() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
 

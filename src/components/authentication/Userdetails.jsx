@@ -140,7 +140,21 @@ const Userdetails = () => {
                         onChange={handleFileInputChange}
                       />
                     </form>
-                    <div className="position-relative d-inline-block">
+                    <span className="fw-semibold me-2 text-capitalize"></span>
+                    <span className="user-details border rounded-circle d-flex justify-content-center align-items-center">
+                      {userprofileData?.photo ? (
+                        <img src={userprofileData?.photo} alt="User Photo" className="rounded-circle shadow" />
+                      ) : (
+                        <i className="ri-user-3-fill"></i>
+                      )}
+
+                      {/* <i
+                        className="ri-edit-line edit-icon position-absolute small-rounded-icon"
+                        style={{ bottom: '0', right: '0' }}
+                        onClick={handleProfilePhotoSelection}
+                      ></i> */}
+                    </span>
+                    {/* <div className="position-relative d-inline-block">
                       {userprofileData?.photo && <img
                         src={userprofileData?.photo}
 
@@ -155,7 +169,7 @@ const Userdetails = () => {
                         style={{ bottom: '0', right: '0', overflow: 'hidden' }}
                         onClick={handleProfilePhotoSelection}
                       ></i>
-                    </div>
+                    </div> */}
 
                     <h5 className="mb-0 ms-3 text-white text-capitalize">
 
@@ -323,6 +337,7 @@ const Userdetails = () => {
                         KYC verify
                       </button>
                     )}
+
                     <button
                       className="btn btn-primary"
                       onClick={() => navigate("/loaneligibilitydetails")}

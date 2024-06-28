@@ -286,7 +286,7 @@ const UsersList = () => {
                                     </tbody>
                                 </table>
 
-                                {usersList.length == 0 && (
+                                {usersList.length == 0 && !loading && (
                                     <div className="text-center mt-3 mb-3">There is no data to view</div>
                                 )}
                             </div>
