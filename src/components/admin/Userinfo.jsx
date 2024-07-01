@@ -88,7 +88,7 @@ const Userinfo = () => {
             const user_id = location.state.user_id;
 
             const response = await backEndCallObj("/admin/users_profile", { user_id });
-            console.log(response, "gffg")
+            // console.log(response, "gffg")
             setAdminprofileData(response);
             setLoading(false);
 
@@ -158,7 +158,7 @@ const Userinfo = () => {
             const user_id = location.state.user_id;
             const obj = { skip: LoanListuser.length, limit, user_id };
             const response = await backEndCallObj("/admin/individual_user_loan_details", obj);
-            console.log(response, "loanshello")
+            // console.log(response, "loanshello")
             if (response?.length === 0) {
                 setLoadMore(false);
                 toast.info("No more EMI to fetch.");

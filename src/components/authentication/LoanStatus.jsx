@@ -30,7 +30,7 @@ function LoanStatus() {
       if (!loanList) {
         setLoading(true);
         const response = await backEndCall("/users/user_loan_details");
-        console.log(response, "loan details");
+        // console.log(response, "loan details");
         setLoanList(response);
         setLoading(false);
       } else {
@@ -75,10 +75,10 @@ function LoanStatus() {
   };
 
   const findInterest = (months, loan_amount) => {
-    console.log(months, loan_amount, "intrest")
+    // console.log(months, loan_amount, "intrest")
 
     const filteredData = usereligibility[0]?.tenure.filter(item => item.months === months);
-    console.log(filteredData, "filterdata")
+    // console.log(filteredData, "filterdata")
     const calculateEMI = (loan_amount * (filteredData[0]?.interest / 100 * months / 12) + loan_amount) / months
 
     setEmi(calculateEMI.toFixed(2));

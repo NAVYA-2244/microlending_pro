@@ -14,7 +14,7 @@ function EmiDetails() {
     const [btnDisabled, setBtnDisabled] = useState(false);
     const location = useLocation();
     const formId = location.state.formId;
-    console.log(formId, "what ")
+    // console.log(formId, "what ")
     const navigate = useNavigate()
     useEffect(() => {
 
@@ -64,10 +64,10 @@ function EmiDetails() {
 
             // console.log(payload, "payload")
             const response = await backEndCallObj("/emi/pay_emi", payload);
-            console.log(response, "response")
+            // console.log(response, "response")
             const transaction_id = response.Transaction_id;
 
-            console.log(transaction_id, "transection id")
+            // console.log(transaction_id, "transection id")
             navigate('/emipayotp', { state: { transaction_id, loan_id: emis?.loan_id, instalmentNumber: emis?.emi_details?.installmentNumber } });
             // setUserprofileData(null);
             // setUserprofileData(null)

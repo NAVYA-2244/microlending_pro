@@ -235,7 +235,7 @@ function AddminControlls() {
         try {
             setLoading(true);
             const response = await backEndCall("/admin/get_admin_controls");
-            console.log(response, "response")
+            // console.log(response, "response")
             const controls = ["login", "register", "withdraw", "emi_type"].map(key => ({
                 value: response[key]?.toUpperCase(),
                 originalValue: response[key]?.toUpperCase(),

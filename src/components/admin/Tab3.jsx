@@ -339,7 +339,7 @@ function Tab3({ LoanListuser, setLoanListuser, setErrorOccur, setLoading, handle
 
 
     const handleShowModal = ({ loan_id }) => {
-        console.log(loan_id, "loanid")
+        // console.log(loan_id, "loanid")
         setFormData(loan_id)
         setShowModal(true);
     };

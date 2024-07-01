@@ -40,7 +40,7 @@ function TransactionHistory() {
             setbkcall(false)
             const obj = { skip: transactionHistory.length, limit };
             const response = await backEndCallObj('/users/transaction_history_all', obj);
-            console.log(response, "transections user")
+            // console.log(response, "transections user")
             if (response?.length === 0) {
                 setLoadMore(true);
                 toast.info("No more users to fetch.");
@@ -62,7 +62,7 @@ function TransactionHistory() {
             setbkcall(false)
             const obj = { skip: transactionHistory.length, limit };
             const response = await backEndCallObj('/admin/transaction_history_all', obj);
-            console.log(response, "transections admin")
+            // console.log(response, "transections admin")
             if (response?.length === 0) {
                 setLoadMore(true);
                 toast.info("No more users to fetch.");
@@ -81,7 +81,7 @@ function TransactionHistory() {
 
     useEffect(() => {
         if (transactionHistory.length == 0) {
-            console.log("hello")
+            // console.log("hello")
             {
                 authService.IsAdmin() ? fetchDataadmin() :
                     fetchData();
@@ -89,7 +89,7 @@ function TransactionHistory() {
         }
     }, []);
 
-    console.log(transactionHistory.length, "transection")
+    // console.log(transactionHistory.length, "transection")
 
 
     //     (node) => {
@@ -124,7 +124,7 @@ function TransactionHistory() {
                 if (entries[0].isIntersecting) {
 
                     if (transactionHistory.length >= 10) {
-                        console.log("Intersection observed, fetching more data...");
+                        // console.log("Intersection observed, fetching more data...");
 
                         {
                             authService.IsAdmin() ? fetchDataadmin() :
@@ -193,7 +193,7 @@ function TransactionHistory() {
 
     const formattedDate = (date) => moment(date).format('YYYY-MM-DD HH:mm:ss');
     const capitalizeFirstLetter = (string) => string ? string.charAt(0).toUpperCase() + string.slice(1) : "";
-    console.log("kkkkk")
+    // console.log("kkkkk")
     return (
         <>
             <h5 className="mb-4">Transaction History</h5>

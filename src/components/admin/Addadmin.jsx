@@ -112,7 +112,7 @@ const AddAdmin = ({ show, onHide }) => {
       setErrors({});
     };
   }, []);
-  console.log(formData)
+  // console.log(formData)
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>

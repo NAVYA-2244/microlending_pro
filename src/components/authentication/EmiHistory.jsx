@@ -44,7 +44,7 @@ function EmiHistory() {
             setbkcall(false)
             const obj = { skip: EmiHistory.length, limit };
             const response = await backEndCallObj('/emi/emi_history', obj);
-            console.log(response, "emi user")
+            // console.log(response, "emi user")
             if (response?.length === 0) {
                 setLoadMore(true);
                 toast.info("No more users to fetch.");
@@ -67,7 +67,7 @@ function EmiHistory() {
             setbkcall(false)
             const obj = { skip: EmiHistory.length, limit };
             const response = await backEndCallObj('/admin/emi_history', obj);
-            console.log(response, "emi user")
+            // console.log(response, "emi user")
             if (response?.length === 0) {
                 setLoadMore(true);
                 toast.info("No more users to fetch.");
@@ -113,7 +113,7 @@ function EmiHistory() {
             };
 
             const response = await backEndCallObj("/emi/emi_filters", formDataToSend);
-            console.log(response, "emi details")
+            // console.log(response, "emi details")
             setEmiHistory(response);
             // console.log(response, "filteremi")
             setFormData({
@@ -152,7 +152,7 @@ function EmiHistory() {
                 if (entries[0].isIntersecting) {
 
                     if (EmiHistory?.length >= 10) {
-                        console.log("Intersection observed, fetching more data...");
+                        // console.log("Intersection observed, fetching more data...");
 
                         {
                             authService.IsAdmin() ? fetchEmiHistoryadmin() :
@@ -197,7 +197,7 @@ function EmiHistory() {
 
     const formattedDate = (date) => moment(date).format('YYYY-MM-DD HH:mm:ss');
     const capitalizeFirstLetter = (string) => string ? string.toUpperCase() + string.slice(1) : "";
-    console.log("kkkkk")
+    // console.log("kkkkk")
 
     return (
         <div className="user-details-container">

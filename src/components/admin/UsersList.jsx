@@ -14,7 +14,7 @@ const UsersList = () => {
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
-    console.log(usersList, "first line");
+    // console.log(usersList, "first line");
 
     const observer = useRef();
     const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ const UsersList = () => {
     });
 
     const fetchData = async () => {
-        console.log(usersList, "entered fetch data")
+        // console.log(usersList, "entered fetch data")
 
         setLoading(true);
         try {
@@ -61,7 +61,7 @@ const UsersList = () => {
             setLoading(false);
         }
     };
-    console.log(usersList.length, "length------->");
+    // console.log(usersList.length, "length------->");
 
     useEffect(() => {
 
@@ -132,7 +132,7 @@ const UsersList = () => {
         try {
             const obj = { user_id: selectedUser.user_id, user_active: selectedUser.user_active === "Enable" ? "Disable" : "Enable" };
             const response = await backEndCallObj("/admin/user_disable", obj);
-            console.log(response);
+            // console.log(response);
 
             // Update user status locally
             const updatedUsersList = usersList.map(user => {
@@ -175,7 +175,7 @@ const UsersList = () => {
             setbkcall(true)
             const response = await backEndCallObj("/admin/find_user", formDataToSend);
 
-            console.log(response, "responsedate");
+            // console.log(response, "responsedate");
 
             setUsersList(response);
             // setLoadMore(false);
@@ -190,7 +190,7 @@ const UsersList = () => {
             if (ex.response && ex.response.status === 400) {
                 // setUsersList([]);
                 toast.error(ex.response.data, "eroor");
-                console.log(ex.response.data, "error")
+                // console.log(ex.response.data, "error")
                 // setLoading(false);
                 // setbkcall(false)
             } else {
@@ -203,7 +203,7 @@ const UsersList = () => {
     const formattedDate = (date) => {
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     };
-    console.log("jhfghjkhj")
+    // console.log("jhfghjkhj")
     return (
         <div className="container-fluid">
             <h5 className="card-title m-0">All Users List</h5>

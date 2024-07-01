@@ -24,7 +24,7 @@ const ApplyLoan = () => {
     const location = useLocation();
     const minAmount = location.state.minAmount;
     const maxAmount = location.state.maxAmount;
-    console.log(minAmount, "minloanamount")
+    // console.log(minAmount, "minloanamount")
     console.log(maxAmount, "maxAmountloanamount")
     const [formData, setFormData] = useState({
         income_proof: "",

@@ -16,7 +16,7 @@ function Resenttransections() {
         setLoading(true)
         try {
             const response = await backEndCall('/users/transaction_history');
-            console.log(response, "recent user")
+            // console.log(response, "recent user")
             if (Array.isArray(response)) {
                 setRecentTransactionHistory(response);
             } else {
@@ -36,7 +36,7 @@ function Resenttransections() {
         setLoading(true)
         try {
             const response = await backEndCall('/admin/transaction_history');
-            console.log(response, "recent admin")
+            // console.log(response, "recent admin")
             if (Array.isArray(response)) {
                 setRecentTransactionHistory(response);
             } else {

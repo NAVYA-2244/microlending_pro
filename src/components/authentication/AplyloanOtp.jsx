@@ -19,7 +19,7 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
     let timer;
 
     useEffect(() => {
-        console.log(phone_number);
+        // console.log(phone_number);
         const fetchIPAddress = async () => {
             try {
                 const ip = await publicIpv4();
@@ -86,13 +86,13 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
     };
 
     const handleSubmit = async (e) => {
-        console.log(phone_number);
+        // console.log(phone_number);
 
         e.preventDefault();
 
 
         const validationErrors = validate();
-        console.log("handle submit called hhhhhhhhhhhhhhhhhhhhhhh");
+        // console.log("handle submit called hhhhhhhhhhhhhhhhhhhhhhh");
         setErrors(validationErrors || {});
         if (validationErrors) return;
 
@@ -106,15 +106,15 @@ const AplyloanOtp = ({ phone_number, otpkey }) => {
 
             console.log(response);
             if (response === "Incorrect OTP. Please Try Again") {
-                console.log("Incorrect OTP. Please Try Again");
+                // console.log("Incorrect OTP. Please Try Again");
             }
             toast.success("otp verified successfully");
-            console.log(response, "response otp");
+            // console.log(response, "response otp");
             navigate("/applyloan");
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
 
-                console.log(errors);
+                // console.log(errors);
                 toast.error(ex.response?.data);
             }
         } finally {

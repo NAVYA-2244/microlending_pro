@@ -34,7 +34,7 @@ const Header = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64String = event.target.result;
-        console.log("Base64:", base64String);
+        // console.log("Base64:", base64String);
         setFormData({ ...formData, photo: base64String }); // Update formData with base64 photo
       };
       reader.readAsDataURL(file);
@@ -49,9 +49,9 @@ const Header = () => {
 
   const handleSubmit = async () => {
     try {
-      console.log(formData, "photo");
+      // console.log(formData, "photo");
       await checkErrors(schema, formData);
-      console.log(formData, "jdjdphoto");
+      // console.log(formData, "jdjdphoto");
       const response = await backEndCallObj("/users/files_upload", formData);
 
       setFormData({ photo: "" });
@@ -77,7 +77,7 @@ const Header = () => {
       const response = await backEndCall("/users/user_profile");
       setUserprofileData(response);
       // setbkcall(false);
-      console.log(response, "profile");
+      // console.log(response, "profile");
       // }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {

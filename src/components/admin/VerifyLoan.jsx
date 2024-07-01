@@ -110,7 +110,7 @@ function VerifyLoan() {
             if (selectedLoanId && actionType) {
                 const loanStatus = actionType === "approve" ? "Approved" : "Rejected";
                 const response = await backEndCallObj("/admin/loan_approvel", { loan_id: selectedLoanId, loan_status: loanStatus });
-                console.log(response.message, "response loalist")
+                // console.log(response.message, "response loalist")
                 toast.success(response);
 
                 // fetchData();
@@ -124,7 +124,7 @@ function VerifyLoan() {
                     ...prev,
                     [activeTab]: prev[activeTab].map(loan => {
                         if (loan.loan_id === selectedLoanId) {
-                            console.log(`Updating loan_id: ${loan.loan_id} to status: ${loanStatus}`);
+                            // console.log(`Updating loan_id: ${loan.loan_id} to status: ${loanStatus}`);
                             return { ...loan, loan_status: loanStatus };
                         }
                         return loan;
@@ -162,7 +162,7 @@ function VerifyLoan() {
             };
 
             const response = await backEndCallObj("/admin/loan_search_filters", formDataToSend);
-            console.log(response, "response filterdata")
+            // console.log(response, "response filterdata")
             setVerifyloan({ [activeTab]: response });  // Clear previous data and set new filtered data
             setFormData({
                 start_date: "",
@@ -202,7 +202,7 @@ function VerifyLoan() {
 
             if (!verifyloan[loan_status]) {
                 const response = await backEndCallObj("/admin/loan_filters", { loan_status });
-                console.log(response, "filterd data")
+                // console.log(response, "filterd data")
                 setVerifyloan(prev => ({ ...prev, [index]: response || [] }));
             }
             setBtnDisabled(false);

@@ -288,13 +288,13 @@ const Updateprofile = () => {
         region: regionAddr
       };
 
-      console.log(formDataWithoutPhoto, "navya");
+      // console.log(formDataWithoutPhoto, "navya");
 
 
       await checkErrors(schema, formDataWithoutPhoto);
 
       setLoading(true)
-      console.log("entet");
+      // console.log("entet");
 
 
 
@@ -403,8 +403,8 @@ const Updateprofile = () => {
   };
 
   const onChangeRegion = (e) => {
-    console.log("region_selected_options", e.target.selectedOptions[0].text);
-    console.log("region_value", e.target.value);
+    // console.log("region_selected_options", e.target.selectedOptions[0].text);
+    // console.log("region_value", e.target.value);
     setRegionAddr(e.target.selectedOptions[0].text);
     provinces(e.target.value).then((response) => {
       setProvince(response);
@@ -419,8 +419,8 @@ const Updateprofile = () => {
 
 
   const onChangeProbince = async (e) => {
-    console.log("province_selected_options", e.target.selectedOptions[0].text);
-    console.log("province_value", e.target.value);
+    // console.log("province_selected_options", e.target.selectedOptions[0].text);
+    // console.log("province_value", e.target.value);
     setProvinceAddr(e.target.selectedOptions[0].text);
     cities(e.target.value).then((response) => {
       setCity(response);
@@ -437,8 +437,8 @@ const Updateprofile = () => {
 
 
   const onChangeCity = (e) => {
-    console.log("city_selected_options", e.target.selectedOptions[0].text);
-    console.log("city_value", e.target.value);
+    // console.log("city_selected_options", e.target.selectedOptions[0].text);
+    // console.log("city_value", e.target.value);
     setCityAddr(e.target.selectedOptions[0].text);
 
     // Assuming barangays is an asynchronous function that fetches barangays based on city value
@@ -454,8 +454,8 @@ const Updateprofile = () => {
   };
 
   const onCHangeBarangay = (e) => {
-    console.log("barangay_selected_options", e.target.selectedOptions[0].text);
-    console.log("barangay_value", e.target.value);
+    // console.log("barangay_selected_options", e.target.selectedOptions[0].text);
+    // console.log("barangay_value", e.target.value);
     setBarangayAddr(e.target.selectedOptions[0].text);
 
     // Assuming you want to clear errors related to 'barangay' here

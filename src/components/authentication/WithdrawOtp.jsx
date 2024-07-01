@@ -17,7 +17,7 @@ function WithdrawOtp() {
         otp: "",
         transaction_id: transaction_id,
     });
-    console.log(transaction_id, "transection id")
+    // console.log(transaction_id, "transection id")
 
     const [errors, setErrors] = useState({});
     const [btnDisabled, setBtnDisabled] = useState(false);
@@ -43,7 +43,7 @@ function WithdrawOtp() {
 
             // Send request to verify OTP
             const otpResponse = await backEndCallObj("/users/withdrawal_verify_otp", formData);
-            console.log(otpResponse, "otp");
+            // console.log(otpResponse, "otp");
 
             // Wait for 2 seconds before checking transaction status
             setFormData({
@@ -53,7 +53,7 @@ function WithdrawOtp() {
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 toast.error(ex.response.data, "error");
-                console.log(ex.response.data, "error");
+                // console.log(ex.response.data, "error");
                 setBtnDisabled(false);
                 setLoading(false);
                 // navigate('/')

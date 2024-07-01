@@ -46,11 +46,11 @@ function WithdrawalPage() {
             setBtndisabled(true)
             const response = await backEndCallObj("/users/Withdrawal_funds", formData);
 
-            console.log(response, "transection id")
+            // console.log(response, "transection id")
 
             const transaction_id = response.Transaction_id;
 
-            console.log(transaction_id, "transection id")
+            // console.log(transaction_id, "transection id")
 
             navigate('/withdrawOtp', { state: { transaction_id } });
             setFormData({

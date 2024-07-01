@@ -116,7 +116,7 @@ function BankDetails() {
         setLoading(true);
         try {
             const response = await backEndCall('/users/banks_list');
-            console.log(response, "bankDetails");
+            // console.log(response, "bankDetails");
             setBankDetails(response.net_banks || {});
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
@@ -133,7 +133,7 @@ function BankDetails() {
 
     const handleBankItemClick = (bankCode, fullName) => {
         const bank = bankDetails[bankCode];
-        console.log('Clicked bank details:', bank);
+        // console.log('Clicked bank details:', bank);
         navigate(`/withdrawal`, { state: { bankCode, fullName, bank } });
     };
 

@@ -79,7 +79,7 @@ function EmiPayOtp() {
             setLoading(true);
 
             const otpResponse = await backEndCallObj("/emi/p2ptransfer_verify_otp", formData);
-            console.log(otpResponse, "otpresponse")
+            // console.log(otpResponse, "otpresponse")
             setOtpResponseData(otpResponse)
             if (otpResponse.EMI_Status === "completed") {
                 loansdata();
