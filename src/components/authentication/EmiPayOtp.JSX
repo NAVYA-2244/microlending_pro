@@ -113,7 +113,12 @@ function EmiPayOtp() {
         setShowSuccessModal(false);
         navigate('/emihistory');
     };
-
+    useEffect(() => {
+        // Clean up errors when component unmounts
+        return () => {
+            setErrors({});
+        };
+    }, []);
     return (
         <div className="container py-5">
             <div className="row justify-content-center text-wraper">
@@ -156,81 +161,102 @@ function EmiPayOtp() {
             </div>
 
             {/* Success Modal */}
-            <div className={`modal fade ${showSuccessModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showSuccessModal ? 'block' : 'none' }}>
-                <div className="modal-dialog modal-dialog-centered" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header bg-success text-white">
-                            <h5 className="modal-title">Success</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseSuccessModal}></button>
-                        </div>
-                        <div className="modal-body text-center">
-                            <div className="mb-3">
-                                <i className="bi bi-check-circle-fill text-success" style={{ fontSize: "2rem" }}></i>
+            {showSuccessModal && (
+                <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header bg-success text-white">
+                                <h5 className="modal-title">Success</h5>
+                                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseSuccessModal}></button>
                             </div>
-                            <p className="mb-0">EMI payment has been successfully processed.</p>
-                            <div className="d-flex justify-content-center mb-4">
-                                <h4>₱ {otpResponseData?.emi_history?.paymentAmount || "NA"}</h4>
+                            <div className="modal-body px-5">
+                                <div className="mb-3  text-center">
+                                    <i className="bi bi-check-circle-fill text-success" style={{ fontSize: "2rem" }}></i>
+                                </div>
+                                <p className="mb-0 text-center">EMI payment has been successfully processed.</p>
+                                <div className="d-flex justify-content-center mb-4">
+                                    <h4>₱ {otpResponseData?.emi_history?.paymentAmount || "NA"}</h4>
+                                </div>
+
+                                {/* <table className="table table-borderless pr-3">
+                                    <tbody>
+                                        <tr>
+                                            <td className="fw-bold">Currency:</td>
+                                            <td>{otpResponseData?.emi_history?.coin || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Payment Id:</td>
+                                            <td>{otpResponseData?.emi_history?.payment_id || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Loan Id:</td>
+                                            <td>₱ {otpResponseData?.emi_history?.loan_id || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Installment Number:</td>
+                                            <td>{otpResponseData?.emi_history?.instalmentNumber || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Type:</td>
+                                            <td>{otpResponseData?.emi_history?.transactionType || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Status:</td>
+                                            <td>{otpResponseData?.emi_history?.emi_status || "0"}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="fw-bold">Comment:</td>
+                                            <td>{otpResponseData?.emi_history?.comment || "0"}</td>
+                                        </tr>
+                                    </tbody>
+                                </table> */}
+                                <div className="text-center">
+                                    <table className="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td className="fw-bold text-start">Currency:</td>
+                                                <td>{otpResponseData?.emi_history?.coin || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Payment Id:</td>
+                                                <td>{otpResponseData?.emi_history?.payment_id || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Loan Id:</td>
+                                                <td>₱ {otpResponseData?.emi_history?.loan_id || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Installment Number:</td>
+                                                <td>{otpResponseData?.emi_history?.instalmentNumber || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Type:</td>
+                                                <td>{otpResponseData?.emi_history?.transactionType || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Status:</td>
+                                                <td>{otpResponseData?.emi_history?.emi_status || "0"}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold text-start">Comment:</td>
+                                                <td>{otpResponseData?.emi_history?.comment || "0"}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
-                            {/* <div>
-                                <p><strong>currency</strong>: {otpResponseData?.emi_history?.coin || "0"}</p>
-
-                                <p><strong>Payment Id</strong>: {otpResponseData?.emi_history?.payment_id || "0"}</p>
-
-                                <p><strong>Loan Id</strong>: ₱ {otpResponseData?.emi_history?.loan_id || "0"}</p>
-
-                                <p><strong>Installment Number</strong>: {otpResponseData?.emi_history?.instalmentNumber || "0"}</p>
-
-
-                                <p><strong>Type</strong>: {otpResponseData?.emi_history?.transactionType || "0"}</p>
-
-                                <p><strong>Status</strong>: {otpResponseData?.emi_history?.emi_status || "0"}</p>
-
-                                <p><strong>Comment</strong>: {otpResponseData?.emi_history?.comment || "0"}</p>
-                            </div> */}
-                            <table className="table table-borderless"> {/* Use 'table-borderless' to remove borders */}
-                                <tbody>
-                                    <tr>
-                                        <td className="fw-bold">Currency:</td> {/* Use 'fw-bold' for bold text */}
-                                        <td>{otpResponseData?.emi_history?.coin || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Payment Id:</td>
-                                        <td>{otpResponseData?.emi_history?.payment_id || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Loan Id:</td>
-                                        <td>₱ {otpResponseData?.emi_history?.loan_id || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Installment Number:</td>
-                                        <td>{otpResponseData?.emi_history?.instalmentNumber || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Type:</td>
-                                        <td>{otpResponseData?.emi_history?.transactionType || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Status:</td>
-                                        <td>{otpResponseData?.emi_history?.emi_status || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="fw-bold">Comment:</td>
-                                        <td>{otpResponseData?.emi_history?.comment || "0"}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="modal-footer justify-content-center">
-                            <button type="button" className="btn btn-success" onClick={handleCloseSuccessModal}>Close</button>
+                            <div className="modal-footer justify-content-center">
+                                <button type="button" className="btn btn-success" onClick={handleCloseSuccessModal}>Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            )}
 
             {/* Modal backdrop */}
-            {showSuccessModal && <div className="modal-backdrop fade show" />}
-        </div >
+            {showSuccessModal && <div className="modal-backdrop fade show" onClick={handleCloseSuccessModal}></div>}
+        </div>
     );
 }
 

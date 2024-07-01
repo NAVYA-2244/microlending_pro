@@ -114,11 +114,21 @@ function VerifyLoan() {
                 toast.success(response);
 
                 // fetchData();
+                // setVerifyloan(prev => ({
+                //     ...prev,
+                //     [activeTab]: prev[activeTab].map(loan =>
+                //         loan.loan_id === selectedLoanId ? { ...loan, loan_status: loanStatus } : loan
+                //     )
+                // }));
                 setVerifyloan(prev => ({
                     ...prev,
-                    [activeTab]: prev[activeTab].map(loan =>
-                        loan.loan_id === selectedLoanId ? { ...loan, loan_status: loanStatus } : loan
-                    )
+                    [activeTab]: prev[activeTab].map(loan => {
+                        if (loan.loan_id === selectedLoanId) {
+                            console.log(`Updating loan_id: ${loan.loan_id} to status: ${loanStatus}`);
+                            return { ...loan, loan_status: loanStatus };
+                        }
+                        return loan;
+                    })
                 }));
             }
         } catch (ex) {

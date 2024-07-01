@@ -2,7 +2,7 @@
 
 
 import Joi from 'joi';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Spinner } from 'react-bootstrap';
 import { backEndCall, backEndCallObj } from '../../services/mainServiceFile';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { useFunctionContext } from '../comman/FunctionsContext';
 function WithdrawalPage() {
     const navigate = useNavigate()
     const { checkErrors } = useFunctionContext();
-    const { errors, setLoading, loading, setErrorOccur } = useMovieContext();
+    const { errors, setLoading, loading, setErrorOccur, setErrors } = useMovieContext();
     const [btndisabled, setBtndisabled] = useState(false)
     const [formData, setFormData] = useState({
         account_number: "",
@@ -85,6 +85,12 @@ function WithdrawalPage() {
     //         </div>
     //     </div></div>;
     // }
+    useEffect(() => {
+        // Clean up errors when component unmounts
+        return () => {
+            setErrors({});
+        };
+    }, []);
     return (
         <div className="container py-5">
             <div className="row justify-content-center text-wraper">

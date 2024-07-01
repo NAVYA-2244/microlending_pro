@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Joi from "joi";
 import { backEndCallObj } from "../../services/mainServiceFile";
 import { Modal, Button } from "react-bootstrap";
@@ -11,7 +11,7 @@ import authservice from '../../services/authService';
 import { Form } from "react-router-dom";
 
 const AddAdmin = ({ show, onHide }) => {
-  const { AddAdminData, setAddadminData, errors, setLoading, setErrorOccur } = useMovieContext();
+  const { AddAdminData, setAddadminData, errors, setLoading, setErrorOccur, setErrors } = useMovieContext();
   const { checkErrors } = useFunctionContext();
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [formData, setFormData] = useState({
@@ -106,7 +106,12 @@ const AddAdmin = ({ show, onHide }) => {
   if (authservice.getCurrentUser().admin_type !== "1") {
     window.history.back();
   }
-
+  useEffect(() => {
+    // Clean up errors when component unmounts
+    return () => {
+      setErrors({});
+    };
+  }, []);
   console.log(formData)
   return (
     <Modal show={show} onHide={onHide}>

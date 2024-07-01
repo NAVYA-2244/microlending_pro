@@ -100,8 +100,9 @@ function LoaneligibilityDetails() {
                                                     </table>
                                                 </td>
                                                 <td>
+                                                    <Button onClick={() => handleApplyLoan(dataItem.minLoanAmount, dataItem.maxLoanAmount)}>Apply</Button>
 
-                                                    <Button onClick={() => handleApplyLoan(usereligibility.minLoanAmount, usereligibility.maxLoanAmount)}>Apply</Button>
+                                                    {/* <Button onClick={() => handleApplyLoan(usereligibility.minLoanAmount, usereligibility.maxLoanAmount)}>Apply</Button> */}
                                                 </td>
                                             </tr>
                                         ))

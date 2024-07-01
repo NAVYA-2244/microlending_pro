@@ -76,7 +76,12 @@ function WithdrawOtp() {
     //     );
     // }
 
-
+    useEffect(() => {
+        // Clean up errors when component unmounts
+        return () => {
+            setErrors({});
+        };
+    }, []);
     return (
         <div className="container py-5">
             <div className="row justify-content-center text-wraper">

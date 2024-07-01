@@ -468,6 +468,13 @@ const Updateprofile = () => {
   useEffect(() => {
     region();
   }, []);
+
+  useEffect(() => {
+    // Clean up errors when component unmounts
+    return () => {
+      setErrors({});
+    };
+  }, []);
   if (loading) {
     return (
       <div className="text-center mt-3">
@@ -477,6 +484,10 @@ const Updateprofile = () => {
       </div>
     );
   }
+
+
+
+
   return (
     <>
       <div className="container">
